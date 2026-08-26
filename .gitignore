@@ -1,0 +1,4 @@
+# what the example site leaves behind
+public/
+resources/
+.hugo_build.lock

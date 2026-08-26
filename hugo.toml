@@ -1,0 +1,6 @@
+# What the theme brings along. A site of its own wins over every value here.
+
+[module]
+  [module.hugoVersion]
+    # Meta gives the coordinates and the moment a camera wrote into a photo
+    min = "0.155.3"
