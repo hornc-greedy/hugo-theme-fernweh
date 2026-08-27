@@ -1,0 +1,14 @@
+{{- /* The date of an entry: one day, or a span when the front matter carries
+       an until date. */ -}}
+{{- $from := .Date -}}
+{{- with .Params.until -}}
+  {{- $f := printf `<time datetime="%s">` (dateFormat "2006-01-02" $from) | safeHTML -}}
+  {{- $t := printf `<time datetime="%s">` (dateFormat "2006-01-02" .) | safeHTML -}}
+  {{- if eq (dateFormat "2006-01" $from) (dateFormat "2006-01" .) -}}
+    {{ $f }}{{ dateFormat site.Params.dates.day $from }}</time>–{{ $t }}{{ dateFormat site.Params.dates.long . }}</time>
+  {{- else -}}
+    {{ $f }}{{ dateFormat site.Params.dates.short $from }}</time> – {{ $t }}{{ dateFormat site.Params.dates.long . }}</time>
+  {{- end -}}
+{{- else -}}
+  <time datetime="{{ dateFormat "2006-01-02" $from }}">{{ dateFormat site.Params.dates.full $from }}</time>
+{{- end -}}

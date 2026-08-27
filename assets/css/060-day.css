@@ -1,0 +1,44 @@
+/* ── Day ───────────────────────────────────────────────────────────────── */
+
+.day-header {
+    margin-block-start: clamp(2.5rem, 7vw, 4.5rem);
+    /* the header keeps the left edge of the album; only the running text is held to
+           a readable measure, the title takes the width it needs */
+    & .day-text {
+        max-width: 44rem;
+    }
+}
+
+.day-date {
+    margin: 0 0 0.6rem;
+    color: var(--accent);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.day-up {
+    border-block-end: 1px solid transparent;
+    &:hover {
+        border-block-end-color: currentColor;
+    }
+}
+
+.day h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.6rem, 7.5vw, 5rem);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+}
+
+/* biome-ignore lint/style/noDescendingSpecificity: the more specific rule above
+   only sets a measure, this one only spacing and colour - nothing to override */
+.day-text {
+    margin-block-start: 1.6rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    text-wrap: pretty;
+}

@@ -1,0 +1,4 @@
+# The texts of the interface. What an entry itself says stands in the content.
+not_found = "Nothing here"
+not_found_back = "Back to the overview"
+skip = "Skip to the content"

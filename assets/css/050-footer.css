@@ -1,0 +1,12 @@
+/* ── Footer ────────────────────────────────────────────────────────────── */
+
+.footer {
+    margin-block-start: 6rem;
+    padding-block: 2.5rem;
+    border-block-start: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    & p {
+        margin: 0;
+    }
+}

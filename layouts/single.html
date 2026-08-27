@@ -1,0 +1,9 @@
+{{ define "main" }}
+  <article class="day">
+    <header class="day-header wrap">
+      <p class="day-date"><a class="day-up" href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a> · {{ partial "entrydate.html" . }}</p>
+      <h1>{{ .Title }}</h1>
+      {{ with .Content }}<div class="day-text">{{ . }}</div>{{ end }}
+    </header>
+  </article>
+{{ end }}
