@@ -1,0 +1,5 @@
+# The name in the header, per language. A file of the same name in a project of
+# your own replaces this one whole, so copy every key you do not change.
+en:
+  name: Travel journal
+  kicker: ""

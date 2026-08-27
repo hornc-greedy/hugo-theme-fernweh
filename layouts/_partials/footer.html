@@ -1,0 +1,5 @@
+<footer class="footer wrap">
+  {{- /* the map carries the OSM credit itself, where the policy wants it */ -}}
+  <p>&copy; {{ now.Format "2006" }} {{ partial "sitetext.html" "name" }}
+    {{- range site.Menus.footer }} &middot; <a href="{{ .URL }}">{{ .Name }}</a>{{ end }}</p>
+</footer>

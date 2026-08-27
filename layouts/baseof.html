@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="{{ site.Language.Locale }}">
+{{ partial "head.html" . }}
+<body>
+  <a class="skip" href="#content">{{ i18n "skip" }}</a>
+  {{ partial "header.html" . }}
+  <main id="content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
+</body>
+</html>

@@ -1,0 +1,19 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f7">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101114">
+  {{- $name := partial "sitetext.html" "name" -}}
+  <title>{{ if .IsHome }}{{ $name }}{{ else }}{{ .Title }} · {{ $name }}{{ end }}</title>
+  {{ with or .Description site.Params.description }}
+    <meta name="description" content="{{ . }}">
+  {{ end }}
+  <link rel="canonical" href="{{ .Permalink }}">
+  {{ if os.FileExists "static/favicon.svg" }}<link rel="icon" href="/favicon.svg" type="image/svg+xml">{{ end }}
+  {{- /* one file per responsibility, bundled into one request. The numbers in
+         the names decide the order, and with it the cascade. */ -}}
+  {{ with resources.Match "css/*.css" | resources.Concat "css/main.css" }}
+    <link rel="stylesheet" href="{{ (. | minify | fingerprint).RelPermalink }}">
+  {{ end }}
+  {{ with site.Params.column }}<style>:root { --column: {{ . }} }</style>{{ end }}
+</head>

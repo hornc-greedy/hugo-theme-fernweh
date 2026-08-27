@@ -1,0 +1,29 @@
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: clamp(1.4rem, 3vw, 2.4rem);
+}
+
+.wordmark {
+    display: grid;
+    gap: 0.2rem;
+    line-height: 1;
+}
+
+.wordmark-kicker {
+    font: 500 0.9rem / 1 var(--font-body);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.wordmark-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.3vw, 2.8rem);
+    letter-spacing: -0.03em;
+}

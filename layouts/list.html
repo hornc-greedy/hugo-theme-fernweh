@@ -1,0 +1,13 @@
+{{ define "main" }}
+  <div class="journey-column">
+    <header class="journey-header">
+      <h1>{{ .Title }}</h1>
+      {{ with .Content }}<div class="day-text">{{ . }}</div>{{ end }}
+    </header>
+    <ul class="journey-days">
+      {{- range .Pages.ByDate }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      {{- end }}
+    </ul>
+  </div>
+{{ end }}

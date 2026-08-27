@@ -1,0 +1,4 @@
+{{ define "main" }}
+  <h1 class="visually-hidden">{{ partial "sitetext.html" "name" }}</h1>
+  {{ with .Content }}<div class="intro wrap">{{ . }}</div>{{ end }}
+{{ end }}

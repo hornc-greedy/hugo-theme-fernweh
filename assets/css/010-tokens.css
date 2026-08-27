@@ -1,0 +1,83 @@
+/* typed so the browser checks them and calc() can rely on them; --tint stays
+   untyped on purpose: that it is invalid without a picture is what makes
+   --paper fall back to the plain surface */
+
+@property --column {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 1280px;
+}
+
+@property --cover {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 400px;
+}
+
+@property --map {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 320px;
+}
+
+@property --gutter {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 1rem;
+}
+
+@property --ar {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 1;
+}
+
+:root {
+    color-scheme: light dark;
+    scrollbar-gutter: stable;
+    --surface: light-dark(#faf9f7, #101114);
+    --surface-2: light-dark(#ffffff, #17181c);
+    --line: light-dark(#e3ded6, #2a2b31);
+    --text: light-dark(#16161a, #ececee);
+    --text-muted: light-dark(#6c6c76, #9a9aa4);
+    --accent: light-dark(#9a6a1f, #d8a367);
+    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    /* the display face is declared in head.html, beside the files it loads */
+    --column: 1280px;
+    --cover: 400px;
+    --map: 320px;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    /* drawn map tiles come light; this is what pulls them into the dark palette */
+    --tile-dark: invert(1) hue-rotate(180deg) brightness(0.86) contrast(0.9) saturate(0.7);
+    --tile-filter: none;
+    --sun: none;
+    --moon: block;
+    /* The paper a page is printed on: the hue of its own picture, the lightness
+           of the palette. head.html sets --tint only where there is a picture, so
+           everywhere else this stays invalid and the plain surface is used. */
+    --paper: oklch(from var(--tint) 0.965 0.018 h);
+}
+
+/* everything that differs in the dark palette, in one place, once for the system
+   setting, once for the switch, and nowhere else in this file */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --tile-filter: var(--tile-dark);
+        --paper: oklch(from var(--tint) 0.2 0.028 h);
+        --sun: block;
+        --moon: none;
+    }
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --tile-filter: var(--tile-dark);
+    --paper: oklch(from var(--tint) 0.2 0.028 h);
+    --sun: block;
+    --moon: none;
+}

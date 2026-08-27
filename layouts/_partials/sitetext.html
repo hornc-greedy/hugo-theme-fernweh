@@ -1,0 +1,3 @@
+{{- /* A text of the header in the language of the page, from data/site.yaml.
+       Takes "name" or "kicker". */ -}}
+{{- return index (index hugo.Data.site site.Language.Lang) . -}}
