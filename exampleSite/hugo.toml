@@ -1,0 +1,25 @@
+# Started from the root of the theme, naming the folder it was cloned into:
+#   hugo server --source exampleSite --themesDir ../.. --theme hugo-theme-fernweh
+
+baseURL = "https://example.com/"
+title = "Fernweh"
+theme = "fernweh"
+
+defaultContentLanguage = "en"
+timeZone = "Europe/Berlin"
+disableKinds = ["taxonomy", "term"]
+
+[languages.en]
+  label = "English"
+  locale = "en-GB"
+  weight = 1
+  [languages.en.params.dates]
+    full = "Monday, 2 January 2006"
+    long = "2 January 2006"
+    short = "2 January"
+    day = "2"
+
+[outputs]
+  home = ["HTML"]
+  page = ["HTML"]
+  section = ["HTML"]
