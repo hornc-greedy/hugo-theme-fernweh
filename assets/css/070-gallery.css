@@ -1,0 +1,84 @@
+/* ── Gallery ───────────────────────────────────────────────────────────── */
+
+/* Which pictures share a row is settled in the template, where their shapes are
+   known. Here a row divides its width among them in proportion to those shapes,
+   so every picture in a row comes out the same height and the row fills the
+   column to the edge. */
+
+.gallery {
+    container: gallery / inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--column);
+    margin: clamp(2.5rem, 7vw, 4.5rem) auto 0;
+    padding-inline: var(--gutter);
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+/* the same pictures cut finer for the phone; on the screen the wide row takes
+   them over */
+
+.row-narrow {
+    display: contents;
+}
+
+.shot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin: 0;
+    /* the width a picture takes in its row follows its shape, hundredfold: a row
+           whose shares add up to less than one is left unfilled by flexbox */
+    flex-grow: calc(var(--ar) * 100);
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+.tile {
+    position: relative;
+    display: block;
+    aspect-ratio: var(--ar);
+    overflow: hidden;
+    border-radius: 2px;
+    cursor: zoom-in;
+}
+
+/* one or two pictures cannot fill the column without being blown up, so they
+   take the height a full row would have and leave the rest of it empty */
+
+.row-loose .shot {
+    flex-grow: 0;
+    flex-basis: auto;
+}
+
+.row-loose .tile {
+    height: 300px;
+}
+
+.shot figcaption {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.45;
+    /* most pictures carry no caption, and an empty line would push the row apart */
+    &:empty {
+        display: none;
+    }
+}
+
+.tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+        transform 0.5s cubic-bezier(0.2, 0, 0.2, 1),
+        opacity 0.3s;
+}
+
+.tile:hover img {
+    transform: scale(1.04);
+}

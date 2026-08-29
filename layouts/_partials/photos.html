@@ -1,0 +1,13 @@
+{{- /* The photos of a day: the pictures lying beside the entry, in the order
+       they were taken. */ -}}
+{{- $page := . -}}
+{{- $images := slice -}}
+{{- $captions := dict -}}
+  {{- range .Params.photos -}}
+    {{- $captions = merge $captions (dict .image (.caption | default "")) -}}
+  {{- end -}}
+  {{- range $page.Resources.ByType "image" -}}
+    {{- $images = $images | append (partial "photoentry.html"
+        (dict "file" . "caption" (index $captions .Name))) -}}
+  {{- end -}}
+{{- return (sort $images "date") -}}

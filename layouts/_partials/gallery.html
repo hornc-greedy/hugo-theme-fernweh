@@ -1,0 +1,42 @@
+{{- $images := .images -}}
+{{- with $images }}
+  {{- $items := slice -}}
+  {{- range . -}}
+    {{- $items = $items | append (merge . (dict "ar" (div (mul 1.0 .w) .h))) -}}
+  {{- end -}}
+  <div class="gallery" id="gallery">
+    {{- $n := 0 -}}
+    {{- /* the wide rows are for the screen, each of them split once more for the
+           phone, so both layouts read the pictures in the same order */ -}}
+    {{- $wide := partial "rows.html" (dict "items" $items "shape" 4.7 "least" 3.0) -}}
+    {{- $only := eq (len $wide) 1 -}}
+    {{- range $wide }}
+      {{- $full := .sum }}
+      {{- $loose := and $only (lt $full 2.2) }}
+      {{- $span := 1200.0 }}{{ if $loose }}{{ $span = mul 300.0 $full }}{{ end }}
+      <div class="row{{ if $loose }} row-loose{{ end }}">
+        {{- range partial "rows.html" (dict "items" .items "shape" 1.5 "least" 1.0) }}
+          {{- $part := .sum }}
+          <div class="row-narrow">
+            {{- range .items }}
+              <figure class="shot" style="--ar: {{ .ar }}">
+                <a class="tile" id="photo-{{ $n }}" href="{{ .url }}"
+                   aria-label="{{ with .caption }}{{ . }}{{ else }}{{ i18n "photo" }} {{ add $n 1 }}{{ end }}"
+                   data-width="{{ .w }}" data-height="{{ .h }}"
+                   data-caption="{{ .caption }}">
+                  <img src="{{ .small }}"
+                       srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w, {{ .url }} {{ .w }}w"
+                       sizes="(max-width: 700px) {{ int (math.Round (mul (div .ar $part) 100)) }}vw, {{ int (math.Round (mul (div .ar $full) $span)) }}px"
+                       width="{{ .sw }}" height="{{ .sh }}"
+                       {{ if $n }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="{{ .caption }}">
+                </a>
+                <figcaption>{{ .caption }}</figcaption>
+              </figure>
+              {{- $n = add $n 1 -}}
+            {{- end }}
+          </div>
+        {{- end }}
+      </div>
+    {{- end }}
+  </div>
+{{- end }}

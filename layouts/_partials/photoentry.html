@@ -1,0 +1,31 @@
+{{- /* One photo, as the pages need it: what it measures, when it was taken and
+       where, and the addresses of the sizes the pages serve, from the file
+       itself, which Hugo cuts and reads the coordinates out of. */ -}}
+{{- $caption := .caption | default "" -}}
+{{- $entry := dict -}}
+{{- with .file -}}
+  {{- $small := .Fit "560x560" -}}
+  {{- $medium := .Fit "1120x1120" -}}
+  {{- $entry = dict
+      "key" .Name
+      "file" .
+      "url" .RelPermalink
+      "caption" $caption
+      "w" .Width "h" .Height
+      "date" ""
+      "small" $small.RelPermalink "sw" $small.Width "sh" $small.Height
+      "medium" $medium.RelPermalink "mw" $medium.Width "mh" $medium.Height
+      "pin" (.Fill "128x128 center").RelPermalink
+      "pinlarge" (.Fill "440x440 center").RelPermalink -}}
+  {{- /* a camera writes the moment and the place into the file; a scan carries
+         neither, and then the album falls back to the order of the folder */ -}}
+  {{- if reflect.IsImageResourceWithMeta . -}}
+    {{- with .Meta -}}
+      {{- $entry = merge $entry (dict "date" (.Date.Format "2006-01-02T15:04:05")) -}}
+      {{- if .Lat -}}
+        {{- $entry = merge $entry (dict "lat" .Lat "lon" .Long) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $entry -}}
