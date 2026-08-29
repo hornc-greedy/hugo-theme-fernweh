@@ -19,6 +19,11 @@ disableKinds = ["taxonomy", "term"]
     short = "2 January"
     day = "2"
 
+# The map is drawn from the coordinates the cameras wrote into the photos, and
+# Hugo leaves GPS out of its metadata unless it is asked for.
+[imaging.meta]
+  fields = ["GPS*", "Date*"]
+
 [outputs]
   home = ["HTML"]
   page = ["HTML"]
