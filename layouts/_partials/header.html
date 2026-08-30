@@ -1,4 +1,5 @@
-<header class="header wrap">
+{{- $over := and .IsPage (partial "cover.html" .) -}}
+<header class="header wrap{{ if $over }} header-over{{ end }}">
   <a class="wordmark" href="{{ site.Home.RelPermalink }}">
     {{ with partial "sitetext.html" "kicker" }}<span class="wordmark-kicker">{{ . }}</span>{{ end }}
     <span class="wordmark-name">{{ partial "sitetext.html" "name" }}</span>

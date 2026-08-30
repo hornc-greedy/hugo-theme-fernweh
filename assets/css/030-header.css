@@ -27,3 +27,39 @@
     font-size: clamp(1.8rem, 3.3vw, 2.8rem);
     letter-spacing: -0.03em;
 }
+
+.header-over .wordmark-kicker {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+/* header and opener share one grid cell: the header lies on the image and stays
+   put until that cell has scrolled past, then it leaves with it */
+
+.topband {
+    display: grid;
+    & > * {
+        grid-area: 1 / 1;
+        /* auto margins from .wrap would shrink a grid item to its content and centre it */
+        width: 100%;
+    }
+}
+
+.header-over {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    z-index: 10;
+    color: #fff;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 100vw;
+        height: 200px;
+        margin-inline-start: -50vw;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+        pointer-events: none;
+        z-index: -1;
+    }
+}
