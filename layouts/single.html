@@ -1,10 +1,27 @@
+{{ define "hero" }}
+  {{- with partial "cover.html" . }}
+    <figure class="opener">
+      <img src="{{ .medium }}"
+           srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w, {{ .url }} {{ .w }}w"
+           sizes="100vw" width="{{ .w }}" height="{{ .h }}"
+           fetchpriority="high" decoding="async" alt="">
+    </figure>
+  {{- end }}
+{{ end }}
+
 {{ define "main" }}
+  {{- $cover := partial "cover.html" . }}
+  {{- $rest := slice }}
+  {{- range partial "photos.html" . }}
+    {{- if or (not $cover) (ne .url $cover.url) }}{{ $rest = $rest | append . }}{{ end }}
+  {{- end }}
+
   <article class="day">
     <header class="day-header wrap">
       <p class="day-date"><a class="day-up" href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a> · {{ partial "entrydate.html" . }}</p>
       <h1>{{ .Title }}</h1>
       {{ with .Content }}<div class="day-text">{{ . }}</div>{{ end }}
     </header>
-    {{ partial "gallery.html" (dict "images" (partial "photos.html" .)) }}
+    {{ partial "gallery.html" (dict "images" $rest) }}
   </article>
 {{ end }}

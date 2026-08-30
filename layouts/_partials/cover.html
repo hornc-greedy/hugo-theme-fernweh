@@ -1,0 +1,13 @@
+{{- /* The opener of an entry: the picked cover, or the first of its photos. */ -}}
+{{- $page := . -}}
+{{- $cover := "" -}}
+{{- with .Params.cover -}}
+  {{- with $page.Resources.GetMatch . -}}
+    {{- $cover = partial "photoentry.html" (dict "file" .) -}}
+  {{- end -}}
+{{- else -}}
+  {{- with partial "photos.html" . -}}
+    {{- $cover = index . 0 -}}
+  {{- end -}}
+{{- end -}}
+{{- return $cover -}}

@@ -1,6 +1,7 @@
 ---
 title: Example day 1
 date: 2025-07-11
+cover: example_2.jpg
 photos:
   - image: example_1.jpg
     caption: An example caption
