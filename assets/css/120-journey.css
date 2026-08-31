@@ -1,0 +1,66 @@
+/* ── Journey: the days of a journey ────────────────────────────────────── */
+
+.journey-column {
+    margin: clamp(2rem, 5vw, 3.5rem) auto 0;
+    max-width: var(--column);
+    padding-inline: var(--gutter);
+    container: days / inline-size;
+    display: grid;
+}
+
+.journey-days {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.day-row {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    align-items: center;
+    gap: 1.4rem;
+    padding-bottom: 1.5rem;
+    border-block-end: 1px solid var(--line);
+    &:last-child {
+        border-block-end: 0;
+        padding-bottom: 0;
+    }
+    & img {
+        width: 132px;
+        height: 99px;
+        object-fit: cover;
+        border-radius: 2px;
+        transition: opacity 0.3s;
+    }
+    &:hover img {
+        opacity: 0.82;
+    }
+}
+
+.day-row-date {
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.day-row-text {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.day-row-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.15;
+}
+
+.day-row:hover .day-row-title {
+    color: var(--accent);
+}
+
+.day-row-excerpt {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}

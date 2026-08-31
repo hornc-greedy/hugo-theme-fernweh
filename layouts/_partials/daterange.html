@@ -1,0 +1,24 @@
+{{- /* The span of a journey: its own dates when the front matter carries an
+       until date, otherwise derived from its entries. */ -}}
+{{- $from := .Date -}}
+{{- $to := .Params.until -}}
+{{- if not $to -}}
+  {{- $s := .Pages.ByDate -}}
+  {{- with $s -}}
+    {{- $last := index $s (sub (len $s) 1) -}}
+    {{- $from = (index $s 0).Date -}}
+    {{- $to = $last.Date -}}
+    {{- with $last.Params.until }}{{ $to = . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- with $to -}}
+  {{- $f := printf `<time datetime="%s">` (dateFormat "2006-01-02" $from) | safeHTML -}}
+  {{- $t := printf `<time datetime="%s">` (dateFormat "2006-01-02" .) | safeHTML -}}
+  {{- if eq (dateFormat "2006-01-02" $from) (dateFormat "2006-01-02" .) -}}
+    <time datetime="{{ dateFormat "2006-01-02" $from }}">{{ dateFormat site.Params.dates.long $from }}</time>
+  {{- else if eq (dateFormat "2006-01" $from) (dateFormat "2006-01" .) -}}
+    {{ $f }}{{ dateFormat site.Params.dates.day $from }}</time>–{{ $t }}{{ dateFormat site.Params.dates.long . }}</time>
+  {{- else -}}
+    {{ $f }}{{ dateFormat site.Params.dates.short $from }}</time> – {{ $t }}{{ dateFormat site.Params.dates.long . }}</time>
+  {{- end -}}
+{{- end -}}
