@@ -16,4 +16,5 @@
     <link rel="stylesheet" href="{{ (. | minify | fingerprint).RelPermalink }}">
   {{ end }}
   {{ with site.Params.column }}<style>:root { --column: {{ . }} }</style>{{ end }}
+  {{ with site.Params.cover }}<style>:root { --cover: {{ . }} }</style>{{ end }}
 </head>
