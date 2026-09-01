@@ -1,0 +1,21 @@
+{{- with site.Sections }}
+  <section class="journeys wrap">
+    {{- range $i, $journey := .ByDate.Reverse }}
+      {{- $days := .Pages.ByDate }}
+      <a class="journey" href="{{ .RelPermalink }}">
+        {{- with $days }}
+          {{- with partial "cover.html" (index . 0) }}
+            {{- /* the topmost cover is the largest contentful paint of the front page */ -}}
+            <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w" sizes="(max-width: 700px) 100vw, 50vw"
+                 width="{{ .sw }}" height="{{ .sh }}"
+                 {{ if $i }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
+          {{- end }}
+        {{- end }}
+        <span class="journey-text">
+          <span class="journey-span">{{ partial "daterange.html" . }}</span>
+          <h2 class="journey-title">{{ .Title }}</h2>
+        </span>
+      </a>
+    {{- end }}
+  </section>
+{{- end }}

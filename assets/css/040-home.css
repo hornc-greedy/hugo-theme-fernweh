@@ -1,0 +1,97 @@
+/* ── Journeys ──────────────────────────────────────────────────────────── */
+
+/* the same indent as the tiles below, so both start on one line */
+
+.intro {
+    margin-block-start: clamp(2.5rem, 6vw, 4.5rem);
+    padding-inline: clamp(var(--gutter), 9vw, 9rem);
+    color: var(--text);
+    font-size: 1.05rem;
+    text-wrap: pretty;
+    & p {
+        margin: 0;
+    }
+    /* inside the inset, so the line starts where the text and the tiles start */
+    & > :last-child {
+        padding-bottom: clamp(2rem, 5vw, 3rem);
+        border-block-end: 1px solid var(--line);
+    }
+}
+
+.journeys {
+    /* the tiles measure against this box, not the window, so they stay right
+           when something stands beside them */
+    container: journeys / inline-size;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    margin-block-start: clamp(2.5rem, 6vw, 4.5rem);
+    /* the tiles keep their distance from both edges, not just the left one; on a
+           narrow screen the inset falls back to the gutter */
+    padding-inline: clamp(var(--gutter), 9vw, 9rem);
+}
+
+.journey {
+    display: grid;
+    /* max-content and justify-self: the link ends where its text ends, so the
+           empty space to the right is neither clickable nor part of the hover */
+    grid-template-columns: minmax(0, var(--cover)) minmax(0, max-content);
+    justify-self: start;
+    max-width: 100%;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    & img {
+        width: 100%;
+        /* the height attribute acts as a presentational hint; without auto it stays
+                   at its pixel value and aspect-ratio never gets to decide */
+        height: auto;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: 3px;
+        transition: opacity 0.35s;
+    }
+    &:hover img {
+        opacity: 0.85;
+    }
+}
+
+.journey-span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.journey-title {
+    display: block;
+    margin: 0.3rem 0 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.4vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+}
+
+.journey:hover .journey-title {
+    color: var(--accent);
+}
+
+.journey-header {
+    max-width: 44rem;
+    margin-block-end: clamp(2rem, 5vw, 3.5rem);
+    & h1 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(2.4rem, 7vw, 4.4rem);
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+    }
+}
+
+@container journeys (width <= 700px) {
+    .journey {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+}
