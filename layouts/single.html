@@ -24,4 +24,9 @@
     </header>
     {{ partial "gallery.html" (dict "images" $rest) }}
   </article>
+
+  <nav class="wrap paging">
+    {{ with .PrevInSection }}<a class="paging-prev" href="{{ .RelPermalink }}"><span>{{ i18n "earlier" }}</span>{{ .Title }}</a>{{ end }}
+    {{ with .NextInSection }}<a class="paging-next" href="{{ .RelPermalink }}"><span>{{ i18n "later" }}</span>{{ .Title }}</a>{{ end }}
+  </nav>
 {{ end }}
