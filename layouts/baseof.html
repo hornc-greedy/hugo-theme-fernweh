@@ -11,5 +11,11 @@
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
+  {{ range slice "js/nav.ts" }}
+    {{ with resources.Get . }}
+      {{ $built := . | js.Build (dict "minify" true "target" "es2022" "format" "esm") }}
+      <script src="{{ ($built | fingerprint).RelPermalink }}" type="module"></script>
+    {{ end }}
+  {{ end }}
 </body>
 </html>
