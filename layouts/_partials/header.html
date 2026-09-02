@@ -4,4 +4,16 @@
     {{ with partial "sitetext.html" "kicker" }}<span class="wordmark-kicker">{{ . }}</span>{{ end }}
     <span class="wordmark-name">{{ partial "sitetext.html" "name" }}</span>
   </a>
+  <div class="controls">
+    <button class="toggle" id="toggle" type="button" aria-label="{{ i18n "theme" }}"
+            data-light="{{ i18n "to_light" }}" data-dark="{{ i18n "to_dark" }}">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7" stroke-linecap="round"/>
+      </svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M20 13.4A8.4 8.4 0 1 1 10.6 4a6.6 6.6 0 0 0 9.4 9.4Z" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
 </header>
