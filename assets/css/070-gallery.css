@@ -82,3 +82,20 @@
 .tile:hover img {
     transform: scale(1.04);
 }
+
+/* hidden only where the script that reveals them is actually running */
+
+.js .shot,
+.js .opener {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+        opacity 0.7s cubic-bezier(0.2, 0, 0.2, 1),
+        transform 0.7s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.js .shot.shown,
+.js .opener.shown {
+    opacity: 1;
+    transform: none;
+}
