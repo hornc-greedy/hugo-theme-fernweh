@@ -4,7 +4,9 @@
   {{- range . -}}
     {{- $items = $items | append (merge . (dict "ar" (div (mul 1.0 .w) .h))) -}}
   {{- end -}}
-  <div class="gallery" id="gallery">
+  <div class="gallery" id="gallery"
+       data-photo="{{ i18n "photo" }}" data-close="{{ i18n "close" }}"
+       data-previous="{{ i18n "previous" }}" data-next="{{ i18n "next" }}">
     {{- $n := 0 -}}
     {{- /* the wide rows are for the screen, each of them split once more for the
            phone, so both layouts read the pictures in the same order */ -}}

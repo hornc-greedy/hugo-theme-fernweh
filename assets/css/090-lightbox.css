@@ -1,0 +1,167 @@
+/* ── Lightbox ──────────────────────────────────────────────────────────── */
+
+.lightbox {
+    /* a modal dialog fills the viewport itself, so the browser default of a
+           centred box with a border has to go */
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border: 0;
+    /* the photo takes every row the strip below it leaves over */
+    grid-template-rows: minmax(0, 1fr) auto;
+    justify-items: center;
+    padding: clamp(0.75rem, 2vh, 1.5rem) clamp(1rem, 4vw, 3.5rem);
+    background: #000000ee;
+    opacity: 0;
+    /* display and overlay are discrete: without allow-discrete the dialog would
+           appear and vanish before the fade has a chance to run */
+    transition:
+        opacity 0.25s,
+        display 0.25s allow-discrete,
+        overlay 0.25s allow-discrete;
+    &[open] {
+        display: grid;
+        opacity: 1;
+    }
+}
+
+@starting-style {
+    .lightbox[open] {
+        opacity: 0;
+    }
+}
+
+.lightbox::backdrop {
+    background: none;
+}
+
+/* the page behind the open dialog is inert already; this keeps it from
+   scrolling away under it */
+
+body:has(dialog[open]) {
+    overflow: hidden;
+}
+
+.lightbox figure {
+    margin: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: center;
+    gap: 0.8rem;
+    /* a definite height all the way down, otherwise the percentage on the
+           image below has nothing to measure against */
+    height: 100%;
+    min-height: 0;
+}
+
+.lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
+}
+
+.lightbox figcaption {
+    /* the zero width keeps the line out of the column sizing, so the figure
+           stays as wide as the image and the text breaks at its edge */
+    width: 0;
+    min-width: 100%;
+    color: #ececee;
+    font-size: 1.1rem;
+    &:empty {
+        display: none;
+    }
+}
+
+.lightbox-bar {
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem;
+}
+
+.lightbox-strip {
+    display: flex;
+    gap: 0.35rem;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    & button {
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        opacity: 0.45;
+        transition: opacity 0.2s;
+    }
+    & button.current {
+        opacity: 1;
+        outline: 2px solid #ececee;
+        outline-offset: -2px;
+    }
+    & img {
+        display: block;
+        width: 3rem;
+        height: 3rem;
+        object-fit: cover;
+    }
+}
+
+.lightbox-count {
+    color: #8b8b94;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+}
+
+.lightbox > button {
+    position: absolute;
+    z-index: 1;
+    background: none;
+    border: 0;
+    color: #ececee;
+    font-size: 2.4rem;
+    line-height: 1;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.lightbox-close {
+    top: 0.6rem;
+    right: 0.8rem;
+    font-size: 2.8rem;
+}
+
+.lightbox-prev {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lightbox-next {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.empty {
+    padding-block: 8rem;
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        /* biome-ignore lint/complexity/noImportantStyles: a stated preference
+           beats every transition on the page, whatever its specificity */
+        transition-duration: 0.01ms !important;
+    }
+}

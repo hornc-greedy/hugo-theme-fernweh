@@ -29,4 +29,9 @@
     {{ with .PrevInSection }}<a class="paging-prev" href="{{ .RelPermalink }}"><span>{{ i18n "earlier" }}</span>{{ .Title }}</a>{{ end }}
     {{ with .NextInSection }}<a class="paging-next" href="{{ .RelPermalink }}"><span>{{ i18n "later" }}</span>{{ .Title }}</a>{{ end }}
   </nav>
+
+  {{ with resources.Get "js/lightbox.ts" }}
+    {{ $built := . | js.Build (dict "minify" true "target" "es2022" "format" "esm") }}
+    <script src="{{ ($built | fingerprint).RelPermalink }}" type="module"></script>
+  {{ end }}
 {{ end }}
