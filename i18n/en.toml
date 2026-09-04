@@ -1,5 +1,8 @@
 # The texts of the interface. What an entry itself says stands in the content.
 photo = "Photo"
+close = "Close"
+previous = "Previous photo"
+next = "Next photo"
 earlier = "Earlier"
 later = "Later"
 theme = "Light or dark"
