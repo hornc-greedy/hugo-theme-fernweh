@@ -19,6 +19,16 @@ disableKinds = ["taxonomy", "term"]
     short = "2 January"
     day = "2"
 
+[languages.de]
+  label = "Deutsch"
+  locale = "de-DE"
+  weight = 2
+  [languages.de.params.dates]
+    full = "Monday, 2. January 2006"
+    long = "2. January 2006"
+    short = "2. January"
+    day = "2."
+
 # The map is drawn from the coordinates the cameras wrote into the photos, and
 # Hugo leaves GPS out of its metadata unless it is asked for.
 [imaging.meta]

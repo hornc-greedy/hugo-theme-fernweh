@@ -1,0 +1,12 @@
+{{- /* Leads to the same page in the other language, and where a page has no
+       translation yet, to that language's front page. */ -}}
+{{- $other := .Translations -}}
+{{- if not $other -}}
+  {{- $other = site.Home.AllTranslations -}}
+{{- end -}}
+{{- range $other -}}
+  {{- if ne .Language.Lang site.Language.Lang }}
+    <a class="lang" href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}"
+       aria-label="{{ i18n "language" (dict "name" .Language.Label) }}">{{ .Language.Lang | upper }}</a>
+  {{- end -}}
+{{- end -}}

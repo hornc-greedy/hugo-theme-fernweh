@@ -5,6 +5,7 @@
     <span class="wordmark-name">{{ partial "sitetext.html" "name" }}</span>
   </a>
   <div class="controls">
+    {{ partial "language.html" . }}
     <button class="toggle" id="toggle" type="button" aria-label="{{ i18n "theme" }}"
             data-light="{{ i18n "to_light" }}" data-dark="{{ i18n "to_dark" }}">
       <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
