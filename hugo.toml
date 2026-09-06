@@ -6,6 +6,8 @@
     min = "0.155.3"
 
 [params]
+  # gold | pink | teal
+  accent = "gold"
   # Content width and edge length of the square cover
   column = "1280px"
   cover = "200px"

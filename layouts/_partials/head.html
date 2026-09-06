@@ -21,6 +21,11 @@
   {{ with site.Params.column }}<style>:root { --column: {{ . }} }</style>{{ end }}
   {{ with site.Params.cover }}<style>:root { --cover: {{ . }} }</style>{{ end }}
   {{ with partial "tint.html" . }}<style>:root { --tint: {{ . | safeCSS }} }</style>{{ end }}
+  {{- $accents := dict
+      "gold" "light-dark(#9a6a1f, #d8a367)"
+      "pink" "light-dark(#d6006e, #ff5cb0)"
+      "teal" "light-dark(#00968a, #00ffd5)" -}}
+  {{- with index $accents (site.Params.accent | default "gold") }}<style>:root { --accent: {{ . | safeCSS }} }</style>{{ end }}
   {{ with resources.Get "js/theme.ts" }}
     {{ $built := . | js.Build (dict "minify" true "target" "es2022") }}
     <script src="{{ ($built | fingerprint).RelPermalink }}"></script>
