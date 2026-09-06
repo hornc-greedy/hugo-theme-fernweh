@@ -1,0 +1,11 @@
+{{- /* The dominant colour of one picture. The only thing a build still reads out
+       of pixels, so it is worked out once per photo and kept. */ -}}
+{{- $hex := "" -}}
+{{- with .file -}}
+  {{- with .Colors -}}{{ $hex = (index . 0).ColorHex }}{{- end -}}
+{{- else -}}
+  {{- with resources.GetRemote .url -}}
+    {{- with .Colors -}}{{ $hex = (index . 0).ColorHex }}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $hex -}}
