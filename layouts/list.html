@@ -1,23 +1,38 @@
 {{ define "main" }}
-  <div class="journey-column">
-    <header class="journey-header">
-      <p class="day-date">{{ partial "daterange.html" . }}</p>
-      <h1>{{ .Title }}</h1>
-      {{ with .Content }}<div class="day-text">{{ . }}</div>{{ end }}
-    </header>
-    <div class="journey-days">
-      {{- range $i, $day := .Pages.ByDate }}
-        <a class="day-row" href="{{ .RelPermalink }}">
-          {{- with partial "cover.html" . }}
-            <img src="{{ .small }}" width="{{ .sw }}" height="{{ .sh }}" {{ if $i }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} alt="">
-          {{- end }}
-          <span class="day-row-text">
-            <span class="day-row-date">{{ partial "entrydate.html" . }}</span>
-            <h2 class="day-row-title">{{ .Title }}</h2>
-            {{ with .Summary }}<span class="day-row-excerpt">{{ . | plainify | truncate 120 }}</span>{{ end }}
-          </span>
-        </a>
-      {{- end }}
+  {{- /* A journey whose photos carry no coordinates gets no map, and the
+         column takes the whole width instead of leaving a hole. */ -}}
+  {{- $located := false -}}
+  {{- range .Pages -}}
+    {{- range partial "photos.html" . -}}
+      {{- if and .lat .lon -}}{{- $located = true -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+  <div class="journey-layout{{ if not $located }} no-map{{ end }}">
+    {{- if $located }}
+      <aside class="journey-map">
+        {{ partial "map.html" . }}
+      </aside>
+    {{- end }}
+    <div class="journey-column">
+      <header class="journey-header">
+        <p class="day-date">{{ partial "daterange.html" . }}</p>
+        <h1>{{ .Title }}</h1>
+        {{ with .Content }}<div class="day-text">{{ . }}</div>{{ end }}
+      </header>
+      <div class="journey-days">
+        {{- range $i, $day := .Pages.ByDate }}
+          <a class="day-row" href="{{ .RelPermalink }}">
+            {{- with partial "cover.html" . }}
+              <img src="{{ .small }}" width="{{ .sw }}" height="{{ .sh }}" {{ if $i }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} alt="">
+            {{- end }}
+            <span class="day-row-text">
+              <span class="day-row-date">{{ partial "entrydate.html" . }}</span>
+              <h2 class="day-row-title">{{ .Title }}</h2>
+              {{ with .Summary }}<span class="day-row-excerpt">{{ . | plainify | truncate 120 }}</span>{{ end }}
+            </span>
+          </a>
+        {{- end }}
+      </div>
     </div>
   </div>
 {{ end }}

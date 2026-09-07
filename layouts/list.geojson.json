@@ -1,0 +1,38 @@
+{{- /* ── the days and their located photos ─────────────────────────────── */ -}}
+{{- $days := slice -}}
+{{- range .Pages -}}
+  {{- $page := . -}}
+  {{- $cover := partial "cover.html" $page -}}
+  {{- $photos := slice -}}
+  {{- /* The album leaves the opener out, so the tiles are numbered without it.
+         Counting over every photo here would point each pin at its neighbour. */ -}}
+  {{- $n := 0 -}}
+  {{- range $photo := partial "photos.html" $page -}}
+    {{- $tile := -1 -}}
+    {{- if or (not $cover) (ne $photo.url $cover.url) -}}
+      {{- $tile = $n -}}
+      {{- $n = add $n 1 -}}
+    {{- end -}}
+    {{- if and $photo.lat $photo.lon -}}
+      {{- $time := "" -}}
+      {{- if gt (len $photo.date) 15 }}{{ $time = substr $photo.date 11 5 }}{{ end -}}
+      {{- $photos = $photos | append (dict
+          "lat" $photo.lat
+          "long" $photo.lon
+          "thumb" $photo.pin
+          "thumbwidth" 128
+          "large" $photo.pinlarge
+          "time" $time
+          "caption" $photo.caption
+          "index" $tile) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $photos -}}
+    {{- $days = $days | append (dict
+        "title" $page.Title
+        "url" $page.RelPermalink
+        "photos" .) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- dict "maps" slice "days" $days | jsonify -}}

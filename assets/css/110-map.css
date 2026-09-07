@@ -1,0 +1,51 @@
+/* ── Map ───────────────────────────────────────────────────────────────── */
+
+#maps {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: center;
+}
+
+.map-box {
+    max-width: 100%;
+}
+
+.map-canvas {
+    height: 100%;
+    background: none;
+    & .leaflet-container {
+        cursor: default;
+        background: none;
+        font: inherit;
+    }
+}
+
+/* leaflet.css is loaded after main.css and states the same two classes, so a tie
+   would go to it: this takes one more */
+
+.leaflet-container .leaflet-control-attribution.leaflet-control {
+    /* the page colour, but see-through: the credit has to stay legible over
+           whatever tile lies under it, in both palettes */
+    background: light-dark(#faf9f7c4, #101114c4);
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    line-height: 1.5;
+    padding: 0 0.35rem;
+}
+
+.leaflet-control-attribution.leaflet-control a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.photo-pin img {
+    border: 2px solid var(--text);
+    border-style: solid;
+    border-color: var(--text);
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.darken .leaflet-tile {
+    filter: var(--tile-filter);
+}

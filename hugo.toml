@@ -11,3 +11,23 @@
   # Content width and edge length of the square cover
   column = "1280px"
   cover = "200px"
+
+  [params.map]
+    # Width of the map column; the outlines fill it and derive their height
+    width = "500px"
+    # Thumbnails on the map grow towards the middle zoom levels and shrink again
+    # at full zoom. Both ends are also capped against the width of the map, so a
+    # narrow column keeps them small whatever is written here.
+    pin = 50
+    pinmax = 100
+    # How far the map lets you zoom in
+    maxzoom = 18
+    # OpenStreetMap: data under ODbL, tiles from the OSM Foundation.
+    tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    darken = true
+
+[outputFormats]
+  [outputFormats.geojson]
+    mediaType = "application/json"
+    baseName = "map"
+    isPlainText = true
