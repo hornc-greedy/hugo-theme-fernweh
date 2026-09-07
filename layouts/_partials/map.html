@@ -1,0 +1,20 @@
+{{- $k := site.Params.map -}}
+{{- $tiles := $k.tiles | default "https://tile.openstreetmap.org/{z}/{x}/{y}.png" -}}
+{{- with .OutputFormats.Get "geojson" }}
+  <link rel="stylesheet" href="/leaflet/leaflet.css">
+  <div id="maps"{{ with $k.darken }} class="darken"{{ end }}
+       data-source="{{ .RelPermalink }}"
+       data-tiles="{{ $tiles }}"
+       data-attribution="{{ i18n "map_attribution" }}"
+       data-panup="{{ i18n "pan_up" }}" data-panleft="{{ i18n "pan_left" }}"
+       data-pandown="{{ i18n "pan_down" }}" data-panright="{{ i18n "pan_right" }}"
+       data-overlay="{{ $k.overlay }}"
+       data-maxzoom="{{ $k.maxzoom | default 18 }}"
+       data-pin="{{ $k.pin | default 20 }}"
+       data-pinmax="{{ $k.pinmax | default 200 }}"></div>
+  <script src="/leaflet/leaflet.js"></script>
+  {{ with resources.Get "js/map.ts" }}
+    {{ $built := . | js.Build (dict "minify" true "target" "es2022" "format" "esm") }}
+    <script src="{{ ($built | fingerprint).RelPermalink }}" type="module"></script>
+  {{ end }}
+{{- end }}

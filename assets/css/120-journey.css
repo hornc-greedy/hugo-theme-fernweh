@@ -1,9 +1,33 @@
-/* ── Journey: the days of a journey ────────────────────────────────────── */
+/* ── Journey: map left, days right ─────────────────────────────────────── */
 
-.journey-column {
+.journey-layout {
+    display: grid;
+    /* minmax(0, …): a plain 1fr never shrinks below its content, and the map
+           boxes carry a pixel width, and the page would refuse to narrow.
+           min(): the configured width is a cap, not a promise; on a narrow window
+           the map gives way instead of squeezing the days into a strip */
+    grid-template-columns: minmax(0, min(var(--map), 38vw)) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
     margin: clamp(2rem, 5vw, 3.5rem) auto 0;
+    align-items: start;
     max-width: var(--column);
     padding-inline: var(--gutter);
+    &.no-map {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (width <= 767px) {
+    .journey-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.journey-map {
+    align-self: start;
+}
+
+.journey-column {
     container: days / inline-size;
     display: grid;
 }
