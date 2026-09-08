@@ -1,5 +1,6 @@
 {{- /* ── the days and their located photos ─────────────────────────────── */ -}}
 {{- $days := slice -}}
+{{- $pins := slice -}}
 {{- range .Pages -}}
   {{- $page := . -}}
   {{- $cover := partial "cover.html" $page -}}
@@ -25,6 +26,7 @@
           "time" $time
           "caption" $photo.caption
           "index" $tile) -}}
+      {{- $pins = $pins | append (dict "lat" $photo.lat "long" $photo.lon) -}}
     {{- end -}}
   {{- end -}}
   {{- with $photos -}}
@@ -35,4 +37,20 @@
   {{- end -}}
 {{- end -}}
 
-{{- dict "maps" slice "days" $days | jsonify -}}
+{{- /* ── which countries, and which parts of them ─────────────────────────
+       Points are grouped into tenth-of-a-degree cells first, or every photo
+       would compute the same answer again. The countries themselves are worked
+       out in their own partial: the result hangs on the coordinates alone, so
+       both languages of a journey share one computation. */ -}}
+{{- $cells := slice -}}
+{{- $seen := slice -}}
+{{- range $pins -}}
+  {{- $key := printf "%.1f/%.1f" .lat .long -}}
+  {{- if not (in $seen $key) -}}
+    {{- $seen = $seen | append $key -}}
+    {{- $cells = $cells | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- $maps := partialCached "countries.html" (dict "cells" $cells) .Path -}}
+
+{{- dict "maps" $maps "days" $days | jsonify -}}
