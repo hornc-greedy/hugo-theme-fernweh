@@ -1,0 +1,49 @@
+{{- /* Which countries a journey touches, and which parts of them.
+
+       Every country is ruled out by its bounding box first, then each part by
+       its own, and only what survives has its outline walked. Drawn are the
+       parts that hold a photo, so shots from Corsica give the island rather
+       than the whole of France.
+
+       The answer depends on the coordinates alone and not on the language of
+       the page, which is why the caller asks for it through partialCached. */ -}}
+{{- $cells := .cells -}}
+{{- $maps := slice -}}
+{{- range $country := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
+  {{- $b := $country.properties.box -}}
+  {{- $near := false -}}
+  {{- range $cells -}}
+    {{- if and (ge .lat (index $b 0)) (le .lat (index $b 2))
+               (ge .long (index $b 1)) (le .long (index $b 3)) -}}
+      {{- $near = true -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if $near -}}
+    {{- $parts := slice -}}
+    {{- range $i, $part := $country.geometry.coordinates -}}
+      {{- $pb := index $country.properties.boxes $i -}}
+      {{- $hit := false -}}
+      {{- range $cells -}}
+        {{- /* the outline is only walked for a point that its own box holds;
+               an island on the far side of the country costs four comparisons */ -}}
+        {{- if and (not $hit) (ge .lat (index $pb 0)) (le .lat (index $pb 2))
+                   (ge .long (index $pb 1)) (le .long (index $pb 3)) -}}
+          {{- if partial "inside-part.html" (dict "lat" .lat "long" .long "part" $part) -}}
+            {{- $hit = true -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if $hit -}}
+        {{- /* append unwraps a slice, so the part has to be wrapped to stay one element */ -}}
+        {{- $parts = $parts | append (slice $part) -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if $parts -}}
+      {{- $maps = $maps | append (dict
+          "geometry" (dict "type" "MultiPolygon" "coordinates" $parts)) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $maps -}}

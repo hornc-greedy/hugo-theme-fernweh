@@ -1,0 +1,22 @@
+{{- /* Ray casting: counts how often a ray to the east crosses the outline. An odd
+       count means the point lies inside. Returns "1" or nothing. */ -}}
+{{- $x := .long -}}
+{{- $y := .lat -}}
+{{- $inside := false -}}
+{{- $ring := index .part 0 -}}
+{{- with $ring -}}
+  {{- $n := len $ring -}}
+  {{- range $i, $p := $ring -}}
+    {{- $q := index $ring (cond (eq $i 0) (sub $n 1) (sub $i 1)) -}}
+    {{- $xi := index $p 0 -}}
+    {{- $yi := index $p 1 -}}
+    {{- $xj := index $q 0 -}}
+    {{- $yj := index $q 1 -}}
+    {{- if ne (gt $yi $y) (gt $yj $y) -}}
+      {{- if lt $x (add (div (mul (sub $xj $xi) (sub $y $yi)) (sub $yj $yi)) $xi) -}}
+        {{- $inside = not $inside -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $inside }}1{{ end -}}
