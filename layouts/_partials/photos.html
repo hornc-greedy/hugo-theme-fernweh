@@ -1,8 +1,14 @@
-{{- /* The photos of a day: the pictures lying beside the entry, in the order
-       they were taken. */ -}}
+{{- /* The photos of a day. With a bucket configured they are the selection from
+       the front matter; without one they are the pictures lying beside the
+       entry. Either way in the order they were taken. */ -}}
 {{- $page := . -}}
 {{- $images := slice -}}
-{{- $captions := dict -}}
+{{- if site.Params.photos.origin -}}
+  {{- range .Params.photos -}}
+    {{- $images = $images | append (partial "photoentry.html" (dict "url" .image "caption" .caption)) -}}
+  {{- end -}}
+{{- else -}}
+  {{- $captions := dict -}}
   {{- range .Params.photos -}}
     {{- $captions = merge $captions (dict .image (.caption | default "")) -}}
   {{- end -}}
@@ -10,4 +16,5 @@
     {{- $images = $images | append (partial "photoentry.html"
         (dict "file" . "caption" (index $captions .Name))) -}}
   {{- end -}}
+{{- end -}}
 {{- return (sort $images "date") -}}

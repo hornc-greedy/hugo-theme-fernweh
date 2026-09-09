@@ -1,6 +1,7 @@
 {{- /* One photo, as the pages need it: what it measures, when it was taken and
-       where, and the addresses of the sizes the pages serve — from the file
-       itself, which Hugo cuts and reads the coordinates out of. */ -}}
+       where, and the addresses of the sizes the pages serve. From the note
+       lying beside it in the bucket, or — without one — from the file itself,
+       which Hugo cuts and reads the coordinates out of. */ -}}
 {{- $caption := .caption | default "" -}}
 {{- $entry := dict -}}
 {{- with .file -}}
@@ -26,6 +27,27 @@
         {{- $entry = merge $entry (dict "lat" .Lat "lon" .Long) -}}
       {{- end -}}
     {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- $url := .url -}}
+  {{- $sizes := site.Params.photos.sizes -}}
+  {{- $key := strings.TrimSuffix ".webp" (strings.TrimPrefix (printf "%s/" site.Params.photos.origin) $url) -}}
+  {{- with partialCached "photonote.html" $key $key -}}
+    {{- /* the cut sizes fit the picture into a box, so a portrait comes out
+           narrower than the box; srcset has to name the width it really has */ -}}
+    {{- $longest := math.Max .w .h -}}
+    {{- $small := math.Min 1.0 (div 560.0 $longest) -}}
+    {{- $medium := math.Min 1.0 (div 1120.0 $longest) -}}
+    {{- $entry = merge . (dict
+        "key" $key
+        "url" $url
+        "caption" $caption
+        "small" (printf "%s/%s-560.webp" $sizes $key)
+        "sw" (int (math.Round (mul .w $small))) "sh" (int (math.Round (mul .h $small)))
+        "medium" (printf "%s/%s-1120.webp" $sizes $key)
+        "mw" (int (math.Round (mul .w $medium))) "mh" (int (math.Round (mul .h $medium)))
+        "pin" (printf "%s/%s-128.webp" $sizes $key)
+        "pinlarge" (printf "%s/%s-440.webp" $sizes $key)) -}}
   {{- end -}}
 {{- end -}}
 {{- return $entry -}}

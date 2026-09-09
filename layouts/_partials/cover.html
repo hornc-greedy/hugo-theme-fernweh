@@ -2,8 +2,12 @@
 {{- $page := . -}}
 {{- $cover := "" -}}
 {{- with .Params.cover -}}
-  {{- with $page.Resources.GetMatch . -}}
-    {{- $cover = partial "photoentry.html" (dict "file" .) -}}
+  {{- if site.Params.photos.origin -}}
+    {{- $cover = partial "photoentry.html" (dict "url" .) -}}
+  {{- else -}}
+    {{- with $page.Resources.GetMatch . -}}
+      {{- $cover = partial "photoentry.html" (dict "file" .) -}}
+    {{- end -}}
   {{- end -}}
 {{- else -}}
   {{- with partial "photos.html" . -}}
