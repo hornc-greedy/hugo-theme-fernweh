@@ -26,6 +26,12 @@
     tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
     darken = true
 
+  # Where the pictures live. Left empty the theme takes the pictures lying
+  # beside an entry and cuts the sizes itself.
+  [params.photos]
+    origin = ""
+    sizes = ""
+
 [outputFormats]
   [outputFormats.geojson]
     mediaType = "application/json"
