@@ -27,6 +27,7 @@
       "pink" "light-dark(#d6006e, #ff5cb0)"
       "teal" "light-dark(#00968a, #00ffd5)" -}}
   {{- with index $accents (site.Params.accent | default "gold") }}<style>:root { --accent: {{ . | safeCSS }} }</style>{{ end }}
+  {{ partial "schema.html" . }}
   {{ with resources.Get "js/theme.ts" }}
     {{ $built := . | js.Build (dict "minify" true "target" "es2022") }}
     <script src="{{ ($built | fingerprint).RelPermalink }}"></script>

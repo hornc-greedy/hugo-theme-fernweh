@@ -1,0 +1,28 @@
+{{- /* What search engines and messengers read instead of guessing from the
+       markup: the journal itself, a journey as a collection, a day as an entry
+       with its photographs. */ -}}
+{{- $name := partial "sitetext.html" "name" -}}
+{{- $author := dict "@type" "Person" "name" $name -}}
+{{- $data := false -}}
+{{- if .IsHome -}}
+  {{- $data = dict "@context" "https://schema.org" "@type" "Blog"
+      "name" $name "url" .Permalink "inLanguage" site.Language.Locale -}}
+{{- else if .IsSection -}}
+  {{- $data = dict "@context" "https://schema.org" "@type" "CollectionPage"
+      "name" .Title "url" .Permalink "inLanguage" site.Language.Locale
+      "isPartOf" (dict "@type" "Blog" "name" $name "url" site.Home.Permalink) -}}
+{{- else if and .IsPage (partial "photos.html" .) -}}
+  {{- $images := slice -}}
+  {{- range partial "photos.html" . -}}
+    {{- $images = $images | append .url -}}
+  {{- end -}}
+  {{- $data = dict "@context" "https://schema.org" "@type" "BlogPosting"
+      "headline" .Title "url" .Permalink "inLanguage" site.Language.Locale
+      "datePublished" (.Date.Format "2006-01-02") "author" $author
+      "isPartOf" (dict "@type" "Blog" "name" $name "url" site.Home.Permalink) -}}
+  {{- with $images }}{{ $data = merge $data (dict "image" .) }}{{ end -}}
+  {{- with .Description }}{{ $data = merge $data (dict "description" .) }}{{ end -}}
+{{- end -}}
+{{- with $data }}
+  <script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
+{{- end }}
