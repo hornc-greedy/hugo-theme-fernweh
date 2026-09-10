@@ -1,0 +1,20 @@
+{{- $name := partial "sitetext.html" "name" -}}
+<meta property="og:site_name" content="{{ $name }}">
+<meta property="og:title" content="{{ if .IsHome }}{{ $name }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{ with or .Description site.Params.description }}
+  <meta property="og:description" content="{{ . }}">
+{{ end }}
+{{- /* A page without photos of its own — the front page, a journey — borrows the
+       newest one below it, so a shared link never arrives without a picture. */ -}}
+{{- $photos := partial "photos.html" . -}}
+{{- if not $photos -}}
+  {{- range first 1 .RegularPagesRecursive.ByDate.Reverse -}}
+    {{- $photos = partial "photos.html" . -}}
+  {{- end -}}
+{{- end }}
+{{ with $photos }}
+  <meta property="og:image" content="{{ (index . 0).medium }}">
+{{ end }}
+<meta name="twitter:card" content="summary_large_image">
