@@ -1,0 +1,108 @@
+/* ── Narrow screens ────────────────────────────────────────────────────── */
+
+/* measured against the window, not a container: the type size and the lightbox
+   belong to the page as a whole */
+@media (width <= 620px) {
+    body {
+        font-size: 16px;
+    }
+    .paging {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    .lightbox button {
+        font-size: 2rem;
+        padding: 0.4rem 0.6rem;
+    }
+    .lightbox img {
+        max-height: 56vh;
+    }
+}
+
+/* the day rows measure against their own column. On a wide window with the map
+   beside it that column is already narrow, and the rows fold at the right
+   moment rather than at a width the window happens to have */
+@container days (width <= 560px) {
+    .day-row {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 1rem;
+        & img {
+            width: 92px;
+            height: 69px;
+        }
+    }
+    .day-row-title {
+        font-size: 1.25rem;
+    }
+    .day-row-excerpt {
+        display: none;
+    }
+}
+
+@container gallery (width <= 600px) {
+    .gallery {
+        gap: 6px;
+    }
+    .row {
+        display: contents;
+    }
+    .row-narrow {
+        display: flex;
+        gap: 6px;
+    }
+    .row-loose .shot {
+        flex-grow: calc(var(--ar) * 100);
+        flex-basis: 0;
+    }
+    .row-loose .tile {
+        height: auto;
+    }
+}
+
+.pan {
+    display: grid;
+    grid-template-columns: repeat(3, 30px);
+    grid-template-rows: repeat(2, 30px);
+    gap: 2px;
+    & button {
+        display: grid;
+        place-items: center;
+        background: color-mix(in srgb, var(--surface) 82%, transparent);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        color: var(--text);
+        font: 15px / 1 sans-serif;
+        cursor: pointer;
+    }
+    & button:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    & button[data-dir="up"] {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    & button[data-dir="left"] {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    & button[data-dir="down"] {
+        grid-column: 2;
+        grid-row: 2;
+    }
+    & button[data-dir="right"] {
+        grid-column: 3;
+        grid-row: 2;
+    }
+}
+
+@media (pointer: coarse) {
+    .pan {
+        grid-template-columns: repeat(3, 44px);
+        grid-template-rows: repeat(2, 44px);
+    }
+    .toggle {
+        width: 44px;
+        height: 44px;
+    }
+}
