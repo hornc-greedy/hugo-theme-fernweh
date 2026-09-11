@@ -1,0 +1,61 @@
+/* ── Plain pages ───────────────────────────────────────────────────────── */
+
+.plain {
+    max-width: 44rem;
+    margin: clamp(2.5rem, 7vw, 4.5rem) auto 0;
+    padding-inline: var(--gutter);
+    & h1 {
+        margin: 0 0 1.8rem;
+        color: var(--text);
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.9rem, 4vw, 2.8rem);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+    & h2 {
+        margin: 2.4rem 0 0.5rem;
+        color: var(--text);
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.15rem;
+    }
+    & a {
+        border-block-end: 1px solid var(--line);
+        overflow-wrap: anywhere;
+    }
+    & a:hover {
+        border-block-end-color: currentColor;
+    }
+}
+
+/* ── Paging ───────────────────────────────────────────────────────────── */
+
+.paging {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-block-start: 5rem;
+    & a {
+        display: grid;
+        gap: 0.2rem;
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+    }
+    & a:hover {
+        color: var(--accent);
+    }
+}
+
+.paging-next {
+    margin-inline-start: auto;
+    text-align: right;
+}
+
+.paging span {
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
