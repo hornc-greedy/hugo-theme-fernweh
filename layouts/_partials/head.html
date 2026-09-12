@@ -27,6 +27,11 @@
       "pink" "light-dark(#d6006e, #ff5cb0)"
       "teal" "light-dark(#00968a, #00ffd5)" -}}
   {{- with index $accents (site.Params.accent | default "gold") }}<style>:root { --accent: {{ . | safeCSS }} }</style>{{ end }}
+  <link rel="preload" href="/fonts/sora-700.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: 'Sora'; src: url('/fonts/sora-700.woff2') format('woff2'); font-weight: 700; font-display: swap }
+    :root { --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif }
+  </style>
   {{ partial "opengraph.html" . }}
   {{ partial "schema.html" . }}
   {{ with resources.Get "js/theme.ts" }}
