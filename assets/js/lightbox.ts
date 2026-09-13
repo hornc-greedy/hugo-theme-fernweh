@@ -68,6 +68,9 @@ if (gallery) {
         if (!tile) {
             return
         }
+        scale = 1
+        shift = { x: 0, y: 0 }
+        img.style.transform = ''
         img.src = tile.href
         img.width = Number(tile.dataset.width)
         img.height = Number(tile.dataset.height)
@@ -153,17 +156,108 @@ if (gallery) {
         thumbs[current]?.scrollIntoView({ inline: 'center', block: 'nearest' })
     })
 
+    // the browser does not zoom a photo inside a fullscreen dialog, so the
+    // gestures on it are handled here
+    let scale = 1
+    let taken = 1
+    let span = 0
+    let shift = { x: 0, y: 0 }
+    // where the photo sits unmoved and unenlarged
+    let middle = { x: 0, y: 0 }
+    // the spot the fingers hold, measured in the photo, not in the window
+    let anchor = { x: 0, y: 0 }
+    let grabbed = { x: 0, y: 0 }
     let start = 0
+    let swipe = false
+
+    const pair = (touches: TouchList): [Touch, Touch] | undefined => {
+        const one = touches[0]
+        const two = touches[1]
+        return one && two ? [one, two] : undefined
+    }
+
+    const spread = ([one, two]: [Touch, Touch]): number =>
+        Math.hypot(one.clientX - two.clientX, one.clientY - two.clientY)
+
+    const between = ([one, two]: [Touch, Touch]) => ({
+        x: (one.clientX + two.clientX) / 2,
+        y: (one.clientY + two.clientY) / 2
+    })
+
+    // the photo is not moved past its own edges
+    const hold = (): void => {
+        const room = {
+            x: Math.max(0, (img.offsetWidth * scale - figure.clientWidth) / 2),
+            y: Math.max(0, (img.offsetHeight * scale - figure.clientHeight) / 2)
+        }
+        shift = {
+            x: Math.min(room.x, Math.max(-room.x, shift.x)),
+            y: Math.min(room.y, Math.max(-room.y, shift.y))
+        }
+        img.style.transform = `translate(${shift.x}px, ${shift.y}px) scale(${scale})`
+    }
+
     frame.addEventListener(
         'touchstart',
         (e) => {
-            start = e.touches[0]?.clientX ?? start
+            swipe = e.touches.length === 1
+            const first = e.touches[0]
+            start = first?.clientX ?? start
+            if (first) {
+                grabbed = { x: first.clientX - shift.x, y: first.clientY - shift.y }
+            }
+            const two = pair(e.touches)
+            if (two) {
+                const box = img.getBoundingClientRect()
+                middle = {
+                    x: box.left + box.width / 2 - shift.x,
+                    y: box.top + box.height / 2 - shift.y
+                }
+                const grip = between(two)
+                anchor = {
+                    x: (grip.x - middle.x - shift.x) / scale,
+                    y: (grip.y - middle.y - shift.y) / scale
+                }
+                span = spread(two)
+                taken = scale
+            }
         },
         { passive: true }
     )
+
+    frame.addEventListener('touchmove', (e) => {
+        const two = pair(e.touches)
+        if (two) {
+            scale = Math.min(4, Math.max(1, (taken * spread(two)) / span))
+            const grip = between(two)
+            shift = {
+                x: grip.x - middle.x - anchor.x * scale,
+                y: grip.y - middle.y - anchor.y * scale
+            }
+            hold()
+            e.preventDefault()
+            return
+        }
+        const first = e.touches[0]
+        if (scale > 1 && first) {
+            shift = { x: first.clientX - grabbed.x, y: first.clientY - grabbed.y }
+            hold()
+            e.preventDefault()
+        }
+    })
+
     frame.addEventListener('touchend', (e) => {
+        // a finger still down after a pinch takes over the moving
+        const left = e.touches[0]
+        if (left) {
+            grabbed = { x: left.clientX - shift.x, y: left.clientY - shift.y }
+        }
+        if (scale === 1) {
+            shift = { x: 0, y: 0 }
+            hold()
+        }
         const dir = (e.changedTouches[0]?.clientX ?? start) - start
-        if (Math.abs(dir) > 50) {
+        if (swipe && scale === 1 && Math.abs(dir) > 50) {
             step(dir > 0 ? -1 : 1)
         }
     })
