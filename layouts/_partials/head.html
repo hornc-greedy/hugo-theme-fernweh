@@ -5,7 +5,7 @@
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101114">
   {{- $name := partial "sitetext.html" "name" -}}
   <title>{{ if .IsHome }}{{ $name }}{{ else }}{{ .Title }} · {{ $name }}{{ end }}</title>
-  {{ with or .Description site.Params.description }}
+  {{ with or .Description (partial "description.html" .) site.Params.description }}
     <meta name="description" content="{{ . }}">
   {{ end }}
   <link rel="canonical" href="{{ .Permalink }}">

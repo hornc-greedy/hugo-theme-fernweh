@@ -17,3 +17,7 @@ map_attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/copyri
 not_found = "Nothing here"
 not_found_back = "Back to the overview"
 skip = "Skip to the content"
+
+[photographs]
+one = "{{ . }} photograph"
+other = "{{ . }} photographs"
