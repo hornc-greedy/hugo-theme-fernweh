@@ -22,6 +22,16 @@
     }
 }
 
+/* lying flat the strip costs a fifth of the height there is */
+@media (height <= 500px) {
+    .lightbox {
+        padding: 0;
+    }
+    .lightbox-strip {
+        display: none;
+    }
+}
+
 /* the day rows measure against their own column. On a wide window with the map
    beside it that column is already narrow, and the rows fold at the right
    moment rather than at a width the window happens to have */
