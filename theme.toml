@@ -7,7 +7,7 @@ homepage = "https://github.com/hornc-greedy/hugo-theme-fernweh"
 tags = ["blog", "gallery", "photography", "travel", "multilingual", "dark-mode", "minimal"]
 features = ["justified gallery", "map from photo coordinates", "lightbox without dependencies", "multilingual", "light and dark", "no javascript frameworks", "no webfonts from a foreign server"]
 
-min_version = "0.155.3"
+min_version = "0.158.0"
 
 [author]
   name = "hornc-greedy"

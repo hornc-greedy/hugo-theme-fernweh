@@ -4,7 +4,7 @@ A travel journal for Hugo. One page bundle per day, its photographs as a
 justified album, a lightbox without dependencies, and a map cut to the shape of
 the country, drawn from the coordinates the cameras wrote into the pictures.
 
-[![Hugo](https://img.shields.io/badge/Hugo-0.155.3%2B-FF4088?logo=hugo&logoColor=white)](https://gohugo.io)
+[![Hugo](https://img.shields.io/badge/Hugo-0.158.0%2B-FF4088?logo=hugo&logoColor=white)](https://gohugo.io)
 [![Licence](https://img.shields.io/badge/licence-MIT-blue)](https://github.com/hornc-greedy/hugo-theme-fernweh/blob/main/LICENSE)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-31C653)
 
@@ -13,7 +13,7 @@ the country, drawn from the coordinates the cameras wrote into the pictures.
 | | |
 | --- | --- |
 | **Example site** | [`exampleSite/`](https://github.com/hornc-greedy/hugo-theme-fernweh/tree/main/exampleSite), two journeys, two days each, English and German |
-| **Needs** | Hugo 0.155.3 or newer, for the metadata a photo carries |
+| **Needs** | Hugo 0.158.0 or newer, for the metadata a photo carries and the name of a language |
 | **Licence** | MIT, and the bundled work under [its own terms](#licences) |
 
 ---

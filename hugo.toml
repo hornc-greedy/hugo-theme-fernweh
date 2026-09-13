@@ -3,7 +3,7 @@
 [module]
   [module.hugoVersion]
     # Meta gives the coordinates and the moment a camera wrote into a photo
-    min = "0.155.3"
+    min = "0.158.0"
 
 [params]
   # gold | pink | teal
