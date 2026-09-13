@@ -422,12 +422,19 @@ if (grid) {
                 active.panBy([dir[0] * s, dir[1] * s], { duration: 0.25 })
             })
 
-            // a phone that turns round changes every width the boxes were built from
+            // a phone that turns round changes every width the boxes were built
+            // from. The height alone changes when a browser bar slides in or out
+            // or a photo takes the screen, and measuring again would throw the
+            // map back to its overview
             let pending: ReturnType<typeof setTimeout>
             addEventListener('resize', () => {
                 clearTimeout(pending)
                 pending = setTimeout(() => {
-                    available = space()
+                    const width = space()
+                    if (width === available) {
+                        return
+                    }
+                    available = width
                     for (const shape of shapes) {
                         measure(shape.ratio, shape.box)
                         shape.map.remeasure(shape.bounds)
