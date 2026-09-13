@@ -6,8 +6,12 @@
       {{- /* a journey without entries has nothing to show, and no cover to show
              it with; it appears once its first day is published */ -}}
       {{- if $days }}
+        {{- /* the picture of the journey, and without one the opener of its
+               first day */ -}}
+        {{- $cover := partial "cover.html" $journey -}}
+        {{- if not $cover }}{{ $cover = partial "cover.html" (index $days 0) }}{{ end -}}
         <a class="journey" href="{{ $journey.RelPermalink }}">
-          {{- with partial "cover.html" (index $days 0) }}
+          {{- with $cover }}
             {{- /* the topmost cover is the largest contentful paint of the front page */ -}}
             <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w" sizes="(max-width: 700px) 100vw, 50vw"
                  width="{{ .sw }}" height="{{ .sh }}"
