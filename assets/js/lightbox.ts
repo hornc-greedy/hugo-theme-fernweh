@@ -134,6 +134,11 @@ if (gallery) {
         }
     })
 
+    // a hidden strip cannot scroll, so it is centred again once it is back
+    addEventListener('resize', () => {
+        thumbs[current]?.scrollIntoView({ inline: 'center', block: 'nearest' })
+    })
+
     let start = 0
     frame.addEventListener(
         'touchstart',
