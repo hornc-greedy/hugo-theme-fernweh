@@ -357,12 +357,23 @@ if (grid) {
                 settle(bounds)
 
                 map.remeasure = (b: Leaflet.LatLngBounds): void => {
+                    // a turn of the phone gives the frame another width, so the
+                    // country is fitted again. How far the reader had zoomed in
+                    // is kept, counted from the overview: that step is a
+                    // different one in the new frame
+                    const kept = {
+                        centre: map.getCenter(),
+                        steps: map.getZoom() - overview.zoom
+                    }
                     building = true
                     map.setMinZoom(0)
                     map.setMaxBounds(null as unknown as Leaflet.LatLngBoundsExpression)
                     map.invalidateSize(false)
                     settle(b)
                     building = false
+                    if (kept.steps > 0) {
+                        map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
+                    }
                     pins.forEach(place)
                     showPan()
                 }
