@@ -1,0 +1,39 @@
+name: Check
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['images/**', 'README.md', 'LICENSE']
+  pull_request:
+    paths-ignore: ['images/**', 'README.md', 'LICENSE']
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # the version theme.toml promises, and the newest one: the first holds
+        # the promise, the second finds a deprecation before a user does
+        hugo: ['0.158.0', 'latest']
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Hugo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${{ matrix.hugo }}"
+          if [ "$version" = latest ]; then
+            version=$(gh api repos/gohugoio/hugo/releases/latest --jq '.tag_name | ltrimstr("v")')
+          fi
+          wget -O "${{ runner.temp }}/hugo.deb" \
+            "https://github.com/gohugoio/hugo/releases/download/v${version}/hugo_${version}_linux-amd64.deb"
+          sudo dpkg -i "${{ runner.temp }}/hugo.deb"
+
+      # the example site reaches every template the theme has, and a warning is
+      # a failure: a deprecated call still renders, and would go unnoticed
+      - name: Build the example site
+        run: >
+          hugo --source exampleSite --themesDir ../..
+          --theme "${GITHUB_REPOSITORY##*/}" --panicOnWarning --gc

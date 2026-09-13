@@ -4,6 +4,7 @@ A travel journal for Hugo. One page bundle per day, its photographs as a
 justified album, a lightbox without dependencies, and a map cut to the shape of
 the country — drawn from the coordinates the cameras wrote into the pictures.
 
+[![Check](https://github.com/hornc-greedy/hugo-theme-fernweh/actions/workflows/check.yml/badge.svg)](https://github.com/hornc-greedy/hugo-theme-fernweh/actions/workflows/check.yml)
 [![Hugo](https://img.shields.io/badge/Hugo-0.158.0%2B-FF4088?logo=hugo&logoColor=white)](https://gohugo.io)
 [![Licence](https://img.shields.io/badge/licence-MIT-blue)](https://github.com/hornc-greedy/hugo-theme-fernweh/blob/main/LICENSE)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-31C653)
