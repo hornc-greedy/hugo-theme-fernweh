@@ -1,0 +1,19 @@
+{{- /* The meta description of a page that carries none of its own: how many
+       photographs the entry holds and when they were taken. Empty for a page
+       without an album, so the site's own description stays the fallback. */ -}}
+{{- $count := 0 -}}
+{{- $span := "" -}}
+{{- if eq .Kind "page" -}}
+  {{- $count = len (partial "photos.html" .) -}}
+  {{- $span = partial "entrydate.html" . -}}
+{{- else if eq .Kind "section" -}}
+  {{- range .Pages -}}
+    {{- $count = add $count (len (partial "photos.html" .)) -}}
+  {{- end -}}
+  {{- $span = partial "daterange.html" . -}}
+{{- end -}}
+{{- $text := "" -}}
+{{- if $count -}}
+  {{- $text = printf "%s · %s" (i18n "photographs" $count) (plainify $span | strings.TrimSpace) -}}
+{{- end -}}
+{{- return $text -}}

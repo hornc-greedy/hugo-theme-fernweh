@@ -3,7 +3,7 @@
 <meta property="og:title" content="{{ if .IsHome }}{{ $name }}{{ else }}{{ .Title }}{{ end }}">
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
-{{ with or .Description site.Params.description }}
+{{ with or .Description (partial "description.html" .) site.Params.description }}
   <meta property="og:description" content="{{ . }}">
 {{ end }}
 {{- /* A page without photos of its own — the front page, a journey — borrows the

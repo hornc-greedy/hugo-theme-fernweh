@@ -114,7 +114,7 @@ the map. What the front matter may add:
 | `until` | journey | its last day, where the entries should not settle it |
 | `cover` | day | which photograph opens the entry; the first one otherwise |
 | `photos` | day | a line under a picture: `- image: photo-1.jpg` with a `caption` |
-| `description` | any | the meta description, and the text a shared link carries |
+| `description` | any | the meta description, and the text a shared link carries. Left out, a journey or a day states how many photographs it holds and when they were taken |
 | `layout` | any | `plain` for a page that is neither journey nor day — an about page, a privacy notice |
 
 ## Configuration

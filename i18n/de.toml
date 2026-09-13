@@ -17,3 +17,7 @@ map_attribution = 'Karte &copy; <a href="https://www.openstreetmap.org/copyright
 not_found = "Hier ist nichts"
 not_found_back = "Zurück zur Übersicht"
 skip = "Zum Inhalt springen"
+
+[photographs]
+one = "{{ . }} Foto"
+other = "{{ . }} Fotos"

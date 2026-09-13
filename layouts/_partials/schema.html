@@ -21,7 +21,7 @@
       "datePublished" (.Date.Format "2006-01-02") "author" $author
       "isPartOf" (dict "@type" "Blog" "name" $name "url" site.Home.Permalink) -}}
   {{- with $images }}{{ $data = merge $data (dict "image" .) }}{{ end -}}
-  {{- with .Description }}{{ $data = merge $data (dict "description" .) }}{{ end -}}
+  {{- with or .Description (partial "description.html" .) }}{{ $data = merge $data (dict "description" .) }}{{ end -}}
 {{- end -}}
 {{- with $data }}
   <script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
