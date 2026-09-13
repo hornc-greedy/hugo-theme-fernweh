@@ -88,8 +88,19 @@ if (gallery) {
         }
     }
 
-    function open(i: number): void {
+    // touch devices show a browser bar, a mouse does not
+    const handheld = matchMedia('(pointer: coarse)').matches
+
+    async function open(i: number): Promise<void> {
         show(i)
+        // before the dialog, not after: the top layer shows whoever entered it
+        // last. Granted only on a gesture, so a photo opened from a link on the
+        // map stays in the window
+        if (handheld) {
+            await document.documentElement
+                .requestFullscreen?.({ navigationUI: 'hide' })
+                .catch(() => undefined)
+        }
         frame.showModal()
     }
 
@@ -98,6 +109,9 @@ if (gallery) {
     }
 
     frame.addEventListener('close', () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen()
+        }
         tiles[current]?.focus()
         // opened from a thumbnail on the map: closing belongs back on that map,
         // not on the album page the link happened to lead to. A tab opened
