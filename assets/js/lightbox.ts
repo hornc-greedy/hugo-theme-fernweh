@@ -1,9 +1,22 @@
-const gallery = document.getElementById('gallery')
+/** one photograph, as the view needs it */
+export interface Shot {
+    href: string
+    width: number
+    height: number
+    caption: string
+    thumb: string
+}
 
-if (gallery) {
-    const tiles = [...gallery.querySelectorAll<HTMLAnchorElement>('.tile')]
-    const wording = gallery.dataset
-
+/**
+ * Builds the view once and hands back what opens it. The photographs come from
+ * the caller: an album has them as tiles, a map as the data it is drawn from.
+ * `closed` is told which one was open when the view went away.
+ */
+export const lightbox = (
+    shots: Shot[],
+    wording: Record<string, string | undefined>,
+    closed?: (i: number) => void
+) => {
     const part = <K extends keyof HTMLElementTagNameMap>(
         tag: K,
         css?: string
@@ -50,12 +63,12 @@ if (gallery) {
     let current = -1
 
     // the strip reuses the pictures the grid has already loaded
-    const thumbs = tiles.map((tile, i) => {
+    const thumbs = shots.map((shot, i) => {
         const thumb = part('button')
         thumb.type = 'button'
         thumb.ariaLabel = `${wording.photo ?? ''} ${i + 1}`
         const picture = part('img')
-        picture.src = tile.querySelector('img')?.src ?? ''
+        picture.src = shot.thumb
         picture.alt = ''
         thumb.append(picture)
         thumb.addEventListener('click', () => show(i))
@@ -64,19 +77,19 @@ if (gallery) {
     })
 
     function show(i: number): void {
-        const tile = tiles[i]
-        if (!tile) {
+        const shot = shots[i]
+        if (!shot) {
             return
         }
         scale = 1
         shift = { x: 0, y: 0 }
         img.style.transform = ''
-        img.src = tile.href
-        img.width = Number(tile.dataset.width)
-        img.height = Number(tile.dataset.height)
-        img.alt = tile.dataset.caption ?? ''
-        text.textContent = tile.dataset.caption ?? ''
-        counter.textContent = `${i + 1} / ${tiles.length}`
+        img.src = shot.href
+        img.width = shot.width
+        img.height = shot.height
+        img.alt = shot.caption
+        text.textContent = shot.caption
+        counter.textContent = `${i + 1} / ${shots.length}`
         thumbs.forEach((thumb, n) => {
             thumb.classList.toggle('current', n === i)
         })
@@ -84,7 +97,7 @@ if (gallery) {
         current = i
         // the neighbours are fetched now so that paging feels instant
         for (const n of [i - 1, i + 1]) {
-            const neighbour = tiles[n]
+            const neighbour = shots[n]
             if (neighbour) {
                 new Image().src = neighbour.href
             }
@@ -108,28 +121,14 @@ if (gallery) {
     }
 
     function step(by: number): void {
-        show((current + by + tiles.length) % tiles.length)
+        show((current + by + shots.length) % shots.length)
     }
 
     frame.addEventListener('close', () => {
         if (document.fullscreenElement) {
             document.exitFullscreen()
         }
-        tiles[current]?.focus()
-        // opened from a thumbnail on the map: closing belongs back on that map,
-        // not on the album page the link happened to lead to. A tab opened
-        // straight on this address has no map behind it and stays where it is.
-        if (fromMap && history.length > 1) {
-            fromMap = false
-            history.back()
-        }
-    })
-
-    tiles.forEach((tile, i) => {
-        tile.addEventListener('click', (e) => {
-            e.preventDefault()
-            open(i)
-        })
+        closed?.(current)
     })
 
     closer.addEventListener('click', () => frame.close())
@@ -262,11 +261,45 @@ if (gallery) {
         }
     })
 
-    // the thumbnails on the map link to a single photo, named by its tile
+    return { open }
+}
+
+// the album of a day drives the view from the tiles it already shows
+const gallery = document.getElementById('gallery')
+
+if (gallery) {
+    const tiles = [...gallery.querySelectorAll<HTMLAnchorElement>('.tile')]
+    const shots = tiles.map((tile) => ({
+        href: tile.href,
+        width: Number(tile.dataset.width),
+        height: Number(tile.dataset.height),
+        caption: tile.dataset.caption ?? '',
+        thumb: tile.querySelector('img')?.src ?? ''
+    }))
+
+    // a thumbnail on the map of another journey links to a single photo here
     const linked = tiles.findIndex((tile) => `#${tile.id}` === location.hash)
     // a bookmark of the same address has no map to return to
     let fromMap = linked > -1 && document.referrer.startsWith(location.origin)
+
+    const view = lightbox(shots, gallery.dataset, (i) => {
+        tiles[i]?.focus()
+        // opened from such a link: closing belongs back on that map, not on the
+        // album page the link happened to lead to
+        if (fromMap && history.length > 1) {
+            fromMap = false
+            history.back()
+        }
+    })
+
+    tiles.forEach((tile, i) => {
+        tile.addEventListener('click', (e) => {
+            e.preventDefault()
+            view.open(i)
+        })
+    })
+
     if (linked > -1) {
-        open(linked)
+        view.open(linked)
     }
 }
