@@ -10,11 +10,13 @@
         flex-wrap: wrap;
         gap: 1.5rem;
     }
-    .lightbox button {
+    .lightbox-close,
+    .lightbox-prev,
+    .lightbox-next {
         font-size: 2rem;
         padding: 0.4rem 0.6rem;
     }
-    .lightbox img {
+    .lightbox figure img {
         max-height: 56vh;
     }
 }
