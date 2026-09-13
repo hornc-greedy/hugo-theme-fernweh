@@ -119,7 +119,8 @@ if (gallery) {
     previous.addEventListener('click', () => step(-1))
     following.addEventListener('click', () => step(1))
     frame.addEventListener('click', (e) => {
-        if (e.target === frame) {
+        // without a margin the space beside the picture belongs to the figure
+        if (e.target === frame || e.target === figure) {
             frame.close()
         }
     })
