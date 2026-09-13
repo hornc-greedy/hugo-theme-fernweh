@@ -277,20 +277,10 @@ if (gallery) {
         thumb: tile.querySelector('img')?.src ?? ''
     }))
 
-    // a thumbnail on the map of another journey links to a single photo here
-    const linked = tiles.findIndex((tile) => `#${tile.id}` === location.hash)
-    // a bookmark of the same address has no map to return to
-    let fromMap = linked > -1 && document.referrer.startsWith(location.origin)
+    const view = lightbox(shots, gallery.dataset, (i) => tiles[i]?.focus())
 
-    const view = lightbox(shots, gallery.dataset, (i) => {
-        tiles[i]?.focus()
-        // opened from such a link: closing belongs back on that map, not on the
-        // album page the link happened to lead to
-        if (fromMap && history.length > 1) {
-            fromMap = false
-            history.back()
-        }
-    })
+    // an address may name a single photo, and then it opens straight away
+    const linked = tiles.findIndex((tile) => `#${tile.id}` === location.hash)
 
     tiles.forEach((tile, i) => {
         tile.addEventListener('click', (e) => {

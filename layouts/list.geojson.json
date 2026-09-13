@@ -20,6 +20,9 @@
       {{- $photos = $photos | append (dict
           "lat" $photo.lat
           "long" $photo.lon
+          "url" $photo.url
+          "w" $photo.w
+          "h" $photo.h
           "thumb" $photo.pin
           "thumbwidth" 128
           "large" $photo.pinlarge

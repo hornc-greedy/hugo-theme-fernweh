@@ -1,10 +1,14 @@
 import type * as Leaflet from 'leaflet'
 import { pinSize } from './arc.ts'
+import { lightbox } from './lightbox.ts'
 
 // What the geojson template hands over
 interface Photo {
     lat: number
     long: number
+    url: string
+    w: number
+    h: number
     thumb: string
     thumbwidth: number
     large: string
@@ -29,14 +33,6 @@ interface MapData {
     days: Day[]
 }
 
-/** the view a pin was clicked in, handed over through sessionStorage */
-interface Resume {
-    id: string
-    lat: number
-    lng: number
-    zoom: number
-}
-
 /** a Leaflet map that can be measured again when the window changes */
 interface JournalMap extends Leaflet.Map {
     remeasure(bounds: Leaflet.LatLngBounds): void
@@ -56,18 +52,6 @@ interface Pin {
     day: Day
 }
 
-// the way back from a photo: the view its pin was clicked in, taken up once
-const stored = sessionStorage.getItem('map-view')
-const resume: Resume | null = stored ? (JSON.parse(stored) as Resume) : null
-sessionStorage.removeItem('map-view')
-// a browser that hands the live page back instead of loading it again never
-// reaches the line above, and the view stays behind
-addEventListener('pageshow', (e) => {
-    if (e.persisted) {
-        sessionStorage.removeItem('map-view')
-    }
-})
-
 const grid = document.getElementById('maps')
 
 if (grid) {
@@ -78,6 +62,25 @@ if (grid) {
     void fetch(grid.dataset.source ?? '')
         .then((r) => r.json() as Promise<MapData>)
         .then((data) => {
+            // every located photograph of the journey, in the order the days run.
+            // A pin opens the view here instead of leading to the album, so the
+            // tap that opens it is the gesture a browser wants before it gives
+            // up its own bars
+            const at = new Map<Photo, number>()
+            const shots = data.days.flatMap((day) =>
+                day.photos.map((photo) => {
+                    at.set(photo, at.size)
+                    return {
+                        href: photo.url,
+                        width: photo.w,
+                        height: photo.h,
+                        caption: photo.caption,
+                        thumb: photo.thumb
+                    }
+                })
+            )
+            const view = lightbox(shots, grid.dataset)
+
             // the map that is currently zoomed in, and therefore the one the arrow
             // keys belong to; null again as soon as it is back in the overview
             let active: Leaflet.Map | null = null
@@ -210,7 +213,7 @@ if (grid) {
                             pin.photo.index < 0
                                 ? pin.day.url
                                 : `${pin.day.url}#photo-${pin.photo.index}`
-                        content = `<a href="${target}">${content}</a>`
+                        content = `<a href="${target}" data-shot="${at.get(pin.photo)}">${content}</a>`
                     }
                     pin.marker.setIcon(
                         L.divIcon({ html: content, className: 'photo-pin', iconSize: [g, g] })
@@ -326,16 +329,16 @@ if (grid) {
                 map.getContainer().addEventListener(
                     'click',
                     (e) => {
-                        if (!(e.target as Element).closest('a')) {
+                        const link = (e.target as Element).closest('a')
+                        if (!link) {
                             return
                         }
-                        if (dragged) {
-                            e.preventDefault()
-                            return
+                        // the address of the photo stays on the link for anyone
+                        // without a script; here the view opens over the map
+                        e.preventDefault()
+                        if (!dragged) {
+                            view.open(Number((link as HTMLElement).dataset.shot))
                         }
-                        const c = map.getCenter()
-                        const view: Resume = { id, lat: c.lat, lng: c.lng, zoom: map.getZoom() }
-                        sessionStorage.setItem('map-view', JSON.stringify(view))
                     },
                     true
                 )
@@ -375,10 +378,6 @@ if (grid) {
                     pins.forEach(place)
                     showPan()
                 })
-
-                if (resume && resume.id === id) {
-                    map.setView([resume.lat, resume.lng], resume.zoom, { animate: false })
-                }
 
                 return map
             }

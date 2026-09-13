@@ -165,6 +165,9 @@ Headings are set in **Sora**, two weights of latin-subset `woff2` under
 - **One map per country a journey touches**, cut to the outline, the photographs
   on their own coordinates. Which countries those are is worked out from the
   pictures — Corsica gives you the island, not the whole of France.
+- **A photograph opens where it lies.** The view comes up over the map and
+  pages through every located picture of the journey; nothing is navigated,
+  and closing it leaves the map where it stood.
 - **Nothing about it is configured.** No country list, no ISO code, no bounding
   box in the front matter.
 - **The outlines are Natural Earth at 1:50 million**, and none of that reaches
