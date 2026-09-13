@@ -92,6 +92,7 @@ body:has(dialog[open]) {
     overflow-x: auto;
     scrollbar-width: none;
     & button {
+        flex: none;
         padding: 0;
         border: 0;
         background: none;
