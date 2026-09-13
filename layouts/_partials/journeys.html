@@ -1,21 +1,25 @@
 {{- with site.Sections }}
   <section class="journeys wrap">
-    {{- range $i, $journey := .ByDate.Reverse }}
-      {{- $days := .Pages.ByDate }}
-      <a class="journey" href="{{ .RelPermalink }}">
-        {{- with $days }}
-          {{- with partial "cover.html" (index . 0) }}
+    {{- $shown := 0 -}}
+    {{- range $journey := .ByDate.Reverse }}
+      {{- $days := $journey.Pages.ByDate -}}
+      {{- /* a journey without entries has nothing to show, and no cover to show
+             it with; it appears once its first day is published */ -}}
+      {{- if $days }}
+        <a class="journey" href="{{ $journey.RelPermalink }}">
+          {{- with partial "cover.html" (index $days 0) }}
             {{- /* the topmost cover is the largest contentful paint of the front page */ -}}
             <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w" sizes="(max-width: 700px) 100vw, 50vw"
                  width="{{ .sw }}" height="{{ .sh }}"
-                 {{ if $i }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
+                 {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
           {{- end }}
-        {{- end }}
-        <span class="journey-text">
-          <span class="journey-span">{{ partial "daterange.html" . }}</span>
-          <h2 class="journey-title">{{ .Title }}</h2>
-        </span>
-      </a>
+          <span class="journey-text">
+            <span class="journey-span">{{ partial "daterange.html" $journey }}</span>
+            <h2 class="journey-title">{{ $journey.Title }}</h2>
+          </span>
+        </a>
+        {{- $shown = add $shown 1 -}}
+      {{- end }}
     {{- end }}
   </section>
 {{- end }}
