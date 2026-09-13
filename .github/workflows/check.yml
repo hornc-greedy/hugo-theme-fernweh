@@ -17,7 +17,7 @@ jobs:
         # the promise, the second finds a deprecation before a user does
         hugo: ['0.158.0', 'latest']
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install Hugo
         env:
