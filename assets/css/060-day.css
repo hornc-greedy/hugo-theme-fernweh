@@ -13,11 +13,7 @@
 
 .day-header {
     margin-block-start: clamp(2.5rem, 7vw, 4.5rem);
-    /* the header keeps the left edge of the album; only the running text is held to
-           a readable measure, the title takes the width it needs */
-    & .day-text {
-        max-width: 44rem;
-    }
+    /* header, running text and album share one width */
 }
 
 .day-date {
@@ -45,10 +41,11 @@
     text-wrap: balance;
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: the more specific rule above
-   only sets a measure, this one only spacing and colour - nothing to override */
 .day-text {
     margin-block-start: 1.6rem;
+    /* set in from both edges of the album, and not at all on a screen that has
+       no width to give away */
+    margin-inline: clamp(0rem, 4vw, 4em);
     color: var(--text-muted);
     font-size: 1.05rem;
     text-wrap: pretty;
