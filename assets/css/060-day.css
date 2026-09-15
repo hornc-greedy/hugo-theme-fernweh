@@ -46,7 +46,7 @@
     /* set in from both edges of the album, and not at all on a screen that has
        no width to give away */
     margin-inline: clamp(0rem, 4vw, 4em);
-    color: var(--text-muted);
+    color: var(--text);
     font-size: 1.05rem;
     text-align: justify;
     /* justified without hyphens tears holes into German; the language of the
