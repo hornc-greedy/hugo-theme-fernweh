@@ -48,5 +48,10 @@
     margin-inline: clamp(0rem, 4vw, 4em);
     color: var(--text-muted);
     font-size: 1.05rem;
+    text-align: justify;
+    /* justified without hyphens tears holes into German; the language of the
+       page decides which dictionary the browser reaches for */
+    hyphens: auto;
+    hyphenate-limit-chars: 7 4 3;
     text-wrap: pretty;
 }
