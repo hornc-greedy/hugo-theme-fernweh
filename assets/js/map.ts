@@ -168,14 +168,12 @@ if (grid) {
 
                 const overview = { center: bounds.getCenter(), zoom: 0 }
 
-                const img = (url: string, edge: number): string => {
-                    // the frame scales with the thumbnail: two fixed pixels take a fifth
-                    // of the width of a twenty pixel pin
-                    const border = Math.max(1, Math.round(edge / 30))
-                    return (
-                        `<img src="${url}" alt="" style="width:${edge}px;height:${edge}px;` +
-                        `border-width:${border}px;object-fit:cover;margin:0;display:block">`
-                    )
+                /** the three elements of a pin, once Leaflet has put it on the map */
+                const parts = (pin: Pin) => {
+                    const box = pin.marker.getElement()
+                    const link = box?.querySelector('a')
+                    const image = box?.querySelector('img')
+                    return box && link && image ? { box, link, image } : undefined
                 }
 
                 const pins: Pin[] = []
@@ -198,21 +196,29 @@ if (grid) {
                     })
 
                 const place = (pin: Pin): void => {
+                    const p = parts(pin)
+                    if (!p) {
+                        return
+                    }
                     const g = Math.round(size())
                     // switch sources when the small one would have to be stretched
                     const source = g > pin.photo.thumbwidth ? pin.photo.large : pin.photo.thumb
-                    let content = img(source, g)
+                    if (p.image.getAttribute('src') !== source) {
+                        p.image.src = source
+                    }
+                    // the one number the stylesheet measures the pin against
+                    p.box.style.setProperty('--pin', `${g}px`)
                     if (map.getZoom() > overview.zoom) {
                         // the opener has no tile of its own, its pin leads to the day
-                        const target =
+                        p.link.href =
                             pin.photo.index < 0
                                 ? pin.day.url
                                 : `${pin.day.url}#photo-${pin.photo.index}`
-                        content = `<a href="${target}" data-shot="${at.get(pin.photo)}">${content}</a>`
+                        p.link.dataset.shot = String(at.get(pin.photo))
+                    } else {
+                        p.link.removeAttribute('href')
+                        delete p.link.dataset.shot
                     }
-                    pin.marker.setIcon(
-                        L.divIcon({ html: content, className: 'photo-pin', iconSize: [g, g] })
-                    )
                 }
 
                 for (const day of allDays) {
@@ -224,7 +230,12 @@ if (grid) {
                         // already, and the pins would double the stations
                         const marker = L.marker([photo.lat, photo.long], {
                             keyboard: false,
-                            title: `${day.title}, ${photo.caption || photo.time}`
+                            title: `${day.title}, ${photo.caption || photo.time}`,
+                            // built once, because a rebuilt icon cannot be animated
+                            icon: L.divIcon({
+                                html: '<a><img alt=""></a>',
+                                className: 'photo-pin'
+                            })
                         }).addTo(map)
                         pins.push({ marker, photo, day })
                         marker.on('click', (e) => {
@@ -325,14 +336,16 @@ if (grid) {
                     'click',
                     (e) => {
                         const link = (e.target as Element).closest('a')
-                        if (!link) {
+                        // in the overview a pin carries no photo yet, and the credit
+                        // under the map is a link of its own
+                        if (!(link instanceof HTMLElement) || !link.dataset.shot) {
                             return
                         }
                         // the address of the photo stays on the link for anyone
                         // without a script; here the view opens over the map
                         e.preventDefault()
                         if (!dragged) {
-                            view.open(Number((link as HTMLElement).dataset.shot))
+                            view.open(Number(link.dataset.shot))
                         }
                     },
                     true

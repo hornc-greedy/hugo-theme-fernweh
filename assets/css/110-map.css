@@ -20,6 +20,10 @@
     }
 }
 
+.photo-pin a {
+    display: block;
+}
+
 /* leaflet.css is loaded after main.css and states the same two classes, so a tie
    would go to it: this takes one more */
 
@@ -38,10 +42,20 @@
     text-decoration: underline;
 }
 
+/* the script sets --pin, the size the picture is drawn at; the frame scales with
+   it, two fixed pixels would take a fifth of the width of a twenty pixel pin */
+
+.photo-pin {
+    margin: calc(var(--pin) / -2);
+}
+
 .photo-pin img {
-    border: 2px solid var(--text);
-    border-style: solid;
-    border-color: var(--text);
+    display: block;
+    margin: 0;
+    width: var(--pin);
+    height: var(--pin);
+    object-fit: cover;
+    border: max(1px, calc(var(--pin) / 30)) solid var(--text);
     border-radius: 2px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
