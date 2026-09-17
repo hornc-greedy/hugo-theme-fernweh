@@ -162,9 +162,18 @@ if (grid) {
                     mask.setStyle({ fillColor: getComputedStyle(document.body).backgroundColor })
                 })
 
-                L.geoJSON(country.geometry, {
+                const outline = L.geoJSON(country.geometry, {
                     style: { color: '#8fa6c0', weight: 1.5, fill: false }
                 }).addTo(map)
+
+                // the outline comes from a world map, fine for the shape of a country
+                // and far too coarse for a coastline at street zoom, where it would cut
+                // across the land and leave pins outside it
+                const shroud = (zoom: number): void => {
+                    const shown = zoom <= overview.zoom
+                    mask.setStyle({ fillOpacity: shown ? 1 : 0 })
+                    outline.setStyle({ opacity: shown ? 1 : 0 })
+                }
 
                 const overview = { center: bounds.getCenter(), zoom: 0 }
 
@@ -231,6 +240,7 @@ if (grid) {
                 /** the pins take the size of the destination at once, held back by a
                     counter-scale that is released over the seconds the map flies */
                 const glide = (zoom: number, seconds: number): void => {
+                    shroud(zoom)
                     // every pin of a map measures the same, so the counter-scale is
                     // worked out once instead of read back from each element
                     const held = size(map.getZoom()) / size(zoom)
@@ -416,12 +426,14 @@ if (grid) {
                     for (const pin of pins) {
                         place(pin)
                     }
+                    shroud(map.getZoom())
                     showPan()
                 }
 
                 for (const pin of pins) {
                     place(pin)
                 }
+                shroud(map.getZoom())
 
                 // registered only now: during fitBounds the overview zoom is not known
                 // yet, and every comparison against it would be answered wrongly
@@ -432,6 +444,7 @@ if (grid) {
                     for (const pin of pins) {
                         place(pin)
                     }
+                    shroud(map.getZoom())
                     showPan()
                 })
 

@@ -20,6 +20,14 @@
     }
 }
 
+/* the mask and the outline fade over the same seconds the map flies */
+
+.leaflet-overlay-pane path {
+    transition:
+        fill-opacity 0.7s,
+        stroke-opacity 0.7s;
+}
+
 .photo-pin a {
     display: block;
 }
