@@ -1,7 +1,7 @@
 {{- /* ── the days and their located photos ─────────────────────────────── */ -}}
 {{- $days := slice -}}
 {{- $pins := slice -}}
-{{- range .Pages -}}
+{{- range .Pages.ByDate -}}
   {{- $page := . -}}
   {{- $cover := partial "cover.html" $page -}}
   {{- $photos := slice -}}
