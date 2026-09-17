@@ -42,7 +42,7 @@
 }
 
 .day-text {
-    margin-block-start: 1.6rem;
+    margin-block-start: clamp(2rem, 4vw, 3rem);
     /* set in from both edges of the album, and not at all on a screen that has
        no width to give away */
     margin-inline: clamp(0rem, 4vw, 4em);
