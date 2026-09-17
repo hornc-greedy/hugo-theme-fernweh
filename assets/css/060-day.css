@@ -46,6 +46,9 @@
     /* set in from both edges of the album, and not at all on a screen that has
        no width to give away */
     margin-inline: clamp(0rem, 4vw, 4em);
+    border: 1px solid var(--text);
+    border-radius: 2px;
+    padding: clamp(1.25rem, 3vw, 2rem);
     color: var(--text);
     font-size: 1.05rem;
     text-align: justify;
@@ -54,4 +57,11 @@
     hyphens: auto;
     hyphenate-limit-chars: 7 4 3;
     text-wrap: pretty;
+    /* the frame's padding is the whole distance; a paragraph brings its own */
+    & > :first-child {
+        margin-block-start: 0;
+    }
+    & > :last-child {
+        margin-block-end: 0;
+    }
 }
