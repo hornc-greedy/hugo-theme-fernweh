@@ -1,15 +1,14 @@
-{{- /* The span of a journey: its own dates when the front matter carries an
-       until date, otherwise derived from its entries. */ -}}
+{{- /* The span of a journey, taken from its entries. The until date of the
+       front matter stands in as long as there are none, so that a journey
+       under way does not give away the day it ends. */ -}}
 {{- $from := .Date -}}
 {{- $to := .Params.until -}}
-{{- if not $to -}}
-  {{- $s := .Pages.ByDate -}}
-  {{- with $s -}}
-    {{- $last := index $s (sub (len $s) 1) -}}
-    {{- $from = (index $s 0).Date -}}
-    {{- $to = $last.Date -}}
-    {{- with $last.Params.until }}{{ $to = . }}{{ end -}}
-  {{- end -}}
+{{- $s := .Pages.ByDate -}}
+{{- with $s -}}
+  {{- $last := index $s (sub (len $s) 1) -}}
+  {{- $from = (index $s 0).Date -}}
+  {{- $to = $last.Date -}}
+  {{- with $last.Params.until }}{{ $to = . }}{{ end -}}
 {{- end -}}
 {{- with $to -}}
   {{- $f := printf `<time datetime="%s">` (dateFormat "2006-01-02" $from) | safeHTML -}}
