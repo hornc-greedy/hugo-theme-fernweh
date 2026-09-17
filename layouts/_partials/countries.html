@@ -20,7 +20,7 @@
   {{- end -}}
 
   {{- if $near -}}
-    {{- $parts := slice -}}
+    {{- $hits := slice -}}
     {{- range $i, $part := $country.geometry.coordinates -}}
       {{- $pb := index $country.properties.boxes $i -}}
       {{- $hit := false -}}
@@ -35,14 +35,15 @@
         {{- end -}}
       {{- end -}}
       {{- if $hit -}}
-        {{- /* append unwraps a slice, so the part has to be wrapped to stay one element */ -}}
-        {{- $parts = $parts | append (slice $part) -}}
+        {{- $hits = $hits | append $i -}}
       {{- end -}}
     {{- end -}}
 
-    {{- if $parts -}}
-      {{- $maps = $maps | append (dict
-          "geometry" (dict "type" "MultiPolygon" "coordinates" $parts)) -}}
+    {{- if $hits -}}
+      {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
+             a second outline cannot be appended to a list that holds one already */ -}}
+      {{- $maps = $maps | append (dict "geometry" (dict "type" "MultiPolygon"
+          "coordinates" (apply $hits "index" $country.geometry.coordinates "."))) -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
