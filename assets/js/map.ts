@@ -127,12 +127,14 @@ if (grid) {
                 // the tile policy asks for the credit on the map itself, not only in
                 // the footer; Leaflet's own name is not part of that
                 map.attributionControl.setPrefix('')
-                L.tileLayer(grid?.dataset.tiles ?? '', {
-                    maxZoom: maxzoom,
-                    attribution: grid?.dataset.attribution
-                }).addTo(map)
+                const tiles = [
+                    L.tileLayer(grid?.dataset.tiles ?? '', {
+                        maxZoom: maxzoom,
+                        attribution: grid?.dataset.attribution
+                    }).addTo(map)
+                ]
                 if (grid?.dataset.overlay) {
-                    L.tileLayer(grid?.dataset.overlay, { maxZoom: maxzoom }).addTo(map)
+                    tiles.push(L.tileLayer(grid?.dataset.overlay, { maxZoom: maxzoom }).addTo(map))
                 }
 
                 // everything outside the country is painted over in the page colour;
@@ -241,6 +243,12 @@ if (grid) {
                     counter-scale that is released over the seconds the map flies */
                 const glide = (zoom: number, seconds: number): void => {
                     shroud(zoom)
+                    // flying in, the tiles at hand cover the destination and only turn
+                    // blurry, so they wait for the landing. Flying out they cover a
+                    // fraction of the frame and have to follow
+                    for (const layer of tiles) {
+                        layer.options.updateWhenZooming = zoom < map.getZoom()
+                    }
                     // every pin of a map measures the same, so the counter-scale is
                     // worked out once instead of read back from each element
                     const held = size(map.getZoom()) / size(zoom)
