@@ -76,6 +76,52 @@ export const lightbox = (
         return thumb
     })
 
+    // the strip is dragged sideways with the mouse, a finger keeps the browser's
+    // own scrolling
+    let dragged = 0
+
+    strip.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse') {
+            return
+        }
+        const held = e.clientX
+        const from = strip.scrollLeft
+        const done = new AbortController()
+        dragged = 0
+        strip.classList.add('dragged')
+        // on the window, so that a hand leaving the strip keeps pushing it
+        addEventListener(
+            'pointermove',
+            (move) => {
+                const by = move.clientX - held
+                dragged = Math.max(dragged, Math.abs(by))
+                strip.scrollLeft = from - by
+            },
+            { signal: done.signal }
+        )
+        addEventListener(
+            'pointerup',
+            () => {
+                strip.classList.remove('dragged')
+                done.abort()
+            },
+            { signal: done.signal }
+        )
+    })
+
+    strip.addEventListener('dragstart', (e) => e.preventDefault())
+
+    // caught on the way down, so that a drag ending on a thumb does not open it
+    strip.addEventListener(
+        'click',
+        (e) => {
+            if (dragged > 6) {
+                e.stopPropagation()
+            }
+        },
+        true
+    )
+
     function show(i: number): void {
         const shot = shots[i]
         if (!shot) {
@@ -168,6 +214,7 @@ export const lightbox = (
     let grabbed = { x: 0, y: 0 }
     let start = 0
     let swipe = false
+    let onbar = false
 
     const pair = (touches: TouchList): [Touch, Touch] | undefined => {
         const one = touches[0]
@@ -199,7 +246,9 @@ export const lightbox = (
     frame.addEventListener(
         'touchstart',
         (e) => {
-            swipe = e.touches.length === 1
+            // a finger on the strip scrolls it, the photo stays where it is
+            onbar = bar.contains(e.target as Node)
+            swipe = e.touches.length === 1 && !onbar
             const first = e.touches[0]
             start = first?.clientX ?? start
             if (first) {
@@ -225,6 +274,9 @@ export const lightbox = (
     )
 
     frame.addEventListener('touchmove', (e) => {
+        if (onbar) {
+            return
+        }
         const two = pair(e.touches)
         if (two) {
             scale = Math.min(4, Math.max(1, (taken * spread(two)) / span))

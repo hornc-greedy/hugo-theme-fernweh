@@ -9,7 +9,6 @@
     height: 100dvh;
     max-height: 100dvh;
     border: 0;
-    /* the photo takes every row the strip below it leaves over */
     grid-template-rows: minmax(0, 1fr) auto;
     justify-items: center;
     padding: clamp(0.75rem, 2vh, 1.5rem) clamp(1rem, 4vw, 3.5rem);
@@ -92,6 +91,7 @@ body:has(dialog[open]) {
     max-width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
+    cursor: grab;
     & button {
         flex: none;
         padding: 0;
@@ -153,6 +153,13 @@ body:has(dialog[open]) {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+}
+
+/* not nested in the strip, that would stand before the plainer button rules */
+
+.lightbox-strip.dragged,
+.lightbox-strip.dragged button {
+    cursor: grabbing;
 }
 
 /* the gestures on the photo are handled by the page, not by the browser */
