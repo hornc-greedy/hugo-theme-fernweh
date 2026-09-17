@@ -46,6 +46,7 @@
     /* set in from both edges of the album, and not at all on a screen that has
        no width to give away */
     margin-inline: clamp(0rem, 4vw, 4em);
+    width: fit-content;
     border: 1px solid var(--text);
     border-radius: 2px;
     padding: clamp(1.25rem, 3vw, 2rem);
