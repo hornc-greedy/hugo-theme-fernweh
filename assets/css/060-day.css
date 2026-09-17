@@ -38,7 +38,7 @@
     font-size: clamp(2rem, 4.8vw, 3.1rem);
     line-height: 1.04;
     letter-spacing: -0.025em;
-    text-wrap: balance;
+    text-wrap: pretty;
 }
 
 .day-text {
