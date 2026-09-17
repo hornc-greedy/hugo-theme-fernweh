@@ -273,6 +273,15 @@ export const lightbox = (
         { passive: true }
     )
 
+    // Leaflet turns touches into pointer events and listens for them on the
+    // document, so a drag it began with the tap that opened the view would follow
+    // every swipe over the photo. A mouse passes, the strip is dragged with it.
+    frame.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') {
+            e.stopPropagation()
+        }
+    })
+
     frame.addEventListener('touchmove', (e) => {
         if (onbar) {
             return
