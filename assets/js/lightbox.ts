@@ -188,6 +188,12 @@ export const lightbox = (
     })
 
     frame.addEventListener('keydown', (e) => {
+        if (!e.key.startsWith('Arrow')) {
+            return
+        }
+        // the map below pans with the arrows too and listens on the document. While
+        // the view is open they belong to it
+        e.stopPropagation()
         if (e.key === 'ArrowLeft') {
             step(-1)
         }
