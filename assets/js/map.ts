@@ -182,25 +182,26 @@ if (grid) {
                     if (map.getZoom() === overview.zoom) {
                         return
                     }
+                    glide(overview.zoom, 0.7)
                     map.flyTo(overview.center, overview.zoom, { duration: 0.7 })
                 }
 
-                const size = (): number =>
+                const size = (zoom: number): number =>
                     pinSize({
                         width: map.getContainer().clientWidth,
                         smallest: smallestPin,
                         largest: largestPin,
                         overview: overview.zoom,
                         maxZoom: map.getMaxZoom(),
-                        zoom: map.getZoom()
+                        zoom
                     })
 
-                const place = (pin: Pin): void => {
+                const place = (pin: Pin, zoom = map.getZoom()): void => {
                     const p = parts(pin)
                     if (!p) {
                         return
                     }
-                    const g = Math.round(size())
+                    const g = Math.round(size(zoom))
                     // switch sources when the small one would have to be stretched
                     const source = g > pin.photo.thumbwidth ? pin.photo.large : pin.photo.thumb
                     if (p.image.getAttribute('src') !== source) {
@@ -208,7 +209,13 @@ if (grid) {
                     }
                     // the one number the stylesheet measures the pin against
                     p.box.style.setProperty('--pin', `${g}px`)
-                    if (map.getZoom() > overview.zoom) {
+                    // a glide that is still running ends here, on the plain size
+                    p.image.style.transition = 'none'
+                    p.image.style.transform = ''
+                    // the size already belongs to the destination, the link only once the
+                    // map is there. Otherwise the click that starts the flight follows it
+                    const arrived = Math.min(zoom, map.getZoom()) > overview.zoom
+                    if (arrived) {
                         // the opener has no tile of its own, its pin leads to the day
                         p.link.href =
                             pin.photo.index < 0
@@ -219,6 +226,29 @@ if (grid) {
                         p.link.removeAttribute('href')
                         delete p.link.dataset.shot
                     }
+                }
+
+                /** the pins take the size of the destination at once, held back by a
+                    counter-scale that is released over the seconds the map flies */
+                const glide = (zoom: number, seconds: number): void => {
+                    // every pin of a map measures the same, so the counter-scale is
+                    // worked out once instead of read back from each element
+                    const held = size(map.getZoom()) / size(zoom)
+                    const images = pins.flatMap((pin) => {
+                        const p = parts(pin)
+                        if (!p) {
+                            return []
+                        }
+                        place(pin, zoom)
+                        p.image.style.transform = `scale(${held})`
+                        return [p.image]
+                    })
+                    requestAnimationFrame(() => {
+                        for (const image of images) {
+                            image.style.transition = `transform ${seconds}s ease-in-out`
+                            image.style.transform = ''
+                        }
+                    })
                 }
 
                 for (const day of allDays) {
@@ -244,6 +274,7 @@ if (grid) {
                             if (map.getZoom() > overview.zoom) {
                                 return
                             }
+                            glide(overview.zoom + 3, 0.7)
                             map.flyTo([photo.lat, photo.long], overview.zoom + 3, { duration: 0.7 })
                         })
                     }
@@ -382,11 +413,15 @@ if (grid) {
                     if (kept.steps > 0) {
                         map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
                     }
-                    pins.forEach(place)
+                    for (const pin of pins) {
+                        place(pin)
+                    }
                     showPan()
                 }
 
-                pins.forEach(place)
+                for (const pin of pins) {
+                    place(pin)
+                }
 
                 // registered only now: during fitBounds the overview zoom is not known
                 // yet, and every comparison against it would be answered wrongly
@@ -394,7 +429,9 @@ if (grid) {
                     if (building) {
                         return
                     }
-                    pins.forEach(place)
+                    for (const pin of pins) {
+                        place(pin)
+                    }
                     showPan()
                 })
 
