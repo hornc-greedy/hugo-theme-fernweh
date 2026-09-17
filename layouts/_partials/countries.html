@@ -1,9 +1,10 @@
 {{- /* Which countries a journey touches, and which parts of them.
 
        Every country is ruled out by its bounding box first, then each part by
-       its own, and only what survives has its outline walked. Drawn are the
-       parts that hold a photo, so shots from Corsica give the island rather
-       than the whole of France.
+       its own, and only what survives has its outline walked. Drawn is a part
+       that holds a photo, and every part that lies within the box of those, so
+       an island keeps the smaller ones before its coast while shots from
+       Corsica still give the island rather than the whole of France.
 
        The answer depends on the coordinates alone and not on the language of
        the page, which is why the caller asks for it through partialCached. */ -}}
@@ -40,10 +41,27 @@
     {{- end -}}
 
     {{- if $hits -}}
+      {{- /* the box around the parts that were hit, and then every part inside it */ -}}
+      {{- $s := 90.0 -}}{{- $w := 180.0 -}}{{- $n := -90.0 -}}{{- $e := -180.0 -}}
+      {{- range $hits -}}
+        {{- $pb := index $country.properties.boxes . -}}
+        {{- $s = math.Min $s (index $pb 0) -}}
+        {{- $w = math.Min $w (index $pb 1) -}}
+        {{- $n = math.Max $n (index $pb 2) -}}
+        {{- $e = math.Max $e (index $pb 3) -}}
+      {{- end -}}
+      {{- $drawn := $hits -}}
+      {{- range $i, $part := $country.geometry.coordinates -}}
+        {{- $pb := index $country.properties.boxes $i -}}
+        {{- if and (not (in $hits $i)) (ge (index $pb 0) $s) (ge (index $pb 1) $w)
+                   (le (index $pb 2) $n) (le (index $pb 3) $e) -}}
+          {{- $drawn = $drawn | append $i -}}
+        {{- end -}}
+      {{- end -}}
       {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
              a second outline cannot be appended to a list that holds one already */ -}}
       {{- $maps = $maps | append (dict "geometry" (dict "type" "MultiPolygon"
-          "coordinates" (apply $hits "index" $country.geometry.coordinates "."))) -}}
+          "coordinates" (apply $drawn "index" $country.geometry.coordinates "."))) -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
