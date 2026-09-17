@@ -33,17 +33,12 @@ interface MapData {
     days: Day[]
 }
 
-/** a Leaflet map that can be measured again when the window changes */
-interface JournalMap extends Leaflet.Map {
-    remeasure(bounds: Leaflet.LatLngBounds): void
-}
-
 interface Shape {
     country: Country
     bounds: Leaflet.LatLngBounds
     ratio: number
     box: HTMLElement
-    map: JournalMap
+    map: Leaflet.Map
 }
 
 interface Pin {
@@ -113,7 +108,7 @@ if (grid) {
                 country: Country,
                 allDays: Day[],
                 bounds: Leaflet.LatLngBounds
-            ): JournalMap {
+            ): Leaflet.Map {
                 // a view has to exist before layers are added, otherwise the renderer
                 // has no bounds yet when fitBounds pulls them in
                 const map = L.map(id, {
@@ -127,7 +122,7 @@ if (grid) {
                     zoomDelta: 1,
                     maxBoundsViscosity: 1,
                     maxZoom: maxzoom
-                }).setView(bounds.getCenter(), 6) as unknown as JournalMap
+                }).setView(bounds.getCenter(), 6)
 
                 // the tile policy asks for the credit on the map itself, not only in
                 // the footer; Leaflet's own name is not part of that
@@ -367,7 +362,7 @@ if (grid) {
                     }
                     building = true
                     map.setMinZoom(0)
-                    map.setMaxBounds(null as unknown as Leaflet.LatLngBoundsExpression)
+                    map.setMaxBounds(null)
                     map.invalidateSize(false)
                     settle(b)
                     building = false
