@@ -11,6 +11,8 @@
     border: 0;
     grid-template-rows: minmax(0, 1fr) auto;
     justify-items: center;
+    /* the photo keeps its caption, the strip stays a tool of its own */
+    gap: 1rem;
     padding: clamp(0.75rem, 2vh, 1.5rem) clamp(1rem, 4vw, 3.5rem);
     background: #000000ee;
     opacity: 0;
@@ -46,12 +48,15 @@ body:has(dialog[open]) {
 .lightbox figure {
     margin: 0;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    /* the row stands whether a caption is written or not, so every photo comes
+       out the same size */
+    grid-template-rows: minmax(0, 1fr) minmax(2.7rem, auto);
     /* once the script has measured, both rows together stand in the middle */
     align-content: center;
     align-items: center;
     justify-items: center;
-    gap: 0.8rem;
+    /* no gap, the box of the caption sits on the lower edge of the photo */
+    gap: 0;
     /* a definite height all the way down, otherwise the percentage on the
            image below has nothing to measure against */
     height: 100%;
@@ -71,8 +76,10 @@ body:has(dialog[open]) {
     /* the zero width keeps the line out of the column sizing */
     width: 0;
     min-width: 100%;
+    border: 1px solid #fffff666;
+    padding: 0.45rem 0.6rem 0.5rem;
     color: #ececee;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     &:empty {
         display: none;
     }
