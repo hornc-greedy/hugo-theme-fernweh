@@ -27,3 +27,77 @@ export const pinSize = (scale: PinScale): number => {
     const t = span === 0 ? 0 : (scale.zoom - scale.overview) / span
     return small + (peak - small) * Math.sin(Math.PI * t)
 }
+
+/** Where a pin sits on the map, in pixels */
+export interface Spot {
+    x: number
+    y: number
+}
+
+/** how much of a pin another may cover before the two count as one spot */
+const crowded = 0.25
+
+/** the share one pin covers of another of the same size */
+const covered = (a: Spot, b: Spot, size: number): number =>
+    (Math.max(0, size - Math.abs(a.x - b.x)) * Math.max(0, size - Math.abs(a.y - b.y))) /
+    (size * size)
+
+const middle = (spots: Spot[]): Spot => ({
+    x: spots.reduce((sum, spot) => sum + spot.x, 0) / spots.length,
+    y: spots.reduce((sum, spot) => sum + spot.y, 0) / spots.length
+})
+
+/** The heap belongs to the last zoom step alone. The thumbnails are back to
+    their smallest there, and one still covers another only because the two
+    photographs were taken on one spot. */
+const heaped = (scale: PinScale): boolean => scale.zoom >= scale.maxZoom
+
+/** the pins that cover each other, gathered into heaps */
+const gathered = <T extends Spot>(spots: T[], size: number): T[][] => {
+    // a spot joins every heap it reaches, and those heaps become one
+    let heaps: T[][] = []
+    for (const spot of spots) {
+        const touches = (heap: T[]): boolean =>
+            heap.some((other) => covered(spot, other, size) > crowded)
+        const joined = heaps.filter(touches).flat()
+        heaps = heaps.filter((heap) => !touches(heap))
+        heaps.push([...joined, spot])
+    }
+    return heaps
+}
+
+/**
+ * Photographs from one spot cover each other however far the map is zoomed in.
+ * On the last zoom step the ones that still do are laid out as a block over the
+ * middle of where they sat, edge to edge and in the order they were taken, as
+ * many across as it takes for the block to come out square. Every picture is
+ * then whole, however many share the spot. Before that a thumbnail is meant to
+ * cover its neighbours and nothing moves. The answer is the step every pin
+ * takes.
+ */
+export const heap = <T extends Spot>(spots: T[], scale: PinScale): Map<T, Spot> => {
+    if (!heaped(scale)) {
+        return new Map(spots.map((spot): [T, Spot] => [spot, { x: 0, y: 0 }]))
+    }
+    const size = pinSize(scale)
+
+    const steps = new Map<T, Spot>()
+    for (const group of gathered(spots, size)) {
+        const pile = spots.filter((spot) => group.includes(spot))
+        const across = Math.ceil(Math.sqrt(pile.length))
+        const cells = pile.map((spot, k) => ({
+            spot,
+            x: k % across,
+            y: Math.floor(k / across)
+        }))
+        const here = middle(pile)
+        const block = middle(cells)
+        for (const cell of cells) {
+            steps.set(cell.spot, {
+                x: here.x + (cell.x - block.x) * size - cell.spot.x,
+                y: here.y + (cell.y - block.y) * size - cell.spot.y
+            })
+        }
+    }
+    return steps
+}

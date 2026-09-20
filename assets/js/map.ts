@@ -1,5 +1,5 @@
 import type * as Leaflet from 'leaflet'
-import { pinSize } from './arc.ts'
+import { heap, type PinScale, pinSize, type Spot } from './arc.ts'
 import { lightbox } from './lightbox.ts'
 
 // What the geojson template hands over
@@ -42,9 +42,13 @@ interface Shape {
 }
 
 interface Pin {
-    marker: Leaflet.Marker
     photo: Photo
     day: Day
+    /** where it goes when it shares its spot with another pin */
+    step: Spot
+    /** the two elements the pin is drawn from */
+    link: HTMLAnchorElement
+    image: HTMLImageElement
 }
 
 const grid = document.getElementById('maps')
@@ -179,14 +183,6 @@ if (grid) {
 
                 const overview = { center: bounds.getCenter(), zoom: 0 }
 
-                /** the three elements of a pin, once Leaflet has put it on the map */
-                const parts = (pin: Pin) => {
-                    const box = pin.marker.getElement()
-                    const link = box?.querySelector('a')
-                    const image = box?.querySelector('img')
-                    return box && link && image ? { box, link, image } : undefined
-                }
-
                 const pins: Pin[] = []
 
                 const back = (): void => {
@@ -197,50 +193,69 @@ if (grid) {
                     map.flyTo(overview.center, overview.zoom, { duration: 0.7 })
                 }
 
-                const size = (zoom: number): number =>
-                    pinSize({
-                        width: map.getContainer().clientWidth,
-                        smallest: smallestPin,
-                        largest: largestPin,
-                        overview: overview.zoom,
-                        maxZoom: map.getMaxZoom(),
-                        zoom
+                const scale = (zoom: number): PinScale => ({
+                    width: map.getContainer().clientWidth,
+                    smallest: smallestPin,
+                    largest: largestPin,
+                    overview: overview.zoom,
+                    maxZoom: map.getMaxZoom(),
+                    zoom
+                })
+
+                const size = (zoom: number): number => pinSize(scale(zoom))
+
+                // the one number the stylesheet measures the pins against, the same
+                // for every pin of a map
+                const grow = (zoom: number): void => {
+                    map.getContainer().style.setProperty('--pin', `${Math.round(size(zoom))}px`)
+                }
+
+                // the zoom is passed in, because during a flight the pins already
+                // belong to the destination
+                const spread = (zoom: number): void => {
+                    const spots = pins.map((pin) => {
+                        const point = map.project([pin.photo.lat, pin.photo.long], zoom)
+                        return { pin, x: point.x, y: point.y }
                     })
+                    for (const [spot, step] of heap(spots, scale(zoom))) {
+                        spot.pin.step = step
+                    }
+                }
 
                 const place = (pin: Pin, zoom = map.getZoom()): void => {
-                    const p = parts(pin)
-                    if (!p) {
-                        return
-                    }
-                    const g = Math.round(size(zoom))
                     // switch sources when the small one would have to be stretched
-                    const source = g > pin.photo.thumbwidth ? pin.photo.large : pin.photo.thumb
-                    if (p.image.getAttribute('src') !== source) {
-                        p.image.src = source
+                    const source =
+                        Math.round(size(zoom)) > pin.photo.thumbwidth
+                            ? pin.photo.large
+                            : pin.photo.thumb
+                    if (pin.image.getAttribute('src') !== source) {
+                        pin.image.src = source
                     }
-                    // the one number the stylesheet measures the pin against
-                    p.box.style.setProperty('--pin', `${g}px`)
                     // a glide that is still running ends here, on the plain size
-                    p.image.style.transition = 'none'
-                    p.image.style.transform = ''
+                    pin.image.style.transition = 'none'
+                    pin.image.style.transform = ''
+                    const { x, y } = pin.step
+                    pin.link.style.transition = 'none'
+                    pin.link.style.translate = `${Math.round(x)}px ${Math.round(y)}px`
                     // the size already belongs to the destination, the link only once the
                     // map is there. Otherwise the click that starts the flight follows it
                     const arrived = Math.min(zoom, map.getZoom()) > overview.zoom
                     if (arrived) {
                         // the opener has no tile of its own, its pin leads to the day
-                        p.link.href =
+                        pin.link.href =
                             pin.photo.index < 0
                                 ? pin.day.url
                                 : `${pin.day.url}#photo-${pin.photo.index}`
-                        p.link.dataset.shot = String(at.get(pin.photo))
+                        pin.link.dataset.shot = String(at.get(pin.photo))
                     } else {
-                        p.link.removeAttribute('href')
-                        delete p.link.dataset.shot
+                        pin.link.removeAttribute('href')
+                        delete pin.link.dataset.shot
                     }
                 }
 
-                /** the pins take the size of the destination at once, held back by a
-                    counter-scale that is released over the seconds the map flies */
+                /** the pins take the size and the place of the destination at once, held
+                    back by a counter-scale and their old step, both released over the
+                    seconds the map flies */
                 const glide = (zoom: number, seconds: number): void => {
                     shroud(zoom)
                     // flying in, the tiles at hand cover the destination and only turn
@@ -252,21 +267,34 @@ if (grid) {
                     // every pin of a map measures the same, so the counter-scale is
                     // worked out once instead of read back from each element
                     const held = size(map.getZoom()) / size(zoom)
-                    const images = pins.flatMap((pin) => {
-                        const p = parts(pin)
-                        if (!p) {
-                            return []
-                        }
+                    grow(zoom)
+                    spread(zoom)
+                    const moving = pins.map((pin) => {
+                        const stood = pin.link.style.translate
                         place(pin, zoom)
-                        p.image.style.transform = `scale(${held})`
-                        return [p.image]
+                        const steps = pin.link.style.translate
+                        pin.link.style.translate = stood
+                        pin.image.style.transform = `scale(${held})`
+                        return { image: pin.image, link: pin.link, steps }
                     })
                     requestAnimationFrame(() => {
-                        for (const image of images) {
+                        for (const { image, link, steps } of moving) {
                             image.style.transition = `transform ${seconds}s ease-in-out`
                             image.style.transform = ''
+                            link.style.transition = `translate ${seconds}s ease-in-out`
+                            link.style.translate = steps
                         }
                     })
+                }
+
+                /** every pin at the size and the place this zoom gives it */
+                const arrange = (): void => {
+                    const zoom = map.getZoom()
+                    grow(zoom)
+                    spread(zoom)
+                    for (const pin of pins) {
+                        place(pin, zoom)
+                    }
                 }
 
                 for (const day of allDays) {
@@ -274,18 +302,19 @@ if (grid) {
                         if (!bounds.contains([photo.lat, photo.long])) {
                             continue
                         }
+                        const image = document.createElement('img')
+                        image.alt = ''
+                        const link = document.createElement('a')
+                        link.append(image)
                         // out of the tab order: the album below lists every photo
                         // already, and the pins would double the stations
                         const marker = L.marker([photo.lat, photo.long], {
                             keyboard: false,
                             title: `${day.title}, ${photo.caption || photo.time}`,
                             // built once, because a rebuilt icon cannot be animated
-                            icon: L.divIcon({
-                                html: '<a><img alt=""></a>',
-                                className: 'photo-pin'
-                            })
+                            icon: L.divIcon({ html: link, className: 'photo-pin' })
                         }).addTo(map)
-                        pins.push({ marker, photo, day })
+                        pins.push({ photo, day, step: { x: 0, y: 0 }, link, image })
                         marker.on('click', (e) => {
                             // a marker click reaches the map afterwards, which would fly straight back out
                             L.DomEvent.stopPropagation(e)
@@ -431,16 +460,12 @@ if (grid) {
                     if (kept.steps > 0) {
                         map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
                     }
-                    for (const pin of pins) {
-                        place(pin)
-                    }
+                    arrange()
                     shroud(map.getZoom())
                     showPan()
                 }
 
-                for (const pin of pins) {
-                    place(pin)
-                }
+                arrange()
                 shroud(map.getZoom())
 
                 // registered only now: during fitBounds the overview zoom is not known
@@ -449,9 +474,7 @@ if (grid) {
                     if (building) {
                         return
                     }
-                    for (const pin of pins) {
-                        place(pin)
-                    }
+                    arrange()
                     shroud(map.getZoom())
                     showPan()
                 })

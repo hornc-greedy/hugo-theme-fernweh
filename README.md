@@ -168,6 +168,10 @@ Headings are set in **Sora**, two weights of latin-subset `woff2` under
 - **A photograph opens where it lies.** The view comes up over the map and
   pages through every located picture of the journey; nothing is navigated,
   and closing it leaves the map where it stood.
+- **Photographs from one spot lie in a block on the last zoom step.** Their pins
+  cover each other at every zoom. Where the map ends, the thumbnails are back to
+  their smallest and the ones that still cover each other are laid out edge to
+  edge, as many across as it takes for the block to come out square.
 - **Nothing about it is configured.** No country list, no ISO code, no bounding
   box in the front matter.
 - **The outlines are Natural Earth at 1:50 million**, and none of that reaches
