@@ -32,7 +32,6 @@
                        width="{{ .sw }}" height="{{ .sh }}"
                        {{ if $n }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="{{ .caption }}">
                 </a>
-                <figcaption>{{ .caption }}</figcaption>
               </figure>
               {{- $n = add $n 1 -}}
             {{- end }}

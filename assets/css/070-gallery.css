@@ -30,7 +30,6 @@
 .shot {
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
     margin: 0;
     /* the width a picture takes in its row follows its shape, hundredfold: a row
            whose shares add up to less than one is left unfilled by flexbox */
@@ -58,16 +57,6 @@
 
 .row-loose .tile {
     height: 300px;
-}
-
-.shot figcaption {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    line-height: 1.45;
-    /* most pictures carry no caption, and an empty line would push the row apart */
-    &:empty {
-        display: none;
-    }
 }
 
 .tile img {
