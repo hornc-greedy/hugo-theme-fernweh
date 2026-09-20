@@ -47,6 +47,8 @@ body:has(dialog[open]) {
     margin: 0;
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
+    /* once the script has measured, both rows together stand in the middle */
+    align-content: center;
     align-items: center;
     justify-items: center;
     gap: 0.8rem;
@@ -66,8 +68,7 @@ body:has(dialog[open]) {
 }
 
 .lightbox figcaption {
-    /* the zero width keeps the line out of the column sizing, so the figure
-           stays as wide as the image and the text breaks at its edge */
+    /* the zero width keeps the line out of the column sizing */
     width: 0;
     min-width: 100%;
     color: #ececee;

@@ -55,6 +55,26 @@ export const lightbox = (
     const bar = part('div', 'lightbox-bar')
     bar.append(strip, counter)
 
+    // the caption fills its row and its column, so both take the measure of the
+    // photo. It is worked out from the entry rather than read off the picture,
+    // which would leave the caption at the wrong width until the photo is in
+    const align = (): void => {
+        const shot = shots[current]
+        if (!shot) {
+            return
+        }
+        // cleared first, or the room is measured against the frame of last time
+        figure.style.width = ''
+        figure.style.gridTemplateRows = ''
+        const ratio = shot.width / shot.height
+        const wide = Math.min(
+            figure.clientWidth,
+            ratio * Number.parseFloat(getComputedStyle(figure).gridTemplateRows)
+        )
+        figure.style.width = `${wide}px`
+        figure.style.gridTemplateRows = `${wide / ratio}px auto`
+    }
+
     const frame = part('dialog', 'lightbox')
     frame.ariaLabel = wording.photo ?? ''
     frame.append(closer, previous, following, figure, bar)
@@ -141,6 +161,7 @@ export const lightbox = (
         })
         thumbs[i]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
         current = i
+        align()
         // the neighbours are fetched now so that paging feels instant
         for (const n of [i - 1, i + 1]) {
             const neighbour = shots[n]
@@ -164,6 +185,7 @@ export const lightbox = (
                 .catch(() => undefined)
         }
         frame.showModal()
+        align()
     }
 
     function step(by: number): void {
@@ -205,7 +227,10 @@ export const lightbox = (
     // a hidden strip cannot scroll, so it is centred again once it is back
     addEventListener('resize', () => {
         thumbs[current]?.scrollIntoView({ inline: 'center', block: 'nearest' })
+        align()
     })
+    // the strip settles late, and the room for the photo is what it leaves over
+    new ResizeObserver(align).observe(bar)
 
     // the browser does not zoom a photo inside a fullscreen dialog, so the
     // gestures on it are handled here
