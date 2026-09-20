@@ -312,7 +312,14 @@ if (grid) {
                             keyboard: false,
                             title: `${day.title}, ${photo.caption || photo.time}`,
                             // built once, because a rebuilt icon cannot be animated
-                            icon: L.divIcon({ html: link, className: 'photo-pin' })
+                            icon: L.divIcon({
+                                html: link,
+                                className: 'photo-pin',
+                                // no size from Leaflet, because an inline width and the
+                                // margin that comes with it beat the stylesheet, which
+                                // measures the pin against --pin
+                                iconSize: undefined
+                            })
                         }).addTo(map)
                         pins.push({ photo, day, step: { x: 0, y: 0 }, link, image })
                         marker.on('click', (e) => {
