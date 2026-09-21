@@ -27,7 +27,7 @@
           "thumbwidth" 128
           "large" $photo.pinlarge
           "cuts" (printf "%s %dw, %s %dw, %s %dw"
-              $photo.small $photo.sw $photo.medium $photo.mw $photo.url $photo.w)
+              $photo.small $photo.sw $photo.medium $photo.mw $photo.url (int $photo.w))
           "time" $time
           "caption" $photo.caption
           "index" $tile) -}}
