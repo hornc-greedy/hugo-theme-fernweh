@@ -21,8 +21,8 @@ export interface PinScale {
  * thumbnail cannot cover half a phone screen.
  */
 export const pinSize = (scale: PinScale): number => {
-    const small = Math.max(12, Math.min(scale.smallest, scale.width / 10))
-    const peak = Math.max(80, Math.min(scale.largest, scale.width * 0.42))
+    const small = Math.min(scale.smallest, scale.width * 0.22)
+    const peak = Math.min(scale.largest, scale.width * 0.42)
     const span = scale.maxZoom - scale.overview
     const t = span === 0 ? 0 : (scale.zoom - scale.overview) / span
     return small + (peak - small) * Math.sin(Math.PI * t)
