@@ -12,6 +12,8 @@ interface Photo {
     thumb: string
     thumbwidth: number
     large: string
+    /** the cuts of the photo, as a srcset */
+    cuts: string
     time: string
     caption: string
     /** the tile in the album this pin leads to, -1 for the opener */
@@ -49,6 +51,8 @@ interface Pin {
     /** the two elements the pin is drawn from */
     link: HTMLAnchorElement
     image: HTMLImageElement
+    /** fetches the photo behind it, once, and says when it is there */
+    fetch: (priority?: 'high' | 'low') => Promise<void>
 }
 
 const grid = document.getElementById('maps')
@@ -71,6 +75,7 @@ if (grid) {
                     at.set(photo, at.size)
                     return {
                         href: photo.url,
+                        cuts: photo.cuts,
                         width: photo.w,
                         height: photo.h,
                         caption: photo.caption,
@@ -222,6 +227,24 @@ if (grid) {
                     }
                 }
 
+                /** the pins nearest this photo, the ones a finger reaches next. Eight,
+                    because the view holds ninety of them on a journey the size of an
+                    island, and every photo is a third of a megabyte */
+                const nearest = (centre: Photo): Pin[] => {
+                    const zoom = map.getZoom()
+                    const here = map.project([centre.lat, centre.long], zoom)
+                    return pins
+                        .map((pin) => ({
+                            pin,
+                            away: here.distanceTo(
+                                map.project([pin.photo.lat, pin.photo.long], zoom)
+                            )
+                        }))
+                        .sort((one, two) => one.away - two.away)
+                        .slice(0, 8)
+                        .map(({ pin }) => pin)
+                }
+
                 const place = (pin: Pin, zoom = map.getZoom()): void => {
                     // switch sources when the small one would have to be stretched
                     const source =
@@ -321,13 +344,49 @@ if (grid) {
                                 iconSize: undefined
                             })
                         }).addTo(map)
-                        pins.push({ photo, day, step: { x: 0, y: 0 }, link, image })
+                        // the flight lasts long enough to bring the photo in, and the
+                        // hand that flew here opens this photo next
+                        let asked: Promise<void> | undefined
+                        const fetchPhoto = (priority: 'high' | 'low' = 'high'): Promise<void> => {
+                            if (!asked) {
+                                const full = new Image()
+                                full.fetchPriority = priority
+                                full.sizes = '100vw'
+                                full.srcset = photo.cuts
+                                full.src = photo.url
+                                asked = full.decode().catch(() => undefined)
+                            }
+                            return asked
+                        }
+                        pins.push({
+                            photo,
+                            day,
+                            step: { x: 0, y: 0 },
+                            link,
+                            image,
+                            fetch: fetchPhoto
+                        })
+                        // in the overview a thumbnail leads nowhere, so the photo waits
+                        image.addEventListener('pointerenter', () => {
+                            if (map.getZoom() > overview.zoom) {
+                                fetchPhoto()
+                            }
+                        })
                         marker.on('click', (e) => {
                             // a marker click reaches the map afterwards, which would fly straight back out
                             L.DomEvent.stopPropagation(e)
+                            void fetchPhoto()
                             if (map.getZoom() > overview.zoom) {
                                 return
                             }
+                            // the next tap goes to a photo around this one, so they
+                            // come in behind it, one after another
+                            map.once('moveend', () => {
+                                void nearest(photo).reduce(
+                                    (before, pin) => before.then(() => pin.fetch('low')),
+                                    Promise.resolve()
+                                )
+                            })
                             glide(overview.zoom + 3, 0.7)
                             map.flyTo([photo.lat, photo.long], overview.zoom + 3, { duration: 0.7 })
                         })
