@@ -30,6 +30,7 @@
 
 .photo-pin a {
     display: block;
+    pointer-events: auto;
 }
 
 /* leaflet.css is loaded after main.css and states the same two classes, so a tie
@@ -55,6 +56,14 @@
 
 .photo-pin {
     margin: calc(var(--pin) / -2);
+}
+
+/* A marker keeps its place while its photo steps aside, so the boxes of one
+   spot lie over each other. Only the photo takes a click, and leaflet.css
+   states two classes for the opposite, so this one states three */
+
+.leaflet-container .leaflet-marker-icon.photo-pin {
+    pointer-events: none;
 }
 
 .photo-pin img {
