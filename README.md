@@ -128,7 +128,7 @@ Everything below is a default the theme brings; a value of your own wins.
 | `column` | `1280px` | width of the one column everything sits in |
 | `cover` | `200px` | edge of the square cover on the front page |
 | `map.width` | `500px` | width of the map column; the outline derives its height |
-| `map.pin` | `50` | thumbnail on the map, in the overview and at full zoom |
+| `map.pin` | `60` | thumbnail on the map, in the overview and at full zoom |
 | `map.pinmax` | `100` | its largest, at the zoom levels in between |
 | `map.maxzoom` | `18` | how far the map lets you zoom in |
 | `map.tiles` | OpenStreetMap | the tile source under the outlines |

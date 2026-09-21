@@ -18,7 +18,7 @@
     # Thumbnails on the map grow towards the middle zoom levels and shrink again
     # at full zoom. Both ends are also capped against the width of the map, so a
     # narrow column keeps them small whatever is written here.
-    pin = 50
+    pin = 60
     pinmax = 100
     # How far the map lets you zoom in
     maxzoom = 18
