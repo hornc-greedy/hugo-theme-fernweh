@@ -1,6 +1,8 @@
 /** one photograph, as the view needs it */
 export interface Shot {
     href: string
+    /** the cuts of the photo, so the screen decides which one it takes */
+    cuts: string
     width: number
     height: number
     caption: string
@@ -46,6 +48,7 @@ export const lightbox = (
 
     const img = part('img')
     img.alt = ''
+    img.fetchPriority = 'high'
     const text = part('figcaption')
     const figure = part('figure')
     figure.append(img, text)
@@ -150,6 +153,8 @@ export const lightbox = (
         scale = 1
         shift = { x: 0, y: 0 }
         img.style.transform = ''
+        img.sizes = '100vw'
+        img.srcset = shot.cuts
         img.src = shot.href
         img.width = shot.width
         img.height = shot.height
@@ -162,13 +167,25 @@ export const lightbox = (
         thumbs[i]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
         current = i
         align()
-        // the neighbours are fetched now so that paging feels instant
-        for (const n of [i - 1, i + 1]) {
-            const neighbour = shots[n]
-            if (neighbour) {
-                new Image().src = neighbour.href
-            }
-        }
+        // the neighbours wait for the photo in front of them, each of them would
+        // take a third of the line
+        void img.decode().then(
+            () => {
+                if (current !== i) {
+                    return
+                }
+                for (const n of [i - 1, i + 1]) {
+                    const neighbour = shots[n]
+                    if (neighbour) {
+                        const ahead = new Image()
+                        ahead.sizes = '100vw'
+                        ahead.srcset = neighbour.cuts
+                        ahead.src = neighbour.href
+                    }
+                }
+            },
+            () => undefined
+        )
     }
 
     // touch devices show a browser bar, a mouse does not
@@ -363,6 +380,7 @@ if (gallery) {
     const tiles = [...gallery.querySelectorAll<HTMLAnchorElement>('.tile')]
     const shots = tiles.map((tile) => ({
         href: tile.href,
+        cuts: tile.querySelector('img')?.srcset ?? '',
         width: Number(tile.dataset.width),
         height: Number(tile.dataset.height),
         caption: tile.dataset.caption ?? '',
