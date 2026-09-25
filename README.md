@@ -216,7 +216,7 @@ address without its `.webp`:
 | `<key>-1120.webp` | wider screens, through `srcset` |
 | `<key>-128.webp` | the thumbnail on the map |
 | `<key>-440.webp` | that thumbnail, zoomed in |
-| `<key>.json` | `{"w":1600,"h":900,"date":"2026-06-13T11:23:45","lat":47.8,"lon":12.4}` |
+| `<key>.json` | `{"w":1600,"h":900,"color":"#8a7b6c","date":"2026-06-13T11:23:45","lat":47.8,"lon":12.4}` |
 
 The note is all a build reads: the order of the album, the aspect ratios, the
 `srcset` and the pins. No picture is fetched, and the bucket is never listed.

@@ -25,7 +25,7 @@
                 <a class="tile" id="photo-{{ $n }}" href="{{ .url }}"
                    aria-label="{{ with .caption }}{{ . }}{{ else }}{{ i18n "photo" }} {{ add $n 1 }}{{ end }}"
                    data-width="{{ .w }}" data-height="{{ .h }}"
-                   data-caption="{{ .caption }}">
+                   data-caption="{{ .caption }}" style="background: {{ .color }}">
                   <img src="{{ .small }}"
                        srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w, {{ .url }} {{ .w }}w"
                        sizes="(max-width: 700px) {{ int (math.Round (mul (div .ar $part) 100)) }}vw, {{ int (math.Round (mul (div .ar $full) $span)) }}px"

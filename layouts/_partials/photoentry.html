@@ -1,7 +1,7 @@
-{{- /* One photo, as the pages need it: what it measures, when it was taken and
-       where, and the addresses of the sizes the pages serve. From the note
-       lying beside it in the bucket, or, without one, from the file itself,
-       which Hugo cuts and reads the coordinates out of. */ -}}
+{{- /* One photo, as the pages need it: what it measures, its colour, when it
+       was taken and where, and the addresses of the sizes the pages serve.
+       From the note lying beside it in the bucket, or, without one, from the
+       file itself, which Hugo cuts and reads the coordinates out of. */ -}}
 {{- $caption := .caption | default "" -}}
 {{- $entry := dict -}}
 {{- with .file -}}
@@ -13,6 +13,7 @@
       "url" .RelPermalink
       "caption" $caption
       "w" .Width "h" .Height
+      "color" (partialCached "photocolor.html" (dict "file" .) .RelPermalink)
       "date" ""
       "small" $small.RelPermalink "sw" $small.Width "sh" $small.Height
       "medium" $medium.RelPermalink "mw" $medium.Width "mh" $medium.Height
