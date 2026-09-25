@@ -9,6 +9,7 @@ interface Photo {
     url: string
     w: number
     h: number
+    color: string
     thumb: string
     thumbwidth: number
     large: string
@@ -327,6 +328,7 @@ if (grid) {
                         }
                         const image = document.createElement('img')
                         image.alt = ''
+                        image.style.background = photo.color
                         const link = document.createElement('a')
                         link.append(image)
                         // out of the tab order: the album below lists every photo

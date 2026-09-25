@@ -23,6 +23,7 @@
           "url" $photo.url
           "w" $photo.w
           "h" $photo.h
+          "color" $photo.color
           "thumb" $photo.pin
           "thumbwidth" 128
           "large" $photo.pinlarge
