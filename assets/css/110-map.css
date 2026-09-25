@@ -95,6 +95,13 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
+/* leaflet.css states two classes to give a marker picture its natural width,
+   which a thumbnail still loading does not have, so this one states three */
+
+.leaflet-container .leaflet-marker-pane .photo-pin img {
+    width: var(--pin);
+}
+
 .darken .leaflet-tile {
     filter: var(--tile-filter);
 }
