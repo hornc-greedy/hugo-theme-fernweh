@@ -28,6 +28,17 @@ export const pinSize = (scale: PinScale): number => {
     return small + (peak - small) * Math.sin(Math.PI * t)
 }
 
+/** the point under a pin that stands on its spot, in proportion to the pin */
+export const tipSize = (pin: number): number => Math.max(4, Math.round(pin / 8))
+
+/**
+ * How far a frame has to reach above its country so that the pin of the
+ * northernmost photo stands in it whole. `below` is how far under the upper
+ * edge of the frame that photo's spot lies.
+ */
+export const headroom = (pin: number, below: number): number =>
+    Math.max(0, Math.ceil(pin + tipSize(pin) - below))
+
 /** Where a pin sits on the map, in pixels */
 export interface Spot {
     x: number

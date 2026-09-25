@@ -55,7 +55,23 @@
    it, two fixed pixels would take a fifth of the width of a twenty pixel pin */
 
 .photo-pin {
-    margin: calc(var(--pin) / -2);
+    margin: calc(-1 * (var(--pin) + var(--tip))) 0 0 calc(var(--pin) / -2);
+}
+
+/* the point under the picture, whose tip is the spot the photo was taken at */
+
+.photo-pin a::after {
+    content: "";
+    display: block;
+    width: 0;
+    margin: 0 auto;
+    border: var(--tip) solid transparent;
+    border-top-color: var(--text);
+    border-bottom: 0;
+}
+
+.heaped .photo-pin a::after {
+    visibility: hidden;
 }
 
 /* A marker keeps its place while its photo steps aside, so the boxes of one
@@ -68,6 +84,8 @@
 
 .photo-pin img {
     display: block;
+    /* it grows and shrinks standing on its point */
+    transform-origin: 50% 100%;
     margin: 0;
     width: var(--pin);
     height: var(--pin);

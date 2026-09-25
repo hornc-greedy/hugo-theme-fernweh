@@ -1,5 +1,5 @@
 import type * as Leaflet from 'leaflet'
-import { heap, type PinScale, pinSize, type Spot } from './arc.ts'
+import { headroom, heap, type PinScale, pinSize, type Spot, tipSize } from './arc.ts'
 import { lightbox } from './lightbox.ts'
 
 // What the geojson template hands over
@@ -213,7 +213,12 @@ if (grid) {
                 // the one number the stylesheet measures the pins against, the same
                 // for every pin of a map
                 const grow = (zoom: number): void => {
-                    map.getContainer().style.setProperty('--pin', `${Math.round(size(zoom))}px`)
+                    const pin = Math.round(size(zoom))
+                    const frame = map.getContainer()
+                    frame.style.setProperty('--pin', `${pin}px`)
+                    frame.style.setProperty('--tip', `${tipSize(pin)}px`)
+                    // a pin moved into a heap no longer stands on its own spot
+                    frame.classList.toggle('heaped', zoom >= map.getMaxZoom())
                 }
 
                 // the zoom is passed in, because during a flight the pins already
@@ -497,8 +502,27 @@ if (grid) {
                     true
                 )
 
+                // the pins stand over their spots, so the one furthest north decides
+                // how far the frame reaches above the country
+                const north = Math.max(...pins.map((pin) => pin.photo.lat))
+
                 const settle = (b: Leaflet.LatLngBounds): void => {
                     map.fitBounds(b, { padding: [12, 12], animate: false })
+                    overview.zoom = map.getZoom()
+                    const room = headroom(
+                        size(overview.zoom),
+                        map.latLngToContainerPoint([north, b.getCenter().lng]).y
+                    )
+                    if (room > 0) {
+                        const box = map.getContainer().parentElement as HTMLElement
+                        box.style.height = `${box.offsetHeight + room}px`
+                        map.invalidateSize(false)
+                        map.fitBounds(b, {
+                            paddingTopLeft: [12, 12 + room],
+                            paddingBottomRight: [12, 12],
+                            animate: false
+                        })
+                    }
                     overview.center = map.getCenter()
                     overview.zoom = map.getZoom()
                     // the country filled the frame at this zoom, there is nothing further
