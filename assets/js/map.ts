@@ -69,7 +69,7 @@ const flyDuration = 0.7
 /** how many zoom steps a tap on a pin flies in */
 const flyInZoom = 3
 /** how far the mask covers the land around a country in the overview */
-const maskOpacity = 1
+const maskOpacity = 0.7
 /** the room between a country and the edge of its frame, in pixels */
 const fitPadding = 12
 
