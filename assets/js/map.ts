@@ -38,10 +38,16 @@ interface MapData {
     days: Day[]
 }
 
-interface Shape {
+interface Region {
     country: Country
     bounds: Leaflet.LatLngBounds
-    ratio: number
+    /** its extent in projected metres */
+    extent: { x: number; y: number }
+    /** a stopover of few photos, drawn in a frame of its own */
+    secondary: boolean
+}
+
+interface Shape extends Region {
     box: HTMLElement
     map: Leaflet.Map
 }
@@ -105,14 +111,21 @@ if (grid) {
 
             let available = space()
 
-            const measure = (ratio: number, box: HTMLElement): void => {
+            const measure = (region: Region, box: HTMLElement): void => {
+                const { x, y } = region.extent
+                if (region.secondary) {
+                    // a stopover keeps a frame of its own, so a tall island cannot outgrow the main maps
+                    box.style.width = `${Math.round(available)}px`
+                    box.style.height = `${Math.round(available * 0.75)}px`
+                    return
+                }
                 // every map takes the full width it is given, the height follows from
                 // the country. Only the extreme shapes are capped, and relative to that
                 // width rather than to the window: a viewport-bound cap makes a tall
                 // country narrower than a round one standing right beside it.
-                const h = Math.min(available / ratio, available * 2)
-                box.style.height = `${Math.round(h)}px`
-                box.style.width = `${Math.round(h * ratio)}px`
+                const scale = Math.min(available / x, (available * 2) / y)
+                box.style.height = `${Math.round(y * scale)}px`
+                box.style.width = `${Math.round(x * scale)}px`
             }
 
             function build(
@@ -577,24 +590,32 @@ if (grid) {
                 return map
             }
 
-            const shapes: Shape[] = data.maps.map((country, i) => {
+            const regions: Region[] = data.maps.map((country, i) => {
                 const bounds = L.geoJSON(country.geometry).getBounds()
                 const nw = L.CRS.EPSG3857.project(bounds.getNorthWest())
                 const se = L.CRS.EPSG3857.project(bounds.getSouthEast())
-                const ratio = (se.x - nw.x) / (nw.y - se.y)
+                const photos = data.days
+                    .flatMap((day) => day.photos)
+                    .filter((photo) => photo.mapIndex === i)
+                return {
+                    country,
+                    bounds,
+                    extent: { x: se.x - nw.x, y: nw.y - se.y },
+                    secondary: photos.length < 5
+                }
+            })
 
+            const shapes: Shape[] = regions.map((region, i) => {
                 const box = document.createElement('div')
                 box.className = 'map-box'
-                measure(ratio, box)
+                measure(region, box)
                 box.innerHTML = `<div class="map-canvas" id="map-${i}"></div>`
                 grid.appendChild(box)
 
                 return {
-                    country,
-                    bounds,
-                    ratio,
+                    ...region,
                     box,
-                    map: build(`map-${i}`, country, data.days, bounds, i)
+                    map: build(`map-${i}`, region.country, data.days, region.bounds, i)
                 }
             })
 
@@ -631,7 +652,7 @@ if (grid) {
                     }
                     available = width
                     for (const shape of shapes) {
-                        measure(shape.ratio, shape.box)
+                        measure(shape, shape.box)
                         shape.map.remeasure(shape.bounds)
                     }
                 }, 200)
