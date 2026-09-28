@@ -1,23 +1,24 @@
 /* typed so the browser checks them and calc() can rely on them; --tint stays
    untyped on purpose: that it is invalid without a picture is what makes
-   --paper fall back to the plain surface */
+   --paper fall back to the plain surface. The widths and the accent come from
+   the configuration through head.html, so only their type is stated here */
 
 @property --column {
     syntax: "<length>";
     inherits: true;
-    initial-value: 1280px;
+    initial-value: 0px;
 }
 
 @property --cover {
     syntax: "<length>";
     inherits: true;
-    initial-value: 400px;
+    initial-value: 0px;
 }
 
 @property --map {
     syntax: "<length>";
     inherits: true;
-    initial-value: 320px;
+    initial-value: 0px;
 }
 
 @property --gutter {
@@ -40,12 +41,8 @@
     --line: light-dark(#e3ded6, #2a2b31);
     --text: light-dark(#16161a, #ececee);
     --text-muted: light-dark(#6c6c76, #9a9aa4);
-    --accent: light-dark(#9a6a1f, #d8a367);
     --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     /* the display face is declared in head.html, beside the files it loads */
-    --column: 1280px;
-    --cover: 400px;
-    --map: 320px;
     --gutter: clamp(1rem, 4vw, 2.5rem);
     /* drawn map tiles come light; this is what pulls them into the dark palette */
     --tile-dark: invert(1) hue-rotate(180deg) brightness(0.86) contrast(0.9) saturate(0.7);
