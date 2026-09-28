@@ -1,4 +1,4 @@
-{{- /* The maps of a journey.
+{{- /* The maps of a journey, the one with the most photos first.
 
        A photo belongs to the part of a country it lies in, or, on an island
        too small for the outlines, to the nearest part within a degree. Parts
@@ -187,12 +187,18 @@
       {{- end -}}
     {{- end -}}
   {{- end -}}
+  {{- $photos := 0 -}}
+  {{- range $g.cells -}}{{- $photos = add $photos .count -}}{{- end -}}
   {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
          a second outline cannot be appended to a list that holds one already */ -}}
   {{- $maps = $maps | append (dict
       "geometry" (dict "type" "MultiPolygon"
           "coordinates" (apply $drawn "index" $country.geometry.coordinates "."))
-      "keys" (apply $g.cells "index" "." "key")) -}}
+      "keys" (apply $g.cells "index" "." "key") "photos" $photos) -}}
 {{- end -}}
 
-{{- return $maps -}}
+{{- $sorted := slice -}}
+{{- range sort $maps "photos" "desc" -}}
+  {{- $sorted = $sorted | append (dict "geometry" .geometry "keys" .keys) -}}
+{{- end -}}
+{{- return $sorted -}}
