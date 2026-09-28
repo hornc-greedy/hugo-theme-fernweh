@@ -2,11 +2,13 @@
        was taken and where, and the addresses of the sizes the pages serve.
        From the note lying beside it in the bucket, or, without one, from the
        file itself, which Hugo cuts and reads the coordinates out of. */ -}}
+{{- /* the sizes the pages serve, as the bucket names them */ -}}
+{{- $renditions := dict "small" 560 "medium" 1120 "pin" 128 "pinlarge" 440 -}}
 {{- $caption := .caption | default "" -}}
 {{- $entry := dict -}}
 {{- with .file -}}
-  {{- $small := .Fit "560x560" -}}
-  {{- $medium := .Fit "1120x1120" -}}
+  {{- $small := .Fit (printf "%dx%d" $renditions.small $renditions.small) -}}
+  {{- $medium := .Fit (printf "%dx%d" $renditions.medium $renditions.medium) -}}
   {{- $entry = dict
       "key" .Name
       "file" .
@@ -17,8 +19,8 @@
       "date" ""
       "small" $small.RelPermalink "sw" $small.Width "sh" $small.Height
       "medium" $medium.RelPermalink "mw" $medium.Width "mh" $medium.Height
-      "pin" (.Fill "128x128 center").RelPermalink
-      "pinlarge" (.Fill "440x440 center").RelPermalink -}}
+      "pin" (.Fill (printf "%dx%d center" $renditions.pin $renditions.pin)).RelPermalink "pw" $renditions.pin
+      "pinlarge" (.Fill (printf "%dx%d center" $renditions.pinlarge $renditions.pinlarge)).RelPermalink -}}
   {{- /* a camera writes the moment and the place into the file; a scan carries
          neither, and then the album falls back to the order of the folder */ -}}
   {{- if reflect.IsImageResourceWithMeta . -}}
@@ -37,18 +39,18 @@
     {{- /* the cut sizes fit the picture into a box, so a portrait comes out
            narrower than the box; srcset has to name the width it really has */ -}}
     {{- $longest := math.Max .w .h -}}
-    {{- $small := math.Min 1.0 (div 560.0 $longest) -}}
-    {{- $medium := math.Min 1.0 (div 1120.0 $longest) -}}
+    {{- $small := math.Min 1.0 (div (float $renditions.small) $longest) -}}
+    {{- $medium := math.Min 1.0 (div (float $renditions.medium) $longest) -}}
     {{- $entry = merge . (dict
         "key" $key
         "url" $url
         "caption" $caption
-        "small" (printf "%s/%s-560.webp" $sizes $key)
+        "small" (printf "%s/%s-%d.webp" $sizes $key $renditions.small)
         "sw" (int (math.Round (mul .w $small))) "sh" (int (math.Round (mul .h $small)))
-        "medium" (printf "%s/%s-1120.webp" $sizes $key)
+        "medium" (printf "%s/%s-%d.webp" $sizes $key $renditions.medium)
         "mw" (int (math.Round (mul .w $medium))) "mh" (int (math.Round (mul .h $medium)))
-        "pin" (printf "%s/%s-128.webp" $sizes $key)
-        "pinlarge" (printf "%s/%s-440.webp" $sizes $key)) -}}
+        "pin" (printf "%s/%s-%d.webp" $sizes $key $renditions.pin) "pw" $renditions.pin
+        "pinlarge" (printf "%s/%s-%d.webp" $sizes $key $renditions.pinlarge)) -}}
   {{- end -}}
 {{- end -}}
 {{- return $entry -}}

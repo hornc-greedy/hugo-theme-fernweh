@@ -25,7 +25,7 @@
           "h" $photo.h
           "color" $photo.color
           "thumb" $photo.pin
-          "thumbwidth" 128
+          "thumbwidth" $photo.pw
           "large" $photo.pinlarge
           "cuts" (printf "%s %dw, %s %dw, %s %dw"
               $photo.small $photo.sw $photo.medium $photo.mw $photo.url (int $photo.w))
