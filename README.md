@@ -25,7 +25,7 @@ the country, drawn from the coordinates the cameras wrote into the pictures.
 - **A justified album**, laid out at build time from the aspect ratios
 - **Sorted by capture time**, placed on the map by the coordinates in the files
 - **A lightbox of its own**, keyboard and screen reader included
-- **A map per country** a journey touches, cut to its outline
+- **A map per region** a journey touches, cut to its outline
 - **Two languages or one**, every word of the interface in `i18n/`
 - **Light and dark**, an accent colour to pick, a page tinted by its own picture
 - **Nothing fetched at run time**, no CDN, no tracker, no build step of your own

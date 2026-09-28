@@ -19,6 +19,8 @@ interface Photo {
     caption: string
     /** the tile in the album this pin leads to, -1 for the opener */
     index: number
+    /** the map among maps this pin stands on */
+    mapIndex: number
 }
 
 interface Day {
@@ -117,7 +119,8 @@ if (grid) {
                 id: string,
                 country: Country,
                 allDays: Day[],
-                bounds: Leaflet.LatLngBounds
+                bounds: Leaflet.LatLngBounds,
+                mapIndex: number
             ): Leaflet.Map {
                 // a view has to exist before layers are added, otherwise the renderer
                 // has no bounds yet when fitBounds pulls them in
@@ -328,7 +331,7 @@ if (grid) {
 
                 for (const day of allDays) {
                     for (const photo of day.photos) {
-                        if (!bounds.contains([photo.lat, photo.long])) {
+                        if (photo.mapIndex !== mapIndex) {
                             continue
                         }
                         const image = document.createElement('img')
@@ -591,7 +594,7 @@ if (grid) {
                     bounds,
                     ratio,
                     box,
-                    map: build(`map-${i}`, country, data.days, bounds)
+                    map: build(`map-${i}`, country, data.days, bounds, i)
                 }
             })
 

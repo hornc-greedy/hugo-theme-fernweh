@@ -1,68 +1,198 @@
-{{- /* Which countries a journey touches, and which parts of them.
+{{- /* The maps of a journey.
 
-       Every country is ruled out by its bounding box first, then each part by
-       its own, and only what survives has its outline walked. Drawn is a part
-       that holds a photo, and every part that lies within the box of those, so
-       an island keeps the smaller ones before its coast while shots from
-       Corsica still give the island rather than the whole of France.
+       A photo belongs to the part of a country it lies in, or, on an island
+       too small for the outlines, to the nearest part within a degree. Parts
+       of one country whose photos lie less than 100 km apart share a map, so
+       a hop between islands stays on one while Sardinia keeps its own. A part
+       less than 40 km across cannot be told apart on its own and draws in
+       every part of its country within 100 km, which puts Norderney on the map
+       of Germany. A smaller part without photos that reaches into the box of a
+       map joins the smallest such map, so Sicily stays whole beside the
+       mainland while Java stays off the map of Bali, and a photo off every
+       coast, from a boat or a plane, joins the map whose box holds it most
+       closely.
 
-       The answer depends on the coordinates alone and not on the language of
-       the page, which is why the caller asks for it through partialCached. */ -}}
+       Each map names the cells of its photos, which is how the caller sets
+       every photo on exactly one map. The answer depends on the coordinates
+       alone and not on the language of the page, which is why the caller asks
+       for it through partialCached. */ -}}
 {{- $cells := .cells -}}
-{{- $maps := slice -}}
-{{- range $country := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
-  {{- $b := $country.properties.box -}}
-  {{- $near := false -}}
-  {{- range $cells -}}
-    {{- if and (ge .lat (index $b 0)) (le .lat (index $b 2))
-               (ge .long (index $b 1)) (le .long (index $b 3)) -}}
-      {{- $near = true -}}
-    {{- end -}}
-  {{- end -}}
+{{- $features := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
 
-  {{- if $near -}}
-    {{- $hits := slice -}}
-    {{- range $i, $part := $country.geometry.coordinates -}}
-      {{- $pb := index $country.properties.boxes $i -}}
-      {{- $hit := false -}}
-      {{- range $cells -}}
+{{- /* ── the part each photo lies in or next to ────────────────────────── */ -}}
+{{- $matches := slice -}}
+{{- $unmatched := slice -}}
+{{- range $cell := $cells -}}
+  {{- $match := dict -}}
+  {{- range $c, $country := $features -}}
+    {{- $b := $country.properties.box -}}
+    {{- if and (not $match) (ge $cell.lat (index $b 0)) (le $cell.lat (index $b 2))
+               (ge $cell.long (index $b 1)) (le $cell.long (index $b 3)) -}}
+      {{- range $i, $part := $country.geometry.coordinates -}}
+        {{- $pb := index $country.properties.boxes $i -}}
         {{- /* the outline is only walked for a point that its own box holds;
                an island on the far side of the country costs four comparisons */ -}}
-        {{- if and (not $hit) (ge .lat (index $pb 0)) (le .lat (index $pb 2))
-                   (ge .long (index $pb 1)) (le .long (index $pb 3)) -}}
-          {{- if partial "inside-part.html" (dict "lat" .lat "long" .long "part" $part) -}}
-            {{- $hit = true -}}
+        {{- if and (not $match) (ge $cell.lat (index $pb 0)) (le $cell.lat (index $pb 2))
+                   (ge $cell.long (index $pb 1)) (le $cell.long (index $pb 3)) -}}
+          {{- if partial "inside-part.html" (dict "lat" $cell.lat "long" $cell.long "part" $part) -}}
+            {{- $match = dict "country" $c "part" $i -}}
           {{- end -}}
         {{- end -}}
       {{- end -}}
-      {{- if $hit -}}
-        {{- $hits = $hits | append $i -}}
-      {{- end -}}
-    {{- end -}}
-
-    {{- if $hits -}}
-      {{- /* the box around the parts that were hit, and then every part inside it */ -}}
-      {{- $s := 90.0 -}}{{- $w := 180.0 -}}{{- $n := -90.0 -}}{{- $e := -180.0 -}}
-      {{- range $hits -}}
-        {{- $pb := index $country.properties.boxes . -}}
-        {{- $s = math.Min $s (index $pb 0) -}}
-        {{- $w = math.Min $w (index $pb 1) -}}
-        {{- $n = math.Max $n (index $pb 2) -}}
-        {{- $e = math.Max $e (index $pb 3) -}}
-      {{- end -}}
-      {{- $drawn := $hits -}}
-      {{- range $i, $part := $country.geometry.coordinates -}}
-        {{- $pb := index $country.properties.boxes $i -}}
-        {{- if and (not (in $hits $i)) (ge (index $pb 0) $s) (ge (index $pb 1) $w)
-                   (le (index $pb 2) $n) (le (index $pb 3) $e) -}}
-          {{- $drawn = $drawn | append $i -}}
-        {{- end -}}
-      {{- end -}}
-      {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
-             a second outline cannot be appended to a list that holds one already */ -}}
-      {{- $maps = $maps | append (dict "geometry" (dict "type" "MultiPolygon"
-          "coordinates" (apply $drawn "index" $country.geometry.coordinates "."))) -}}
     {{- end -}}
   {{- end -}}
+  {{- if not $match -}}
+    {{- $cos := math.Cos (mul $cell.lat 0.0174533) -}}
+    {{- /* squared kilometres, a degree of latitude at the most */ -}}
+    {{- $minDistance := 12365.0 -}}
+    {{- range $c, $country := $features -}}
+      {{- range $i, $pb := $country.properties.boxes -}}
+        {{- if and (ge $cell.lat (sub (index $pb 0) 1)) (le $cell.lat (add (index $pb 2) 1))
+                   (ge $cell.long (sub (index $pb 1) 1)) (le $cell.long (add (index $pb 3) 1)) -}}
+          {{- range index (index $country.geometry.coordinates $i) 0 -}}
+            {{- $dy := mul (sub (index . 1) $cell.lat) 111.2 -}}
+            {{- $dx := mul (mul (sub (index . 0) $cell.long) 111.2) $cos -}}
+            {{- $d := add (mul $dx $dx) (mul $dy $dy) -}}
+            {{- if lt $d $minDistance -}}
+              {{- $minDistance = $d -}}
+              {{- $match = dict "country" $c "part" $i -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $match -}}
+    {{- $matches = $matches | append (merge $match (dict "cell" $cell)) -}}
+  {{- else -}}
+    {{- $unmatched = $unmatched | append $cell -}}
+  {{- end -}}
 {{- end -}}
+
+{{- /* ── the parts each photo draws in, gathered into maps ─────────────── */ -}}
+{{- $clusters := slice -}}
+{{- range $matches -}}
+  {{- $cell := .cell -}}
+  {{- $country := index $features .country -}}
+  {{- $cos := math.Cos (mul $cell.lat 0.0174533) -}}
+  {{- $radiusLat := 0.9 -}}
+  {{- $radiusLong := div 0.9 $cos -}}
+  {{- $containing := .part -}}
+  {{- $hb := index $country.properties.boxes $containing -}}
+  {{- $heightKm := mul (sub (index $hb 2) (index $hb 0)) 111.2 -}}
+  {{- $widthKm := mul (sub (index $hb 3) (index $hb 1)) 111.2 (math.Cos (mul (add (index $hb 0) (index $hb 2)) 0.0087266)) -}}
+  {{- $small := lt (math.Max $heightKm $widthKm) 40 -}}
+  {{- $parts := slice $containing -}}
+  {{- range $i, $pb := $country.properties.boxes -}}
+    {{- if and $small (ne $i $containing) (ge $cell.lat (sub (index $pb 0) $radiusLat)) (le $cell.lat (add (index $pb 2) $radiusLat))
+               (ge $cell.long (sub (index $pb 1) $radiusLong)) (le $cell.long (add (index $pb 3) $radiusLong)) -}}
+      {{- range index (index $country.geometry.coordinates $i) 0 -}}
+        {{- $dy := mul (sub (index . 1) $cell.lat) 111.2 -}}
+        {{- $dx := mul (mul (sub (index . 0) $cell.long) 111.2) $cos -}}
+        {{- if lt (add (mul $dx $dx) (mul $dy $dy)) 10000.0 -}}
+          {{- $parts = $parts | append $i -}}
+          {{- break -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $cluster := dict "country" .country "parts" $parts "cells" (slice $cell) -}}
+  {{- $others := slice -}}
+  {{- range $g := $clusters -}}
+    {{- $overlaps := false -}}
+    {{- if eq $g.country $cluster.country -}}
+      {{- range $cluster.parts -}}{{- if in $g.parts . -}}{{- $overlaps = true -}}{{- end -}}{{- end -}}
+      {{- range $a := $g.cells -}}
+        {{- $cosLat := math.Cos (mul $a.lat 0.0174533) -}}
+        {{- range $b := $cluster.cells -}}
+          {{- $dy := mul (sub $b.lat $a.lat) 111.2 -}}
+          {{- $dx := mul (sub $b.long $a.long) 111.2 $cosLat -}}
+          {{- if lt (add (mul $dx $dx) (mul $dy $dy)) 10000.0 -}}{{- $overlaps = true -}}{{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if $overlaps -}}
+      {{- $cluster = dict "country" $cluster.country "parts" ($cluster.parts | append $g.parts | uniq)
+                       "cells" ($cluster.cells | append $g.cells) -}}
+    {{- else -}}
+      {{- $others = $others | append $g -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $clusters = $others | append $cluster -}}
+{{- end -}}
+
+{{- /* the box around the parts of each map */ -}}
+{{- $bounded := slice -}}
+{{- range $g := $clusters -}}
+  {{- $country := index $features $g.country -}}
+  {{- $s := 90.0 -}}{{- $w := 180.0 -}}{{- $n := -90.0 -}}{{- $e := -180.0 -}}
+  {{- range $g.parts -}}
+    {{- $pb := index $country.properties.boxes . -}}
+    {{- $s = math.Min $s (index $pb 0) -}}
+    {{- $w = math.Min $w (index $pb 1) -}}
+    {{- $n = math.Max $n (index $pb 2) -}}
+    {{- $e = math.Max $e (index $pb 3) -}}
+  {{- end -}}
+  {{- $bounded = $bounded | append (merge $g (dict "box" (slice $s $w $n $e))) -}}
+{{- end -}}
+
+{{- /* a photo off every coast joins the map whose box holds it most closely */ -}}
+{{- range $cell := $unmatched -}}
+  {{- $owner := -1 -}}
+  {{- $area := 64800.0 -}}
+  {{- range $k, $g := $bounded -}}
+    {{- $gb := $g.box -}}
+    {{- $size := mul (sub (index $gb 2) (index $gb 0)) (sub (index $gb 3) (index $gb 1)) -}}
+    {{- if and (ge $cell.lat (index $gb 0)) (le $cell.lat (index $gb 2))
+               (ge $cell.long (index $gb 1)) (le $cell.long (index $gb 3)) (lt $size $area) -}}
+      {{- $owner = $k -}}
+      {{- $area = $size -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if ge $owner 0 -}}
+    {{- $next := slice -}}
+    {{- range $k, $g := $bounded -}}
+      {{- $next = $next | append (cond (eq $k $owner) (merge $g (dict "cells" ($g.cells | append $cell))) $g) -}}
+    {{- end -}}
+    {{- $bounded = $next -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ── the outlines of each map ──────────────────────────────────────── */ -}}
+{{- $maps := slice -}}
+{{- range $k, $g := $bounded -}}
+  {{- $country := index $features $g.country -}}
+  {{- $claimed := slice -}}
+  {{- range $bounded -}}{{- if eq .country $g.country -}}{{- $claimed = $claimed | append .parts -}}{{- end -}}{{- end -}}
+  {{- $drawn := $g.parts -}}
+  {{- range $i, $part := $country.geometry.coordinates -}}
+    {{- if not (in $claimed $i) -}}
+      {{- $pb := index $country.properties.boxes $i -}}
+      {{- /* a smaller part without a photo nearby joins the smallest box it reaches into */ -}}
+      {{- $partSize := mul (sub (index $pb 2) (index $pb 0)) (sub (index $pb 3) (index $pb 1)) -}}
+      {{- $owner := -1 -}}
+      {{- $area := 64800.0 -}}
+      {{- range $j, $o := $bounded -}}
+        {{- $ob := $o.box -}}
+        {{- $size := mul (sub (index $ob 2) (index $ob 0)) (sub (index $ob 3) (index $ob 1)) -}}
+        {{- if and (eq $o.country $g.country) (le (index $pb 0) (index $ob 2)) (ge (index $pb 2) (index $ob 0))
+                   (le (index $pb 1) (index $ob 3)) (ge (index $pb 3) (index $ob 1))
+                   (lt $partSize $size) (lt $size $area) -}}
+          {{- $owner = $j -}}
+          {{- $area = $size -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if eq $owner $k -}}
+        {{- $drawn = $drawn | append $i -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
+         a second outline cannot be appended to a list that holds one already */ -}}
+  {{- $maps = $maps | append (dict
+      "geometry" (dict "type" "MultiPolygon"
+          "coordinates" (apply $drawn "index" $country.geometry.coordinates "."))
+      "keys" (apply $g.cells "index" "." "key")) -}}
+{{- end -}}
+
 {{- return $maps -}}

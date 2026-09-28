@@ -43,20 +43,40 @@
   {{- end -}}
 {{- end -}}
 
-{{- /* ── which countries, and which parts of them ─────────────────────────
+{{- /* ── which maps, and which photo stands on which ──────────────────────
        Points are grouped into tenth-of-a-degree cells first, or every photo
-       would compute the same answer again. The countries themselves are worked
-       out in their own partial: the result hangs on the coordinates alone, so
-       both languages of a journey share one computation. */ -}}
-{{- $cells := slice -}}
-{{- $seen := slice -}}
+       would compute the same answer again. The maps themselves are worked out
+       in their own partial: the result hangs on the coordinates alone, so both
+       languages of a journey share one computation. */ -}}
+{{- $cells := dict -}}
 {{- range $pins -}}
   {{- $key := printf "%.1f/%.1f" .lat .long -}}
-  {{- if not (in $seen $key) -}}
-    {{- $seen = $seen | append $key -}}
-    {{- $cells = $cells | append . -}}
+  {{- if not (isset $cells $key) -}}
+    {{- $cells = merge $cells (dict $key (dict "key" $key "lat" .lat "long" .long)) -}}
   {{- end -}}
 {{- end -}}
-{{- $maps := partialCached "countries.html" (dict "cells" $cells) .Path -}}
+{{- $cellList := slice -}}
+{{- range $cells -}}{{- $cellList = $cellList | append . -}}{{- end -}}
+{{- $maps := partialCached "countries.html" (dict "cells" $cellList) .Path -}}
 
-{{- dict "maps" $maps "days" $days | jsonify -}}
+{{- $mapIndexOf := dict -}}
+{{- range $i, $map := $maps -}}
+  {{- range $map.keys -}}{{- $mapIndexOf = merge $mapIndexOf (dict . $i) -}}{{- end -}}
+{{- end -}}
+{{- $placedDays := slice -}}
+{{- range $day := $days -}}
+  {{- $photos := slice -}}
+  {{- range $day.photos -}}
+    {{- $key := printf "%.1f/%.1f" .lat .long -}}
+    {{- if isset $mapIndexOf $key -}}
+      {{- $photos = $photos | append (merge . (dict "mapIndex" (index $mapIndexOf $key))) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $photos -}}
+    {{- $placedDays = $placedDays | append (merge $day (dict "photos" .)) -}}
+  {{- end -}}
+{{- end -}}
+{{- $geometries := slice -}}
+{{- range $maps -}}{{- $geometries = $geometries | append (dict "geometry" .geometry) -}}{{- end -}}
+
+{{- dict "maps" $geometries "days" $placedDays | jsonify -}}
