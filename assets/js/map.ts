@@ -64,9 +64,20 @@ interface Pin {
     fetch: (priority?: 'high' | 'low') => Promise<void>
 }
 
+/** how long a flight in or out lasts, in seconds */
+const flyDuration = 0.7
+/** how many zoom steps a tap on a pin flies in */
+const flyInZoom = 3
+/** how far the mask covers the land around a country in the overview */
+const maskOpacity = 1
+/** the room between a country and the edge of its frame, in pixels */
+const fitPadding = 12
+
 const grid = document.getElementById('maps')
 
 if (grid) {
+    // the stylesheet fades the mask and the outline over the same seconds
+    grid.style.setProperty('--fly-duration', `${flyDuration}s`)
     const maxzoom = Number(grid.dataset.maxzoom)
     const smallestPin = Number(grid.dataset.pin)
     const largestPin = Number(grid.dataset.pinmax)
@@ -110,6 +121,18 @@ if (grid) {
             }
 
             let available = space()
+
+            // one step of the arrows on a map and of the arrow keys alike
+            const directions: Record<string, Leaflet.PointTuple> = {
+                up: [0, -1],
+                down: [0, 1],
+                left: [-1, 0],
+                right: [1, 0]
+            }
+            const pan = (target: Leaflet.Map, [x, y]: Leaflet.PointTuple): void => {
+                const s = Math.round(target.getContainer().clientWidth / 4)
+                target.panBy([x * s, y * s], { duration: 0.25 })
+            }
 
             const measure = (region: Region, box: HTMLElement): void => {
                 const { x, y } = region.extent
@@ -181,7 +204,7 @@ if (grid) {
                 )
                 const mask = L.polygon([world, ...holes], {
                     fillColor: getComputedStyle(document.body).backgroundColor,
-                    fillOpacity: 1,
+                    fillOpacity: maskOpacity,
                     stroke: false,
                     interactive: false
                 }).addTo(map)
@@ -199,7 +222,7 @@ if (grid) {
                 // across the land and leave pins outside it
                 const shroud = (zoom: number): void => {
                     const shown = zoom <= overview.zoom
-                    mask.setStyle({ fillOpacity: shown ? 1 : 0 })
+                    mask.setStyle({ fillOpacity: shown ? maskOpacity : 0 })
                     outline.setStyle({ opacity: shown ? 1 : 0 })
                 }
 
@@ -211,8 +234,8 @@ if (grid) {
                     if (map.getZoom() === overview.zoom) {
                         return
                     }
-                    glide(overview.zoom, 0.7)
-                    map.flyTo(overview.center, overview.zoom, { duration: 0.7 })
+                    glide(overview.zoom, flyDuration)
+                    map.flyTo(overview.center, overview.zoom, { duration: flyDuration })
                 }
 
                 const scale = (zoom: number): PinScale => ({
@@ -410,8 +433,10 @@ if (grid) {
                                     Promise.resolve()
                                 )
                             })
-                            glide(overview.zoom + 3, 0.7)
-                            map.flyTo([photo.lat, photo.long], overview.zoom + 3, { duration: 0.7 })
+                            glide(overview.zoom + flyInZoom, flyDuration)
+                            map.flyTo([photo.lat, photo.long], overview.zoom + flyInZoom, {
+                                duration: flyDuration
+                            })
                         })
                     }
                 }
@@ -444,16 +469,9 @@ if (grid) {
                         if (!button) {
                             return
                         }
-                        const s = Math.round(map.getContainer().clientWidth / 4)
-                        const steps: Record<string, Leaflet.PointTuple> = {
-                            up: [0, -s],
-                            down: [0, s],
-                            left: [-s, 0],
-                            right: [s, 0]
-                        }
-                        const step = steps[button.dataset.dir ?? '']
+                        const step = directions[button.dataset.dir ?? '']
                         if (step) {
-                            map.panBy(step, { duration: 0.25 })
+                            pan(map, step)
                         }
                     })
                     return box
@@ -523,7 +541,7 @@ if (grid) {
                 const north = Math.max(...pins.map((pin) => pin.photo.lat))
 
                 const settle = (b: Leaflet.LatLngBounds): void => {
-                    map.fitBounds(b, { padding: [12, 12], animate: false })
+                    map.fitBounds(b, { padding: [fitPadding, fitPadding], animate: false })
                     overview.zoom = map.getZoom()
                     const room = headroom(
                         size(overview.zoom),
@@ -534,8 +552,8 @@ if (grid) {
                         box.style.height = `${box.offsetHeight + room}px`
                         map.invalidateSize(false)
                         map.fitBounds(b, {
-                            paddingTopLeft: [12, 12 + room],
-                            paddingBottomRight: [12, 12],
+                            paddingTopLeft: [fitPadding, fitPadding + room],
+                            paddingBottomRight: [fitPadding, fitPadding],
                             animate: false
                         })
                     }
@@ -623,19 +641,12 @@ if (grid) {
                 if (!active) {
                     return
                 }
-                const dirs: Record<string, Leaflet.PointTuple> = {
-                    ArrowUp: [0, -1],
-                    ArrowDown: [0, 1],
-                    ArrowLeft: [-1, 0],
-                    ArrowRight: [1, 0]
-                }
-                const dir = dirs[e.key]
+                const dir = directions[e.key.replace('Arrow', '').toLowerCase()]
                 if (!dir) {
                     return
                 }
                 e.preventDefault()
-                const s = Math.round(active.getContainer().clientWidth / 4)
-                active.panBy([dir[0] * s, dir[1] * s], { duration: 0.25 })
+                pan(active, dir)
             })
 
             // a phone that turns round changes every width the boxes were built
