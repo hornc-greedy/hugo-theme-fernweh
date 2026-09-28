@@ -80,7 +80,7 @@ body:has(dialog[open]) {
     min-width: 100%;
     border: 1px solid #fffff666;
     padding: 0.45rem 0.6rem 0.5rem;
-    color: #ececee;
+    color: var(--text-on-dark);
     font-size: 0.9rem;
     &:empty {
         display: none;
@@ -113,7 +113,7 @@ body:has(dialog[open]) {
     }
     & button.current {
         opacity: 1;
-        outline: 2px solid #ececee;
+        outline: 2px solid var(--text-on-dark);
         outline-offset: -2px;
     }
     & img {
@@ -135,7 +135,7 @@ body:has(dialog[open]) {
     z-index: 1;
     background: none;
     border: 0;
-    color: #ececee;
+    color: var(--text-on-dark);
     font-size: 2.4rem;
     line-height: 1;
     padding: 0.6rem 1rem;

@@ -39,7 +39,9 @@
     --surface: light-dark(#faf9f7, #101114);
     --surface-2: light-dark(#ffffff, #17181c);
     --line: light-dark(#e3ded6, #2a2b31);
-    --text: light-dark(#16161a, #ececee);
+    /* the text of the dark palette, and of the lightbox in either */
+    --text-on-dark: #ececee;
+    --text: light-dark(#16161a, var(--text-on-dark));
     --text-muted: light-dark(#6c6c76, #9a9aa4);
     --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     /* the display face is declared in head.html, beside the files it loads */
