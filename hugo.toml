@@ -12,6 +12,15 @@
   column = "1280px"
   cover = "200px"
 
+  # How a date reads, in Go's layout of 2 January 2006. Hugo puts the names in
+  # the language of the page, and a language may set formats of its own under
+  # its params.
+  [params.dates]
+    full = "Monday, 2 January 2006"
+    long = "2 January 2006"
+    short = "2 January"
+    day = "2"
+
   [params.map]
     # Width of the map column; the outlines fill it and derive their height
     width = "500px"

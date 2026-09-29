@@ -127,6 +127,7 @@ Everything below is a default the theme brings; a value of your own wins.
 | `accent` | `gold` | `gold`, `pink` or `teal` |
 | `column` | `1280px` | width of the one column everything sits in |
 | `cover` | `200px` | edge of the square cover on the front page |
+| `dates.full`, `dates.long`, `dates.short`, `dates.day` | day, month, year | how a date reads, in Go's layout of 2 January 2006. Hugo puts the names in the language of the page, and a language may set formats of its own under its `params` |
 | `map.width` | `500px` | width of the map column; the outline derives its height |
 | `map.pin` | `60` | thumbnail on the map, in the overview and at full zoom |
 | `map.pinmax` | `100` | its largest, at the zoom levels in between |
