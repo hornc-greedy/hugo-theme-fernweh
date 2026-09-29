@@ -12,7 +12,7 @@
   {{ range .AllTranslations }}
     <link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
   {{ end }}
-  {{ if os.FileExists "static/favicon.svg" }}<link rel="icon" href="/favicon.svg" type="image/svg+xml">{{ end }}
+  {{ if os.FileExists "static/favicon.svg" }}<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">{{ end }}
   {{- /* one file per responsibility, bundled into one request. The numbers in
          the names decide the order, and with it the cascade. */ -}}
   {{ with resources.Match "css/*.css" | resources.Concat "css/main.css" }}
@@ -27,9 +27,9 @@
       "pink" "light-dark(#d6006e, #ff5cb0)"
       "teal" "light-dark(#00968a, #00ffd5)" -}}
   {{- with index $accents site.Params.accent }}<style>:root { --accent: {{ . | safeCSS }} }</style>{{ end }}
-  <link rel="preload" href="/fonts/sora-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ "fonts/sora-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
   <style>
-    @font-face { font-family: 'Sora'; src: url('/fonts/sora-700.woff2') format('woff2'); font-weight: 700; font-display: swap }
+    @font-face { font-family: 'Sora'; src: url('{{ "fonts/sora-700.woff2" | relURL }}') format('woff2'); font-weight: 700; font-display: swap }
     :root { --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif }
   </style>
   {{ partial "opengraph.html" . }}
