@@ -1,11 +1,5 @@
-{{- /* The dominant colour of one picture. The only thing a build still reads out
-       of pixels, so it is worked out once per photo and kept. */ -}}
+{{- /* The dominant colour of a picture lying beside an entry, worked out once
+       per photo and kept. A photo from a bucket brings its colour in its note. */ -}}
 {{- $hex := "" -}}
-{{- with .file -}}
-  {{- with .Colors -}}{{ $hex = (index . 0).ColorHex }}{{- end -}}
-{{- else -}}
-  {{- with resources.GetRemote .url -}}
-    {{- with .Colors -}}{{ $hex = (index . 0).ColorHex }}{{- end -}}
-  {{- end -}}
-{{- end -}}
+{{- with .file.Colors -}}{{ $hex = (index . 0).ColorHex }}{{- end -}}
 {{- return $hex -}}

@@ -20,7 +20,7 @@
 {{- $b := 0.0 -}}
 {{- $n := 0 -}}
 {{- range $imgs -}}
-  {{- with partialCached "photocolor.html" . .url -}}
+  {{- with .color -}}
     {{- $s := lower (strings.TrimPrefix "#" .) -}}
     {{- $r = add $r (add (mul 16 (index $d (substr $s 0 1))) (index $d (substr $s 1 1))) -}}
     {{- $g = add $g (add (mul 16 (index $d (substr $s 2 1))) (index $d (substr $s 3 1))) -}}
