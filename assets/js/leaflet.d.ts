@@ -7,7 +7,7 @@ declare global {
     const L: typeof Leaflet
 }
 
-// the map measures itself against its country again when the window changes; the
+// the map measures itself against its country again when the window changes. The
 // method is added where the map is built
 declare module 'leaflet' {
     interface Map {

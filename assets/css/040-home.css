@@ -25,7 +25,7 @@
     display: grid;
     gap: clamp(2rem, 4vw, 3.5rem);
     margin-block-start: clamp(2.5rem, 6vw, 4.5rem);
-    /* the tiles keep their distance from both edges, not just the left one; on a
+    /* the tiles keep their distance from both edges, not just the left one. On a
            narrow screen the inset falls back to the gutter */
     padding-inline: clamp(var(--gutter), 9vw, 9rem);
 }
@@ -41,7 +41,7 @@
     gap: clamp(1.5rem, 3vw, 3rem);
     & img {
         width: 100%;
-        /* the height attribute acts as a presentational hint; without auto it stays
+        /* the height attribute acts as a presentational hint. Without auto it stays
                    at its pixel value and aspect-ratio never gets to decide */
         height: auto;
         aspect-ratio: 1;

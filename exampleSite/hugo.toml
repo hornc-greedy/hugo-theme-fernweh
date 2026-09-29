@@ -34,7 +34,7 @@ disableKinds = ["taxonomy", "term"]
 [imaging.meta]
   fields = ["GPS*", "Date*"]
 
-# A journey needs the geojson beside its page; a theme cannot set this for you.
+# A journey needs the geojson beside its page. A theme cannot set this for you.
 [outputs]
   home = ["HTML"]
   page = ["HTML"]

@@ -1,4 +1,4 @@
-// images fade in as they come into view; the class is only added, never
+// images fade in as they come into view. The class is only added, never
 // removed, so nothing moves a second time
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches
 const candidates = document.querySelectorAll<HTMLElement>('.shot, .opener')

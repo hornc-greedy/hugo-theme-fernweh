@@ -21,7 +21,7 @@
       "medium" $medium.RelPermalink "mw" $medium.Width "mh" $medium.Height
       "pin" (.Fill (printf "%dx%d center" $renditions.pin $renditions.pin)).RelPermalink "pw" $renditions.pin
       "pinlarge" (.Fill (printf "%dx%d center" $renditions.pinlarge $renditions.pinlarge)).RelPermalink -}}
-  {{- /* a camera writes the moment and the place into the file; a scan carries
+  {{- /* a camera writes the moment and the place into the file. A scan carries
          neither, and then the album falls back to the order of the folder */ -}}
   {{- if reflect.IsImageResourceWithMeta . -}}
     {{- with .Meta -}}
@@ -37,7 +37,7 @@
   {{- $key := strings.TrimSuffix ".webp" (strings.TrimPrefix (printf "%s/" site.Params.photos.origin) $url) -}}
   {{- with partialCached "photonote.html" $key $key -}}
     {{- /* the cut sizes fit the picture into a box, so a portrait comes out
-           narrower than the box; srcset has to name the width it really has */ -}}
+           narrower than the box. The srcset has to name the width it really has */ -}}
     {{- $longest := math.Max .w .h -}}
     {{- $small := math.Min 1.0 (div (float $renditions.small) $longest) -}}
     {{- $medium := math.Min 1.0 (div (float $renditions.medium) $longest) -}}

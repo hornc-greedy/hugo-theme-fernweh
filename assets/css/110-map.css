@@ -51,7 +51,7 @@
     text-decoration: underline;
 }
 
-/* the script sets --pin, the size the picture is drawn at; the frame scales with
+/* the script sets --pin, the size the picture is drawn at. The frame scales with
    it, two fixed pixels would take a fifth of the width of a twenty pixel pin */
 
 .photo-pin {

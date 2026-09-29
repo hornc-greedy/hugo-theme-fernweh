@@ -106,7 +106,8 @@ if (grid) {
             const view = lightbox(shots, grid.dataset)
 
             // the map that is currently zoomed in, and therefore the one the arrow
-            // keys belong to; null again as soon as it is back in the overview
+            // keys belong to. It is null again as soon as that map is back in the
+            // overview
             let active: Leaflet.Map | null = null
 
             // measured once and without the padding clientWidth counts in, otherwise
@@ -174,7 +175,7 @@ if (grid) {
                 }).setView(bounds.getCenter(), 6)
 
                 // the tile policy asks for the credit on the map itself, not only in
-                // the footer; Leaflet's own name is not part of that
+                // the footer. Leaflet's own name is not part of that
                 map.attributionControl.setPrefix('')
                 const tiles = [
                     L.tileLayer(grid?.dataset.tiles ?? '', {
@@ -186,15 +187,15 @@ if (grid) {
                     tiles.push(L.tileLayer(grid?.dataset.overlay, { maxZoom: maxzoom }).addTo(map))
                 }
 
-                // everything outside the country is painted over in the page colour;
-                // an even-odd polygon with the country as its holes is the mask
+                // everything outside the country is painted over in the page colour.
+                // An even-odd polygon with the country as its holes is the mask
                 const world: Leaflet.LatLngTuple[] = [
                     [-85, -180],
                     [-85, 180],
                     [85, 180],
                     [85, -180]
                 ]
-                // geojson counts longitude first, Leaflet latitude; a ring without
+                // geojson counts longitude first, Leaflet latitude. A ring without
                 // points cannot become a hole and is left out
                 const holes: Leaflet.LatLngTuple[][] = country.geometry.coordinates.flatMap(
                     (part) => {
@@ -441,7 +442,7 @@ if (grid) {
                     }
                 }
 
-                // dragging comes with the zoom; the keyboard has these steps instead
+                // dragging comes with the zoom. The keyboard has these steps instead
                 const panControl = new L.Control({ position: 'bottomright' })
                 panControl.onAdd = () => {
                     const box = L.DomUtil.create('div', 'pan')
@@ -527,7 +528,7 @@ if (grid) {
                             return
                         }
                         // the address of the photo stays on the link for anyone
-                        // without a script; here the view opens over the map
+                        // without a script. Here the view opens over the map
                         e.preventDefault()
                         if (!dragged) {
                             view.open(Number(link.dataset.shot))

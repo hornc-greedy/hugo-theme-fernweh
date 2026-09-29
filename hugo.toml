@@ -22,7 +22,7 @@
     day = "2"
 
   [params.map]
-    # Width of the map column; the outlines fill it and derive their height
+    # Width of the map column. The outlines fill it and derive their height
     width = "500px"
     # Thumbnails on the map grow towards the middle zoom levels and shrink again
     # at full zoom. Both ends are also capped against the width of the map, so a

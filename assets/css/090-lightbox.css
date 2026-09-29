@@ -38,7 +38,7 @@
     background: none;
 }
 
-/* the page behind the open dialog is inert already; this keeps it from
+/* the page behind the open dialog is inert already. This keeps it from
    scrolling away under it */
 
 body:has(dialog[open]) {

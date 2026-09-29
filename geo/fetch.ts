@@ -1,5 +1,5 @@
 // Fetches the country outlines the map is drawn from. Without arguments it
-// refreshes the theme's own file at 1:50 million; with a scale and a target it
+// refreshes the theme's own file at 1:50 million. With a scale and a target it
 // writes a finer one into a project of your own, where it wins over the theme's:
 //   node themes/fernweh/geo/fetch.ts
 //   node themes/fernweh/geo/fetch.ts 10 assets/geo/countries.json

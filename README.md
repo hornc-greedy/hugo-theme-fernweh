@@ -61,7 +61,7 @@ git submodule add https://github.com/hornc-greedy/hugo-theme-fernweh themes/fern
 
 Or **copied in**: put this repository in `themes/fernweh`.
 
-The last two want `theme: fernweh` in your configuration; the module import says
+The last two want `theme: fernweh` in your configuration. The module import says
 it already. Two more lines belong there whichever way you went, because a theme
 may not set them for you:
 
@@ -111,16 +111,16 @@ the map. What the front matter may add:
 | Key | On | What it does |
 | --- | --- | --- |
 | `title` | journey, day | |
-| `date` | journey, day | the day it happened; sets the order |
+| `date` | journey, day | the day it happened, which sets the order |
 | `until` | journey | its last day, used while the journey has no entries |
-| `cover` | journey, day | on a day the photograph that opens the entry, on a journey the one on the front page; without it a day takes its first photograph, a journey the cover of its first day |
+| `cover` | journey, day | on a day the photograph that opens the entry, on a journey the one on the front page. Without it a day takes its first photograph, a journey the cover of its first day |
 | `photos` | day | a line under a picture: `- image: photo-1.jpg` with a `caption` |
 | `description` | any | the meta description, and the text a shared link carries. Left out, a journey or a day states how many photographs it holds and when they were taken |
 | `layout` | any | `plain` for a page that is neither journey nor day, an about page or a privacy notice |
 
 ## Configuration
 
-Everything below is a default the theme brings; a value of your own wins.
+Everything below is a default the theme brings. A value of your own wins.
 
 | Param | Default | What it does |
 | --- | --- | --- |
@@ -128,7 +128,7 @@ Everything below is a default the theme brings; a value of your own wins.
 | `column` | `1280px` | width of the one column everything sits in |
 | `cover` | `200px` | edge of the square cover on the front page |
 | `dates.full`, `dates.long`, `dates.short`, `dates.day` | day, month, year | how a date reads, in Go's layout of 2 January 2006. Hugo puts the names in the language of the page, and a language may set formats of its own under its `params` |
-| `map.width` | `500px` | width of the map column; the outline derives its height |
+| `map.width` | `500px` | width of the map column, from which the outline derives its height |
 | `map.pin` | `60` | thumbnail on the map, in the overview and at full zoom |
 | `map.pinmax` | `100` | its largest, at the zoom levels in between |
 | `map.maxzoom` | `18` | how far the map lets you zoom in |
@@ -141,7 +141,7 @@ Two more places carry texts rather than values:
 
 - **`i18n/de.toml`, `i18n/en.toml`** hold every word the interface says, including
   the map credit under `map_attribution`. Another language wants a table of its
-  own beside them; a missing key falls back to the default language.
+  own beside them. A missing key falls back to the default language.
 - **`data/site.yaml`** holds the name in the header, per language. A file of your own
   replaces the theme's whole, so write down every language you serve:
 
@@ -156,7 +156,7 @@ Two more places carry texts rather than values:
 
 Headings are set in **Sora**, two weights of latin-subset `woff2` under
 `static/fonts/`, about 32 KB and no font service. Swap the files and the
-`@font-face` rules in `layouts/_partials/head.html`; everything else follows
+`@font-face` rules in `layouts/_partials/head.html`. Everything else follows
 `--font-display`.
 
 ## Map
@@ -167,7 +167,7 @@ Headings are set in **Sora**, two weights of latin-subset `woff2` under
   on their own coordinates. Which countries those are is worked out from the
   pictures. Corsica gives you the island, not the whole of France.
 - **A photograph opens where it lies.** The view comes up over the map and
-  pages through every located picture of the journey; nothing is navigated,
+  pages through every located picture of the journey. Nothing is navigated,
   and closing it leaves the map where it stood.
 - **Photographs from one spot lie in a block on the last zoom step.** Their pins
   cover each other at every zoom. Where the map ends, the thumbnails are back to
@@ -224,7 +224,7 @@ The note is all a build reads: the order of the album, the aspect ratios, the
 The theme shows what an entry names, nothing else.
 
 **You bring the uploader.** Cutting those four sizes and writing the note is a
-short script over your own storage; the theme ships none, because what it would
+short script over your own storage. The theme ships none, because what it would
 have to talk to differs with every host.
 
 ## Contributing

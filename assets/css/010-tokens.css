@@ -1,4 +1,4 @@
-/* typed so the browser checks them and calc() can rely on them; --tint stays
+/* typed so the browser checks them and calc() can rely on them. --tint stays
    untyped on purpose: that it is invalid without a picture is what makes
    --paper fall back to the plain surface. The widths and the accent come from
    the configuration through head.html, so only their type is stated here */
@@ -46,7 +46,7 @@
     --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     /* the display face is declared in head.html, beside the files it loads */
     --gutter: clamp(1rem, 4vw, 2.5rem);
-    /* drawn map tiles come light; this is what pulls them into the dark palette */
+    /* drawn map tiles come light. This is what pulls them into the dark palette */
     --tile-dark: invert(1) hue-rotate(180deg) brightness(0.86) contrast(0.9) saturate(0.7);
     --tile-filter: none;
     --sun: none;

@@ -4,7 +4,7 @@
     display: grid;
     /* minmax(0, …): a plain 1fr never shrinks below its content, and the map
            boxes carry a pixel width, and the page would refuse to narrow.
-           min(): the configured width is a cap, not a promise; on a narrow window
+           min(): the configured width is a cap, not a promise. On a narrow window
            the map gives way instead of squeezing the days into a strip */
     grid-template-columns: minmax(0, min(var(--map), 38vw)) minmax(0, 1fr);
     gap: clamp(2rem, 4vw, 3.5rem);

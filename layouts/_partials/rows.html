@@ -1,9 +1,9 @@
 {{- /* Splits pictures into rows of about equal height. The number of rows comes
-       from the total shape of the album; each row is then filled to the average
+       from the total shape of the album. Each row is then filled to the average
        of what is still unplaced, and closed where that average is nearest, so
        the last row is as full as the others instead of holding the remainder.
        Takes the pictures, the shape a row should have and the fewest pictures a
-       row may hold; returns every row with its shape. */ -}}
+       row may hold. Returns every row with its shape. */ -}}
 {{- $items := .items -}}
 {{- $least := .least -}}
 {{- $n := mul 1.0 (len $items) -}}

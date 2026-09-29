@@ -1,5 +1,5 @@
-/* the browser cross-fades between pages where it can; elsewhere nothing
-   happens and the navigation is as before */
+/* the browser cross-fades between pages where it can. Elsewhere nothing
+   happens and a page replaces the last one */
 
 @view-transition {
     navigation: auto;
@@ -31,7 +31,7 @@
 
 body {
     margin: 0;
-    /* the header scrim is a 100vw element; without this the scrollbar width
+    /* the header scrim is a 100vw element. Without this the scrollbar width
            turns into a horizontal scrollbar of its own */
     overflow-x: clip;
     overflow-wrap: break-word;

@@ -7,7 +7,7 @@
 }
 
 /* the same box and the same colour as the toggle beside it, so the two sit on
-   one line and offer the same target; the indent gives back what the tracking
+   one line and offer the same target. The indent gives back what the tracking
    adds after the last letter and would otherwise push the pair off centre */
 
 .lang {

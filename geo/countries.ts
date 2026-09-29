@@ -20,7 +20,7 @@ export interface Feature {
 export const shorten = (part: Part): Part =>
     part.map((ring) => ring.map((point) => point.map((n) => Number(n.toFixed(4)))))
 
-/** the box around a ring; geojson counts longitude first, the templates latitude */
+/** the box around a ring. GeoJSON counts longitude first, the templates latitude */
 export const bbox = (ring: Ring): Box => {
     let south = Number.POSITIVE_INFINITY
     let west = Number.POSITIVE_INFINITY
@@ -67,7 +67,7 @@ export const convert = (source: { features: Feature[] }): Outlines => ({
     type: 'FeatureCollection',
     features: source.features.flatMap((feature) => {
         // Natural Earth leaves ISO_A2 at -99 for France, Norway and a handful of
-        // disputed areas; ISO_A2_EH carries the code for the ones that have one
+        // disputed areas. ISO_A2_EH carries the code for the ones that have one
         const iso = [feature.properties.ISO_A2_EH, feature.properties.ISO_A2].find(
             (code) => code && code !== '-99'
         )
