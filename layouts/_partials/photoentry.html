@@ -1,7 +1,7 @@
 {{- /* One photo, as the pages need it: what it measures, its colour, when it
        was taken and where, and the addresses of the sizes the pages serve.
-       From the note lying beside it in the bucket, or, without one, from the
-       file itself, which Hugo cuts and reads the coordinates out of. */ -}}
+       A file beside an entry is cut and read by Hugo. A photo from a bucket
+       takes all of it from its note in the bucket. */ -}}
 {{- /* the sizes the pages serve, as the bucket names them */ -}}
 {{- $renditions := dict "small" 560 "medium" 1120 "pin" 128 "pinlarge" 440 -}}
 {{- $caption := .caption | default "" -}}
