@@ -195,13 +195,10 @@ if (grid) {
                     [85, 180],
                     [85, -180]
                 ]
-                // geojson counts longitude first, Leaflet latitude. A ring without
-                // points cannot become a hole and is left out
-                const holes: Leaflet.LatLngTuple[][] = country.geometry.coordinates.flatMap(
-                    (part) => {
-                        const ring = part[0]
-                        return ring ? [ring.map(([x, y]) => [y, x] as Leaflet.LatLngTuple)] : []
-                    }
+                // the outer ring of every part becomes a hole, turned from the
+                // longitude first of geojson to the latitude first of Leaflet
+                const holes: Leaflet.LatLngTuple[][] = country.geometry.coordinates.map((part) =>
+                    (part[0] as GeoJSON.Position[]).map(([x, y]) => [y, x] as Leaflet.LatLngTuple)
                 )
                 const mask = L.polygon([world, ...holes], {
                     fillColor: getComputedStyle(document.body).backgroundColor,
