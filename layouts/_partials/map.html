@@ -14,8 +14,5 @@
        data-pin="{{ $k.pin }}"
        data-pinmax="{{ $k.pinmax }}"></div>
   <script src="{{ "leaflet/leaflet.js" | relURL }}"></script>
-  {{ with resources.Get "js/map.ts" }}
-    {{ $built := . | js.Build (dict "minify" true "target" "es2022" "format" "esm") }}
-    <script src="{{ ($built | fingerprint).RelPermalink }}" type="module"></script>
-  {{ end }}
+  {{ partial "module.html" "js/map.ts" }}
 {{- end }}
