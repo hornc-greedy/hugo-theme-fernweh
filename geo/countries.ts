@@ -53,6 +53,15 @@ export const enclose = (boxes: Box[]): Box =>
         ]
     )
 
+/** the parts of a polygon or a multipolygon, shortened, with the box of each */
+export const parts = (geometry: Feature['geometry']): { coordinates: Part[]; boxes: Box[] } => {
+    const coordinates: Part[] =
+        geometry.type === 'Polygon'
+            ? [shorten(geometry.coordinates as Part)]
+            : (geometry.coordinates as Part[]).map(shorten)
+    return { coordinates, boxes: coordinates.map((part) => bbox(part[0] as Ring)) }
+}
+
 /** the file the map reads: one feature per country */
 export interface Outlines {
     type: 'FeatureCollection'
@@ -74,13 +83,9 @@ export const convert = (source: { features: Feature[] }): Outlines => ({
         if (!iso) {
             return []
         }
-        const coordinates: Part[] =
-            feature.geometry.type === 'Polygon'
-                ? [shorten(feature.geometry.coordinates as Part)]
-                : (feature.geometry.coordinates as Part[]).map(shorten)
         // a box per part, not only per country: the map only has to draw the parts
         // that hold a photo, and an island is ruled out by four comparisons
-        const boxes = coordinates.map((part) => bbox(part[0] as Ring))
+        const { coordinates, boxes } = parts(feature.geometry)
         return [
             {
                 type: 'Feature',
