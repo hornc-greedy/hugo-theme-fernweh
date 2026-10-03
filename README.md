@@ -112,7 +112,7 @@ the map. What the front matter may add:
 | --- | --- | --- |
 | `title` | journey, day | |
 | `date` | journey, day | the day it happened, which sets the order |
-| `until` | journey | its last day, used while the journey has no entries |
+| `until` | journey, day | on a journey its last day, used while it has no entries. On a day the last of the days one entry covers |
 | `cover` | journey, day | on a day the photograph that opens the entry, on a journey the one on the front page. Without it a day takes its first photograph, a journey the cover of its first day |
 | `photos` | day | a line under a picture: `- image: photo-1.jpg` with a `caption` |
 | `description` | any | the meta description, and the text a shared link carries. Left out, a journey or a day states how many photographs it holds and when they were taken |
@@ -128,6 +128,7 @@ Everything below is a default the theme brings. A value of your own wins.
 | `column` | `1280px` | width of the one column everything sits in |
 | `cover` | `200px` | edge of the square cover on the front page |
 | `dates.full`, `dates.long`, `dates.short`, `dates.day` | day, month, year | how a date reads, in Go's layout of 2 January 2006. Hugo puts the names in the language of the page, and a language may set formats of its own under its `params` |
+| `description` | | the meta description and the text of a shared link for a page without its own, the front page or a plain page for instance |
 | `map.width` | `500px` | width of the map column, from which the outline derives its height |
 | `map.pin` | `60` | thumbnail on the map, in the overview and at full zoom |
 | `map.pinmax` | `100` | its largest, at the zoom levels in between |
@@ -158,6 +159,10 @@ Headings are set in **Sora**, one weight of latin-subset `woff2` under
 `static/fonts/`, about 15 KB and no font service. Swap the file, its preload
 and the `@font-face` rule in `layouts/_partials/head.html`. Everything else
 follows `--font-display`.
+
+Two things are picked up when your site brings them. A menu named `footer` puts
+its links on the copyright line, an imprint or a privacy notice for instance,
+and a `static/favicon.svg` becomes the icon of the tab.
 
 ## Map
 
