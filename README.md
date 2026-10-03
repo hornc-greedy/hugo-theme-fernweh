@@ -154,10 +154,10 @@ Two more places carry texts rather than values:
     kicker: ""
   ```
 
-Headings are set in **Sora**, two weights of latin-subset `woff2` under
-`static/fonts/`, about 32 KB and no font service. Swap the files and the
-`@font-face` rules in `layouts/_partials/head.html`. Everything else follows
-`--font-display`.
+Headings are set in **Sora**, one weight of latin-subset `woff2` under
+`static/fonts/`, about 15 KB and no font service. Swap the file, its preload
+and the `@font-face` rule in `layouts/_partials/head.html`. Everything else
+follows `--font-display`.
 
 ## Map
 
