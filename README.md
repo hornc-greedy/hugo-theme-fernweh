@@ -168,9 +168,14 @@ and a `static/favicon.svg` becomes the icon of the tab.
 
 ![The map of a journey](https://raw.githubusercontent.com/hornc-greedy/hugo-theme-fernweh/main/images/map.png)
 
-- **One map per country a journey touches**, cut to the outline, the photographs
-  on their own coordinates. Which countries those are is worked out from the
-  pictures. Corsica gives you the island, not the whole of France.
+- **One map per region a journey touches**, cut to the outline, the photographs
+  on their own coordinates and the map with the most of them first. Which
+  regions those are is worked out from the pictures: an island stands apart from
+  its mainland, so Sardinia keeps a map of its own, while an island too small to
+  be told apart keeps its country around it, so Norderney sits on the map of
+  Germany. Corsica gives you the island, not the whole of France.
+- **A stopover stays small.** A map of fewer than five photographs, a flight over
+  a country or a changeover, gets a frame of its own instead of its shape.
 - **A photograph opens where it lies.** The view comes up over the map and
   pages through every located picture of the journey. Nothing is navigated,
   and closing it leaves the map where it stood.
