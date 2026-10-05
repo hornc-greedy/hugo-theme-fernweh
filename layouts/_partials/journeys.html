@@ -12,8 +12,11 @@
         {{- if not $cover }}{{ $cover = partial "cover.html" (index $days 0) }}{{ end -}}
         <a class="journey" href="{{ $journey.RelPermalink }}">
           {{- with $cover }}
+            {{- /* the square shows the middle of the picture, so a wide one is drawn
+                   wider than the square by its aspect ratio */ -}}
+            {{- $ratio := math.Max 1.0 .ar }}
             {{- /* the topmost cover is the largest contentful paint of the front page */ -}}
-            <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w" sizes="(max-width: 700px) 100vw, 50vw"
+            <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w" sizes="(max-width: 700px) calc(100vw * {{ $ratio }}), calc({{ site.Params.cover }} * {{ $ratio }})"
                  width="{{ .sw }}" height="{{ .sh }}"
                  {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
           {{- end }}
