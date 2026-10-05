@@ -12,10 +12,7 @@
   {{- $data = merge $base (dict "@type" "CollectionPage" "name" .Title "isPartOf" $blog) -}}
 {{- else if .IsPage -}}
   {{- with partial "photos.html" . -}}
-    {{- $images := slice -}}
-    {{- range . -}}
-      {{- $images = $images | append .url -}}
-    {{- end -}}
+    {{- $images := apply . "index" "." "url" -}}
     {{- $data = merge $base (dict "@type" "BlogPosting"
         "headline" $.Title "datePublished" ($.Date.Format "2006-01-02") "author" $author
         "isPartOf" $blog) -}}
