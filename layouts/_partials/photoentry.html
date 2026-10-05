@@ -10,15 +10,13 @@
   {{- $small := .Fit (printf "%dx%d" $renditions.small $renditions.small) -}}
   {{- $medium := .Fit (printf "%dx%d" $renditions.medium $renditions.medium) -}}
   {{- $entry = dict
-      "key" .Name
-      "file" .
       "url" .RelPermalink
       "caption" $caption
       "w" .Width "h" .Height
       "color" (partialCached "photocolor.html" (dict "file" .) .RelPermalink)
       "date" ""
       "small" $small.RelPermalink "sw" $small.Width "sh" $small.Height
-      "medium" $medium.RelPermalink "mw" $medium.Width "mh" $medium.Height
+      "medium" $medium.RelPermalink "mw" $medium.Width
       "pin" (.Fill (printf "%dx%d center" $renditions.pin $renditions.pin)).RelPermalink "pw" $renditions.pin
       "pinlarge" (.Fill (printf "%dx%d center" $renditions.pinlarge $renditions.pinlarge)).RelPermalink -}}
   {{- /* a camera writes the moment and the place into the file. A scan carries
@@ -42,13 +40,12 @@
     {{- $small := math.Min 1.0 (div (float $renditions.small) $longest) -}}
     {{- $medium := math.Min 1.0 (div (float $renditions.medium) $longest) -}}
     {{- $entry = merge . (dict
-        "key" $key
         "url" $url
         "caption" $caption
         "small" (printf "%s/%s-%d.webp" $sizes $key $renditions.small)
         "sw" (int (math.Round (mul .w $small))) "sh" (int (math.Round (mul .h $small)))
         "medium" (printf "%s/%s-%d.webp" $sizes $key $renditions.medium)
-        "mw" (int (math.Round (mul .w $medium))) "mh" (int (math.Round (mul .h $medium)))
+        "mw" (int (math.Round (mul .w $medium)))
         "pin" (printf "%s/%s-%d.webp" $sizes $key $renditions.pin) "pw" $renditions.pin
         "pinlarge" (printf "%s/%s-%d.webp" $sizes $key $renditions.pinlarge)) -}}
   {{- end -}}
