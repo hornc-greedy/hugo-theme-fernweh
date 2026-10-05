@@ -15,9 +15,8 @@
   {{ if os.FileExists "static/favicon.svg" }}<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">{{ end }}
   {{- /* one file per responsibility, bundled into one request. The numbers in
          the names decide the order, and with it the cascade. */ -}}
-  {{ with resources.Match "css/*.css" | resources.Concat "css/main.css" }}
-    <link rel="stylesheet" href="{{ (. | minify | fingerprint).RelPermalink }}">
-  {{ end }}
+  {{ $css := resources.Match "css/*.css" | resources.Concat "css/main.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
   {{ with site.Params.column }}<style>:root { --column: {{ . }} }</style>{{ end }}
   {{ with site.Params.cover }}<style>:root { --cover: {{ . }} }</style>{{ end }}
   {{ with site.Params.map.width }}<style>:root { --map: {{ . }} }</style>{{ end }}
@@ -34,8 +33,6 @@
   </style>
   {{ partial "opengraph.html" . }}
   {{ partial "schema.html" . }}
-  {{ with resources.Get "js/theme.ts" }}
-    {{ $built := . | js.Build (dict "minify" true "target" "es2022") }}
-    <script src="{{ ($built | fingerprint).RelPermalink }}"></script>
-  {{ end }}
+  {{ $js := resources.Get "js/theme.ts" | js.Build (dict "minify" true "target" "es2022") | fingerprint }}
+  <script src="{{ $js.RelPermalink }}"></script>
 </head>
