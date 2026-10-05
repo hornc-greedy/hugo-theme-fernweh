@@ -20,6 +20,56 @@ export interface Feature {
 export const shorten = (part: Part): Part =>
     part.map((ring) => ring.map((point) => point.map((n) => Number(n.toFixed(4)))))
 
+/** the points of a line that stray further than `tolerance` from it, Douglas-Peucker */
+const thin = (line: Ring, tolerance: number): Ring => {
+    const kept = new Set([0, line.length - 1])
+    const spans: [number, number][] = [[0, line.length - 1]]
+    for (let span = spans.pop(); span; span = spans.pop()) {
+        const [a, b] = span
+        const [x1, y1] = line[a] as [number, number]
+        const [x2, y2] = line[b] as [number, number]
+        const length = Math.hypot(x2 - x1, y2 - y1)
+        let far = -1
+        let distance = tolerance
+        for (let i = a + 1; i < b; i++) {
+            const [x, y] = line[i] as [number, number]
+            const d = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / length
+            if (d > distance) {
+                far = i
+                distance = d
+            }
+        }
+        if (far > 0) {
+            kept.add(far)
+            spans.push([a, far], [far, b])
+        }
+    }
+    return line.filter((_, i) => kept.has(i))
+}
+
+/**
+ * A ring with the points left out that stray less than `tolerance` degrees from
+ * the line through their neighbours. A closed ring ends where it starts, so it
+ * is split at the point furthest from its start and both halves are thinned.
+ */
+export const simplify = (ring: Ring, tolerance: number): Ring => {
+    const [x0, y0] = ring[0] as [number, number]
+    const away = (i: number): number => {
+        const [x, y] = ring[i] as [number, number]
+        return Math.hypot(x - x0, y - y0)
+    }
+    let far = 0
+    for (let i = 1; i < ring.length; i++) {
+        if (away(i) > away(far)) {
+            far = i
+        }
+    }
+    return [
+        ...thin(ring.slice(0, far + 1), tolerance).slice(0, -1),
+        ...thin(ring.slice(far), tolerance)
+    ]
+}
+
 /** the box around a ring. GeoJSON counts longitude first, the templates latitude */
 export const bbox = (ring: Ring): Box => {
     let south = Number.POSITIVE_INFINITY
