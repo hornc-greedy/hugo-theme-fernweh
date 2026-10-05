@@ -1,9 +1,13 @@
 /* ── Theme toggle ──────────────────────────────────────────────────────── */
 
 .controls {
+    --target: 50px;
     display: flex;
     align-items: center;
     gap: 0.1rem;
+    @media (pointer: coarse) {
+        --target: 44px;
+    }
 }
 
 /* the same box and the same colour as the toggle beside it, so the two sit on
@@ -13,8 +17,8 @@
 .lang {
     display: grid;
     place-items: center;
-    width: 50px;
-    height: 50px;
+    width: var(--target);
+    height: var(--target);
     font: 600 0.95rem / 1 var(--font-body);
     letter-spacing: 0.1em;
     text-indent: 0.1em;
@@ -24,8 +28,8 @@
 .toggle {
     display: grid;
     place-items: center;
-    width: 50px;
-    height: 50px;
+    width: var(--target);
+    height: var(--target);
     margin-inline-end: -0.8rem;
     background: none;
     border: 0;

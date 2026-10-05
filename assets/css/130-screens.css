@@ -114,8 +114,4 @@
         grid-template-columns: repeat(3, 44px);
         grid-template-rows: repeat(2, 44px);
     }
-    .toggle {
-        width: 44px;
-        height: 44px;
-    }
 }
