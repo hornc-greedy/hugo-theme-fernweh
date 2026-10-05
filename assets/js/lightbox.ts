@@ -1,5 +1,5 @@
 /** one photograph, as the view needs it */
-export interface Shot {
+interface Shot {
     href: string
     /** the cuts of the photo, so the screen decides which one it takes */
     cuts: string
