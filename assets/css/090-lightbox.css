@@ -47,6 +47,9 @@ body:has(dialog[open]) {
 
 .lightbox figure {
     margin: 0;
+    /* the whole column, otherwise the centring shrinks it to the photo still in it
+       and the script measures that */
+    width: 100%;
     display: grid;
     /* the row stands whether a caption is written or not, so every photo comes
        out the same size */
