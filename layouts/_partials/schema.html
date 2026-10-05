@@ -3,24 +3,22 @@
        with its photographs. */ -}}
 {{- $name := partial "sitetext.html" "name" -}}
 {{- $author := dict "@type" "Person" "name" $name -}}
+{{- $base := dict "@context" "https://schema.org" "url" .Permalink "inLanguage" site.Language.Locale -}}
+{{- $blog := dict "@type" "Blog" "name" $name "url" site.Home.Permalink -}}
 {{- $data := false -}}
 {{- if .IsHome -}}
-  {{- $data = dict "@context" "https://schema.org" "@type" "Blog"
-      "name" $name "url" .Permalink "inLanguage" site.Language.Locale -}}
+  {{- $data = merge $base $blog -}}
 {{- else if .IsSection -}}
-  {{- $data = dict "@context" "https://schema.org" "@type" "CollectionPage"
-      "name" .Title "url" .Permalink "inLanguage" site.Language.Locale
-      "isPartOf" (dict "@type" "Blog" "name" $name "url" site.Home.Permalink) -}}
+  {{- $data = merge $base (dict "@type" "CollectionPage" "name" .Title "isPartOf" $blog) -}}
 {{- else if .IsPage -}}
   {{- with partial "photos.html" . -}}
     {{- $images := slice -}}
     {{- range . -}}
       {{- $images = $images | append .url -}}
     {{- end -}}
-    {{- $data = dict "@context" "https://schema.org" "@type" "BlogPosting"
-        "headline" $.Title "url" $.Permalink "inLanguage" site.Language.Locale
-        "datePublished" ($.Date.Format "2006-01-02") "author" $author
-        "isPartOf" (dict "@type" "Blog" "name" $name "url" site.Home.Permalink) -}}
+    {{- $data = merge $base (dict "@type" "BlogPosting"
+        "headline" $.Title "datePublished" ($.Date.Format "2006-01-02") "author" $author
+        "isPartOf" $blog) -}}
     {{- with $images }}{{ $data = merge $data (dict "image" .) }}{{ end -}}
     {{- with or $.Description (partial "description.html" $) }}{{ $data = merge $data (dict "description" .) }}{{ end -}}
   {{- end -}}
