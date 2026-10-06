@@ -391,6 +391,7 @@ if (grid) {
                         link.append(image)
                         // out of the tab order: the album below lists every photo
                         // already, and the pins would double the stations
+                        link.tabIndex = -1
                         const marker = L.marker([photo.lat, photo.long], {
                             keyboard: false,
                             title: `${day.title}, ${photo.caption || photo.time}`,
