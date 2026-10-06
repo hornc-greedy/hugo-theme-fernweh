@@ -85,6 +85,9 @@ export const lightbox = (
 
     let current = -1
 
+    // paging runs on past either end of the album
+    const around = (i: number): number => (i + shots.length) % shots.length
+
     // the strip reuses the pictures the grid has already loaded
     const thumbs = shots.map((shot, i) => {
         const thumb = part('button')
@@ -175,13 +178,11 @@ export const lightbox = (
                     return
                 }
                 for (const n of [i - 1, i + 1]) {
-                    const neighbour = shots[n]
-                    if (neighbour) {
-                        const ahead = new Image()
-                        ahead.sizes = '100vw'
-                        ahead.srcset = neighbour.cuts
-                        ahead.src = neighbour.href
-                    }
+                    const neighbour = shots[around(n)] as Shot
+                    const ahead = new Image()
+                    ahead.sizes = '100vw'
+                    ahead.srcset = neighbour.cuts
+                    ahead.src = neighbour.href
                 }
             },
             () => undefined
@@ -206,7 +207,7 @@ export const lightbox = (
     }
 
     function step(by: number): void {
-        show((current + by + shots.length) % shots.length)
+        show(around(current + by))
     }
 
     frame.addEventListener('close', () => {
