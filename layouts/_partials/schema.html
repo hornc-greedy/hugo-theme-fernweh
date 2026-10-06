@@ -14,7 +14,7 @@
   {{- with partial "photos.html" . -}}
     {{- $data = merge $base (dict "@type" "BlogPosting"
         "headline" $.Title "datePublished" ($.Date.Format "2006-01-02") "author" $author
-        "isPartOf" $blog "image" (apply . "index" "." "url")
+        "isPartOf" $blog "image" (apply (apply . "index" "." "url") "absURL" ".")
         "description" (or $.Description (partial "description.html" $))) -}}
   {{- end -}}
 {{- end -}}

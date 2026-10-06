@@ -15,6 +15,6 @@
   {{- end -}}
 {{- end }}
 {{ with $photos }}
-  <meta property="og:image" content="{{ (index . 0).medium }}">
+  <meta property="og:image" content="{{ (index . 0).medium | absURL }}">
 {{ end }}
 <meta name="twitter:card" content="summary_large_image">
