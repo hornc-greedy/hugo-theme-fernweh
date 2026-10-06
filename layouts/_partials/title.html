@@ -1,4 +1,6 @@
-{{- /* The title of a page, on the front page the name of the journal. */ -}}
+{{- /* The title of a page, the name of the journal on the front page and the
+       translated message on the 404 page. */ -}}
 {{- $title := .Title -}}
 {{- if .IsHome }}{{ $title = partial "sitetext.html" "name" }}{{ end -}}
+{{- if eq .Kind "404" }}{{ $title = i18n "not_found" }}{{ end -}}
 {{- return $title -}}
