@@ -389,12 +389,14 @@ if (grid) {
                         image.style.background = photo.color
                         const link = document.createElement('a')
                         link.append(image)
-                        // out of the tab order: the album below lists every photo
-                        // already, and the pins would double the stations
+                        link.title = `${day.title}, ${photo.caption || photo.time}`
+                        // hidden from assistive technology and out of the tab order,
+                        // because the album below lists every photo already and the
+                        // pins would double the stations
+                        link.ariaHidden = 'true'
                         link.tabIndex = -1
                         const marker = L.marker([photo.lat, photo.long], {
                             keyboard: false,
-                            title: `${day.title}, ${photo.caption || photo.time}`,
                             // built once, because a rebuilt icon cannot be animated
                             icon: L.divIcon({
                                 html: link,
