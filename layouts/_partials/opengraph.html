@@ -6,16 +6,16 @@
 {{ with or .Description (partial "description.html" .) site.Params.description }}
   <meta property="og:description" content="{{ . }}">
 {{ end }}
-{{- /* A page without photos of its own, the front page or a journey, borrows from
-       the newest page below it with photos, so a shared link never arrives without
-       a picture. */ -}}
-{{- $photos := partial "photos.html" . -}}
-{{- if not $photos -}}
+{{- /* a shared link shows the cover of the page. A page without one, the front
+       page or a journey without a cover of its own, borrows the cover of the newest
+       page below it with one */ -}}
+{{- $cover := partial "cover.html" . -}}
+{{- if not $cover -}}
   {{- range .RegularPagesRecursive.ByDate.Reverse -}}
-    {{- with partial "photos.html" . }}{{ $photos = . }}{{ break }}{{ end -}}
+    {{- with partial "cover.html" . }}{{ $cover = . }}{{ break }}{{ end -}}
   {{- end -}}
 {{- end }}
-{{ with $photos }}
-  <meta property="og:image" content="{{ (index . 0).medium | absURL }}">
+{{ with $cover }}
+  <meta property="og:image" content="{{ .medium | absURL }}">
   <meta name="twitter:card" content="summary_large_image">
 {{ end }}
