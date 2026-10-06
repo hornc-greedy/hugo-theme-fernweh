@@ -450,10 +450,11 @@ if (grid) {
                                     Promise.resolve()
                                 )
                             })
-                            glide(overview.zoom + flyInZoom, flyDuration)
-                            map.flyTo([photo.lat, photo.long], overview.zoom + flyInZoom, {
-                                duration: flyDuration
-                            })
+                            // the overview of a small boundary already lies close to
+                            // maxZoom, and flyTo does not stop there
+                            const zoom = Math.min(overview.zoom + flyInZoom, map.getMaxZoom())
+                            glide(zoom, flyDuration)
+                            map.flyTo([photo.lat, photo.long], zoom, { duration: flyDuration })
                         })
                     }
                 }
