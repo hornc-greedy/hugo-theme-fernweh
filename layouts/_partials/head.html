@@ -3,8 +3,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f7">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101114">
-  {{- $name := partial "sitetext.html" "name" -}}
-  <title>{{ if .IsHome }}{{ $name }}{{ else }}{{ .Title }} · {{ $name }}{{ end }}</title>
+  <title>{{ partial "title.html" . }}{{ if not .IsHome }} · {{ partial "sitetext.html" "name" }}{{ end }}</title>
   {{ with or .Description (partial "description.html" .) site.Params.description }}
     <meta name="description" content="{{ . }}">
   {{ end }}

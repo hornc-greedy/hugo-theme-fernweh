@@ -1,6 +1,5 @@
-{{- $name := partial "sitetext.html" "name" -}}
-<meta property="og:site_name" content="{{ $name }}">
-<meta property="og:title" content="{{ if .IsHome }}{{ $name }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:site_name" content="{{ partial "sitetext.html" "name" }}">
+<meta property="og:title" content="{{ partial "title.html" . }}">
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
 {{ with or .Description (partial "description.html" .) site.Params.description }}

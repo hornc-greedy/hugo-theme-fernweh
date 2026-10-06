@@ -1,0 +1,4 @@
+{{- /* The title of a page, on the front page the name of the journal. */ -}}
+{{- $title := .Title -}}
+{{- if .IsHome }}{{ $title = partial "sitetext.html" "name" }}{{ end -}}
+{{- return $title -}}
