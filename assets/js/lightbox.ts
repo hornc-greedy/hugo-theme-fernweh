@@ -88,13 +88,15 @@ export const lightbox = (
     // paging runs on past either end of the album
     const around = (i: number): number => (i + shots.length) % shots.length
 
-    // the strip reuses the pictures the grid has already loaded
-    const thumbs = shots.map((shot, i) => {
+    // a thumbnail of every photo, fetched when the view opens. A closed dialog
+    // would fetch them all with the page, lazy or not
+    const pictures: HTMLImageElement[] = []
+    const thumbs = shots.map((_, i) => {
         const thumb = part('button')
         thumb.type = 'button'
         thumb.ariaLabel = `${wording.photo ?? ''} ${i + 1}`
         const picture = part('img')
-        picture.src = shot.thumb
+        pictures.push(picture)
         picture.alt = ''
         thumb.append(picture)
         thumb.addEventListener('click', () => show(i))
@@ -193,6 +195,9 @@ export const lightbox = (
     const handheld = matchMedia('(pointer: coarse)').matches
 
     async function open(i: number): Promise<void> {
+        for (const [n, picture] of pictures.entries()) {
+            picture.src = (shots[n] as Shot).thumb
+        }
         show(i)
         // before the dialog, not after: the top layer shows whoever entered it
         // last. Granted only on a gesture, so a photo opened from a link on the
