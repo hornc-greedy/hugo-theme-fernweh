@@ -20,10 +20,10 @@
                  width="{{ .sw }}" height="{{ .sh }}"
                  {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
           {{- end }}
-          <span class="journey-text">
+          <div class="journey-text">
             <span class="journey-span">{{ partial "daterange.html" $journey }}</span>
             <h2 class="journey-title">{{ $journey.Title }}</h2>
-          </span>
+          </div>
         </a>
         {{- $shown = add $shown 1 -}}
       {{- end }}
