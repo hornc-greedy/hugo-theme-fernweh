@@ -34,6 +34,10 @@
     # OpenStreetMap: data under ODbL, tiles from the OSM Foundation.
     tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
     darken = true
+    # How far a photo may lie outside a boundary, as a share of the boundary's
+    # size, for the map to draw that boundary
+    [params.map.boundary]
+      margin = 0.1
 
   # Where the pictures live. Left empty the theme takes the pictures lying
   # beside an entry and cuts the sizes itself.

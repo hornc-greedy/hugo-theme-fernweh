@@ -10,7 +10,10 @@
        map joins the smallest such map, so Sicily stays whole beside the
        mainland while Java stays off the map of Bali, and a photo off every
        coast, from a boat or a plane, joins the map whose box holds it most
-       closely.
+       closely. A map whose photos all lie within a boundary from
+       assets/geo/boundaries.json or a state of its country from
+       assets/geo/states.json, or close outside it, draws the smallest such
+       boundary instead.
 
        Each map names the cells of its photos, which is how the caller sets
        every photo on exactly one map. The answer depends on the coordinates
@@ -18,6 +21,23 @@
        for it through partialCached. */ -}}
 {{- $cells := .cells -}}
 {{- $features := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
+{{- /* the boundaries of the project and the states of every country, smallest
+       first, each with the size its margin is measured by. A state counts a
+       quarter larger than it is, so a boundary of your own wins over a state of
+       about its size. */ -}}
+{{- $boundaries := slice -}}
+{{- range $file, $weight := dict "geo/boundaries.json" 1.0 "geo/states.json" 1.25 -}}
+  {{- range (resources.Get $file | transform.Unmarshal).features -}}
+    {{- $b := .properties.box -}}
+    {{- $cos := math.Cos (mul (div (add (index $b 0) (index $b 2)) 2) 0.0174533) -}}
+    {{- $height := mul (sub (index $b 2) (index $b 0)) 111.2 -}}
+    {{- $width := mul (sub (index $b 3) (index $b 1)) 111.2 $cos -}}
+    {{- $boundaries = $boundaries | append (dict
+        "feature" . "country" (.properties.country | default "")
+        "area" (mul $height $width $weight) "size" (math.Max $height $width)) -}}
+  {{- end -}}
+{{- end -}}
+{{- $boundaries = sort $boundaries "area" -}}
 
 {{- /* ── the part each photo lies in or next to ────────────────────────── */ -}}
 {{- $matches := slice -}}
@@ -191,10 +211,45 @@
   {{- range $g.cells -}}{{- $photos = add $photos .count -}}{{- end -}}
   {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
          a second outline cannot be appended to a list that holds one already */ -}}
-  {{- $maps = $maps | append (dict
-      "geometry" (dict "type" "MultiPolygon"
-          "coordinates" (apply $drawn "index" $country.geometry.coordinates "."))
-      "keys" (apply $g.cells "index" "." "key") "photos" $photos) -}}
+  {{- $geometry := dict "type" "MultiPolygon"
+      "coordinates" (apply $drawn "index" $country.geometry.coordinates ".") -}}
+  {{- $entry := dict "keys" (apply $g.cells "index" "." "key") "photos" $photos -}}
+  {{- /* the smallest boundary that holds every photo of the map, each inside it
+         or within the margin around it. The margin grows with the boundary. It
+         has to be smaller than the land the map draws already, so a province of
+         three islands leaves the one island alone. */ -}}
+  {{- $points := slice -}}
+  {{- range $g.cells -}}{{- $points = $points | append .points -}}{{- end -}}
+  {{- $land := slice 90.0 180.0 -90.0 -180.0 -}}
+  {{- range $drawn -}}
+    {{- $pb := index $country.properties.boxes . -}}
+    {{- $land = slice (math.Min (index $land 0) (index $pb 0)) (math.Min (index $land 1) (index $pb 1))
+                      (math.Max (index $land 2) (index $pb 2)) (math.Max (index $land 3) (index $pb 3)) -}}
+  {{- end -}}
+  {{- $landArea := mul (sub (index $land 2) (index $land 0)) 111.2
+      (sub (index $land 3) (index $land 1)) 111.2
+      (math.Cos (mul (div (add (index $land 0) (index $land 2)) 2) 0.0174533)) -}}
+  {{- $held := false -}}
+  {{- $iso := $country.properties.ISO_A2 -}}
+  {{- range where (where $boundaries "country" "in" (slice "" $iso)) "area" "lt" $landArea -}}
+    {{- $boundary := .feature -}}
+    {{- $reach := mul site.Params.map.boundary.margin .size -}}
+    {{- $all := true -}}
+    {{- range $points -}}
+      {{- if not (partial "within-reach.html" (dict "lat" .lat "long" .long "boundary" $boundary "reach" $reach)) -}}
+        {{- $all = false -}}
+        {{- break -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if $all -}}
+      {{- $held = $boundary -}}
+      {{- break -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $held -}}
+    {{- $geometry = .geometry -}}
+  {{- end -}}
+  {{- $maps = $maps | append (merge $entry (dict "geometry" $geometry)) -}}
 {{- end -}}
 
 {{- $sorted := slice -}}

@@ -51,8 +51,10 @@
 {{- $cells := dict -}}
 {{- range $pins -}}
   {{- $key := printf "%.1f/%.1f" .lat .long -}}
-  {{- $cell := index $cells $key | default (dict "key" $key "lat" .lat "long" .long "count" 0) -}}
-  {{- $cells = merge $cells (dict $key (merge $cell (dict "count" (add $cell.count 1)))) -}}
+  {{- $cell := index $cells $key | default (dict "key" $key "lat" .lat "long" .long "count" 0 "points" slice) -}}
+  {{- $cells = merge $cells (dict $key (merge $cell (dict
+      "count" (add $cell.count 1)
+      "points" ($cell.points | append (dict "lat" .lat "long" .long))))) -}}
 {{- end -}}
 {{- $cellList := slice -}}
 {{- range $cells -}}{{- $cellList = $cellList | append . -}}{{- end -}}

@@ -136,6 +136,7 @@ Everything below is a default the theme brings. A value of your own wins.
 | `map.tiles` | OpenStreetMap | the tile source under the outlines |
 | `map.overlay` | | a second tile layer over the first, labels for instance |
 | `map.darken` | `true` | pull light tiles into the dark palette with a CSS filter |
+| `map.boundary.margin` | `0.1` | how far a photo may lie outside a boundary, as a share of its size, for the map to draw it |
 | `photos.origin`, `photos.sizes` | empty | take the pictures from a bucket instead |
 
 Two more places carry texts rather than values:
@@ -192,6 +193,26 @@ and a `static/favicon.svg` becomes the icon of the tab.
 
   ```sh
   node themes/fernweh/geo/fetch.ts 10 assets/geo/countries.json
+  ```
+
+- **A state takes the place of its country.** When every photograph of a map
+  lies within one state or province, or close outside it, the map shows that
+  state instead of the whole country. A state only replaces land it is smaller than, so an
+  island stays an island. The states come from Natural Earth once, into a file
+  of your own of about 8 MB, and the build needs no network afterwards:
+
+  ```sh
+  node themes/fernweh/geo/fetch.ts states assets/geo/states.json
+  ```
+
+- **A city of your own goes further.** An administrative boundary your project
+  carries, a city or a district, takes the place of its state the same way: the
+  smallest one that holds the photographs is drawn. It comes from OpenStreetMap,
+  once each, and the script names the place it found, so a search that lands on
+  another one shows at once:
+
+  ```sh
+  node themes/fernweh/geo/boundary.ts Wien assets/geo/boundaries.json
   ```
 
 - **A photo without coordinates is left off**, which is what happens to anything
