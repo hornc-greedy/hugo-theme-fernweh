@@ -19,13 +19,13 @@
             <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w" sizes="(max-width: 700px) calc(100vw * {{ $ratio }}), calc({{ site.Params.cover }} * {{ $ratio }})"
                  width="{{ .sw }}" height="{{ .sh }}"
                  {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
+            {{- $shown = add $shown 1 -}}
           {{- end }}
           <div class="journey-text">
             <span class="journey-span">{{ partial "daterange.html" $journey }}</span>
             <h2 class="journey-title">{{ $journey.Title }}</h2>
           </div>
         </a>
-        {{- $shown = add $shown 1 -}}
       {{- end }}
     {{- end }}
   </section>
