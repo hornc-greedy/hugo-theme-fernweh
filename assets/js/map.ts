@@ -607,12 +607,16 @@ if (grid) {
             }
 
             const regions: Region[] = data.maps.map((country, i) => {
-                const bounds = L.geoJSON(country.geometry).getBounds()
-                const nw = L.CRS.EPSG3857.project(bounds.getNorthWest())
-                const se = L.CRS.EPSG3857.project(bounds.getSouthEast())
                 const photos = data.days
                     .flatMap((day) => day.photos)
                     .filter((photo) => photo.mapIndex === i)
+                // a photo just outside a boundary still belongs in the frame
+                const bounds = L.geoJSON(country.geometry).getBounds()
+                for (const photo of photos) {
+                    bounds.extend([photo.lat, photo.long])
+                }
+                const nw = L.CRS.EPSG3857.project(bounds.getNorthWest())
+                const se = L.CRS.EPSG3857.project(bounds.getSouthEast())
                 return {
                     country,
                     bounds,
