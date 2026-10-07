@@ -50,4 +50,7 @@
         "pinlarge" (printf "%s/%s-%d.webp" $sizes $key $renditions.pinlarge)) -}}
   {{- end -}}
 {{- end -}}
-{{- return merge $entry (dict "ar" (div (float $entry.w) $entry.h)) -}}
+{{- return merge $entry (dict
+    "ar" (div (float $entry.w) $entry.h)
+    "srcset" (printf "%s %dw, %s %dw, %s %dw"
+        $entry.small $entry.sw $entry.medium $entry.mw $entry.url (int $entry.w))) -}}

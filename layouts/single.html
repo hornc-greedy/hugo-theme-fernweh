@@ -2,7 +2,7 @@
   {{- with partial "cover.html" . }}
     <figure class="opener">
       <img src="{{ .medium }}"
-           srcset="{{ .small }} {{ .sw }}w, {{ .medium }} {{ .mw }}w, {{ .url }} {{ .w }}w"
+           srcset="{{ .srcset }}"
            sizes="100vw" width="{{ .w }}" height="{{ .h }}"
            fetchpriority="high" decoding="async" alt="{{ .caption }}">
     </figure>
