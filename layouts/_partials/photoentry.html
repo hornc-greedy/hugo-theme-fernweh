@@ -50,7 +50,10 @@
         "pinlarge" (printf "%s/%s-%d.webp" $sizes $key $renditions.pinlarge)) -}}
   {{- end -}}
 {{- end -}}
-{{- return merge $entry (dict
-    "ar" (div (float $entry.w) $entry.h)
-    "srcset" (printf "%s %dw, %s %dw, %s %dw"
-        $entry.small $entry.sw $entry.medium $entry.mw $entry.url (int $entry.w))) -}}
+{{- /* the cuts never grow past the photo, so a cut can end up as wide as the
+       next. The srcset names every width once */ -}}
+{{- $w := int $entry.w -}}
+{{- $srcset := printf "%s %dw" $entry.small $entry.sw -}}
+{{- if gt $entry.mw $entry.sw }}{{ $srcset = printf "%s, %s %dw" $srcset $entry.medium $entry.mw }}{{ end -}}
+{{- if gt $w $entry.mw }}{{ $srcset = printf "%s, %s %dw" $srcset $entry.url $w }}{{ end -}}
+{{- return merge $entry (dict "ar" (div (float $entry.w) $entry.h) "srcset" $srcset) -}}
