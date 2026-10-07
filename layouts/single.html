@@ -13,7 +13,7 @@
   {{- $cover := partial "cover.html" . }}
   {{- $rest := slice }}
   {{- range partial "photos.html" . }}
-    {{- if or (not $cover) (ne .url $cover.url) }}{{ $rest = $rest | append . }}{{ end }}
+    {{- if ne .url $cover.url }}{{ $rest = $rest | append . }}{{ end }}
   {{- end }}
 
   <article class="day">

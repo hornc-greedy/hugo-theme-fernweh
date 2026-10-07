@@ -10,7 +10,7 @@
   {{- $n := 0 -}}
   {{- range $photo := partial "photos.html" $page -}}
     {{- $tile := -1 -}}
-    {{- if or (not $cover) (ne $photo.url $cover.url) -}}
+    {{- if ne $photo.url $cover.url -}}
       {{- $tile = $n -}}
       {{- $n = add $n 1 -}}
     {{- end -}}
