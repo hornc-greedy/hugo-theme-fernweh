@@ -4,5 +4,7 @@
 {{- if eq (dateFormat "2006-01" .from) (dateFormat "2006-01" .to) -}}
   {{ $f }}{{ dateFormat site.Params.dates.day .from }}</time>–{{ $t }}{{ dateFormat site.Params.dates.long .to }}</time>
 {{- else -}}
-  {{ $f }}{{ dateFormat site.Params.dates.short .from }}</time> – {{ $t }}{{ dateFormat site.Params.dates.long .to }}</time>
+  {{- /* the first day keeps its year where the span crosses into a new one */ -}}
+  {{- $first := cond (eq (dateFormat "2006" .from) (dateFormat "2006" .to)) site.Params.dates.short site.Params.dates.long -}}
+  {{ $f }}{{ dateFormat $first .from }}</time> – {{ $t }}{{ dateFormat site.Params.dates.long .to }}</time>
 {{- end -}}
