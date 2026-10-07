@@ -46,8 +46,7 @@
 {{- /* ── which maps, and which photo stands on which ──────────────────────
        Points are grouped into tenth-of-a-degree cells first, or every photo
        would compute the same answer again. The maps themselves are worked out
-       in their own partial: the result hangs on the coordinates alone, so both
-       languages of a journey share one computation. */ -}}
+       in their own partial, once per journey and language. */ -}}
 {{- $cells := dict -}}
 {{- range $pins -}}
   {{- $key := printf "%.1f/%.1f" .lat .long -}}
