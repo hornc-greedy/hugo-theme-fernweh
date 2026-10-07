@@ -20,10 +20,12 @@
         {{ with .Content }}<div class="day-text">{{ . }}</div>{{ end }}
       </header>
       <div class="journey-days">
-        {{- range $i, $day := .Pages.ByDate }}
+        {{- $shown := 0 -}}
+        {{- range .Pages.ByDate }}
           <a class="day-row" href="{{ .RelPermalink }}">
             {{- with partial "cover.html" . }}
-              <img src="{{ .small }}" width="{{ .sw }}" height="{{ .sh }}" {{ if $i }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} alt="">
+              <img src="{{ .small }}" width="{{ .sw }}" height="{{ .sh }}" {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} alt="">
+              {{- $shown = add $shown 1 -}}
             {{- end }}
             <div class="day-row-text">
               <span class="day-row-date">{{ partial "entrydate.html" . }}</span>
