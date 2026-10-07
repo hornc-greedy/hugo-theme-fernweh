@@ -1,8 +1,10 @@
-/* the browser cross-fades between pages where it can. Elsewhere nothing
-   happens and a page replaces the last one */
+/* the browser cross-fades between pages where it can, unless the visitor asks
+   for less motion. Elsewhere a page replaces the last one */
 
-@view-transition {
-    navigation: auto;
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
 }
 
 *,
