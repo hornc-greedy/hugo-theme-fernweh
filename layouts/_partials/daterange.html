@@ -11,13 +11,9 @@
   {{- with $last.Params.until }}{{ $to = . }}{{ end -}}
 {{- end -}}
 {{- with $to -}}
-  {{- $f := printf `<time datetime="%s">` (dateFormat "2006-01-02" $from) | safeHTML -}}
-  {{- $t := printf `<time datetime="%s">` (dateFormat "2006-01-02" .) | safeHTML -}}
   {{- if eq (dateFormat "2006-01-02" $from) (dateFormat "2006-01-02" .) -}}
     <time datetime="{{ dateFormat "2006-01-02" $from }}">{{ dateFormat site.Params.dates.long $from }}</time>
-  {{- else if eq (dateFormat "2006-01" $from) (dateFormat "2006-01" .) -}}
-    {{ $f }}{{ dateFormat site.Params.dates.day $from }}</time>–{{ $t }}{{ dateFormat site.Params.dates.long . }}</time>
   {{- else -}}
-    {{ $f }}{{ dateFormat site.Params.dates.short $from }}</time> – {{ $t }}{{ dateFormat site.Params.dates.long . }}</time>
+    {{ partial "span.html" (dict "from" $from "to" .) }}
   {{- end -}}
 {{- end -}}

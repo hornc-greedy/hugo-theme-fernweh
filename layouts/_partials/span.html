@@ -1,0 +1,8 @@
+{{- /* A span of days, from the day `from` to the day `to`. */ -}}
+{{- $f := printf `<time datetime="%s">` (dateFormat "2006-01-02" .from) | safeHTML -}}
+{{- $t := printf `<time datetime="%s">` (dateFormat "2006-01-02" .to) | safeHTML -}}
+{{- if eq (dateFormat "2006-01" .from) (dateFormat "2006-01" .to) -}}
+  {{ $f }}{{ dateFormat site.Params.dates.day .from }}</time>–{{ $t }}{{ dateFormat site.Params.dates.long .to }}</time>
+{{- else -}}
+  {{ $f }}{{ dateFormat site.Params.dates.short .from }}</time> – {{ $t }}{{ dateFormat site.Params.dates.long .to }}</time>
+{{- end -}}
