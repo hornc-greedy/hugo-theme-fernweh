@@ -1,8 +1,9 @@
 const toggle = document.getElementById('toggle') as HTMLButtonElement
 const root = document.documentElement
 
-const theme = (): string =>
-    root.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+const prefersDark = matchMedia('(prefers-color-scheme: dark)')
+
+const theme = (): string => root.dataset.theme ?? (prefersDark.matches ? 'dark' : 'light')
 
 // the header carries the wording for both directions
 const label = (): void => {
@@ -13,6 +14,7 @@ const label = (): void => {
 }
 
 label()
+prefersDark.addEventListener('change', label)
 
 toggle.addEventListener('click', () => {
     const next = theme() === 'dark' ? 'light' : 'dark'
