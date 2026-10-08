@@ -1,13 +1,13 @@
 {{- /* The photos of a day. With a bucket configured they are the selection from
        the front matter. Without one they are the pictures lying beside the
-       entry. Either way in the order they were taken. */ -}}
+       entry. A plain page has none. All in the order they were taken. */ -}}
 {{- $page := . -}}
 {{- $images := slice -}}
 {{- if site.Params.photos.origin -}}
   {{- range .Params.photos -}}
     {{- $images = $images | append (partial "photoentry.html" (dict "url" .image "caption" .caption)) -}}
   {{- end -}}
-{{- else -}}
+{{- else if ne .Layout "plain" -}}
   {{- $captions := dict -}}
   {{- range .Params.photos -}}
     {{- $captions = merge $captions (dict .image (.caption | default "")) -}}
