@@ -42,8 +42,7 @@
 
 .day-text {
     margin-block-start: clamp(2rem, 4vw, 3rem);
-    /* set in from both edges of the album, and not at all on a screen that has
-       no width to give away */
+    /* set in from both edges of the album */
     margin-inline: min(4vw, 4rem);
     border: 1px solid var(--text);
     border-radius: 2px;
