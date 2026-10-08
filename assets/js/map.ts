@@ -305,9 +305,9 @@ if (grid) {
                 }
 
                 const place = (pin: Pin, zoom = map.getZoom()): void => {
-                    // switch sources when the small one would have to be stretched
+                    // switch sources when the small one would have to be stretched on this screen
                     const source =
-                        Math.round(size(zoom)) > pin.photo.thumbwidth
+                        Math.round(size(zoom)) * devicePixelRatio > pin.photo.thumbwidth
                             ? pin.photo.large
                             : pin.photo.thumb
                     if (pin.image.getAttribute('src') !== source) {
