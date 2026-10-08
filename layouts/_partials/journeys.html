@@ -15,8 +15,10 @@
             {{- /* the square shows the middle of the picture, so a wide one is drawn
                    wider than the square by its aspect ratio */ -}}
             {{- $ratio := math.Max 1.0 .ar }}
-            {{- /* the topmost cover is the largest contentful paint of the front page */ -}}
-            <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w{{ if gt .mw .sw }}, {{ .medium }} {{ .mw }}w{{ end }}" sizes="(max-width: 700px) calc(100vw * {{ $ratio }}), calc({{ site.Params.cover }} * {{ $ratio }})"
+            {{- /* the topmost cover is the largest contentful paint of the front page.
+                   The tiles stack at 700px of the list, which inset by 9vw is a
+                   window of 853px */ -}}
+            <img src="{{ .small }}" srcset="{{ .small }} {{ .sw }}w{{ if gt .mw .sw }}, {{ .medium }} {{ .mw }}w{{ end }}" sizes="(max-width: 853px) calc(100vw * {{ $ratio }}), calc({{ site.Params.cover }} * {{ $ratio }})"
                  width="{{ .sw }}" height="{{ .sh }}"
                  {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
             {{- $shown = add $shown 1 -}}

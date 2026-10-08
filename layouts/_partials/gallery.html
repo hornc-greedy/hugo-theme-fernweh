@@ -22,9 +22,11 @@
                    aria-label="{{ with .caption }}{{ . }}{{ else }}{{ i18n "photo" }} {{ add $n 1 }}{{ end }}"
                    data-width="{{ .w }}" data-height="{{ .h }}"
                    data-caption="{{ .caption }}" style="background: {{ .color }}">
+                  {{- /* the rows fold at 600px of the gallery, which with gutters of
+                         4vw is a window of 652px */ -}}
                   <img src="{{ .small }}"
                        srcset="{{ .srcset }}"
-                       sizes="(max-width: 700px) {{ int (math.Round (mul (div .ar $part) 100)) }}vw, {{ int (math.Round (mul (div .ar $full) $span)) }}px"
+                       sizes="(max-width: 652px) {{ int (math.Round (mul (div .ar $part) 100)) }}vw, {{ int (math.Round (mul (div .ar $full) $span)) }}px"
                        width="{{ .sw }}" height="{{ .sh }}"
                        {{ if $n }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="{{ .caption }}">
                 </a>
