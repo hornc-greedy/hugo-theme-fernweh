@@ -120,18 +120,9 @@ if (grid) {
             // overview
             let active: Leaflet.Map | null = null
 
-            // measured once and without the padding clientWidth counts in, otherwise
-            // the second map is built against a width the first one changed
-            const space = (): number => {
-                const style = getComputedStyle(grid)
-                return (
-                    grid.clientWidth -
-                    parseFloat(style.paddingLeft) -
-                    parseFloat(style.paddingRight)
-                )
-            }
-
-            let available = space()
+            // measured before the maps are built, otherwise the second map is built
+            // against a width the first one changed
+            let available = grid.clientWidth
 
             const measure = (region: Region, box: HTMLElement): void => {
                 const { x, y } = region.extent
@@ -639,7 +630,7 @@ if (grid) {
             addEventListener('resize', () => {
                 clearTimeout(pending)
                 pending = setTimeout(() => {
-                    const width = space()
+                    const width = grid.clientWidth
                     if (width === available) {
                         return
                     }
