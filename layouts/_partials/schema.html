@@ -1,6 +1,6 @@
 {{- /* What search engines and messengers read instead of guessing from the
-       markup: the journal itself, a journey as a collection, a day as an entry
-       with its photographs. */ -}}
+       markup. The journal is a blog, a journey a collection and a day an entry.
+       A plain page has none. */ -}}
 {{- $name := partial "sitetext.html" "name" -}}
 {{- $author := dict "@type" "Person" "name" $name -}}
 {{- $base := dict "@context" "https://schema.org" "url" .Permalink "inLanguage" site.Language.Locale -}}
@@ -10,12 +10,15 @@
   {{- $data = merge $base $blog -}}
 {{- else if .IsSection -}}
   {{- $data = merge $base (dict "@type" "CollectionPage" "name" .Title "isPartOf" $blog) -}}
-{{- else if .IsPage -}}
+{{- else if and .IsPage (ne .Layout "plain") -}}
+  {{- $data = merge $base (dict "@type" "BlogPosting"
+      "headline" .Title "datePublished" (.Date.Format "2006-01-02") "author" $author
+      "isPartOf" $blog) -}}
   {{- with partial "photos.html" . -}}
-    {{- $data = merge $base (dict "@type" "BlogPosting"
-        "headline" $.Title "datePublished" ($.Date.Format "2006-01-02") "author" $author
-        "isPartOf" $blog "image" (apply (apply . "index" "." "url") "absURL" ".")
-        "description" (or $.Description (partial "description.html" $))) -}}
+    {{- $data = merge $data (dict "image" (apply (apply . "index" "." "url") "absURL" ".")) -}}
+  {{- end -}}
+  {{- with or .Description (partial "description.html" .) -}}
+    {{- $data = merge $data (dict "description" .) -}}
   {{- end -}}
 {{- end -}}
 {{- with $data }}
