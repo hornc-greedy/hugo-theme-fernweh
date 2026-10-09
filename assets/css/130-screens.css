@@ -39,10 +39,6 @@
     .day-row {
         grid-template-columns: 92px minmax(0, 1fr);
         gap: 1rem;
-        & img {
-            width: 92px;
-            height: 69px;
-        }
     }
     .day-row-title {
         font-size: 1.25rem;
