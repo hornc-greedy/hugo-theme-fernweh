@@ -22,7 +22,6 @@
     font: 600 0.95rem / 1 var(--font-body);
     letter-spacing: 0.1em;
     text-indent: 0.1em;
-    color: inherit;
 }
 
 .toggle {
