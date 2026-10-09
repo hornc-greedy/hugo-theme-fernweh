@@ -158,7 +158,6 @@ if (grid) {
                     // without this Leaflet snaps fitBounds down to a whole zoom level and
                     // a country can end up at half the width of the box built for it
                     zoomSnap: 0,
-                    zoomDelta: 1,
                     maxBoundsViscosity: 1,
                     maxZoom: maxzoom
                 }).setView(bounds.getCenter(), 6)
