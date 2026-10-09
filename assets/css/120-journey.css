@@ -65,6 +65,8 @@
 }
 
 .day-row-text {
+    /* beside the picture, and on a day without one in line with the others */
+    grid-column: 2;
     display: grid;
     gap: 0.25rem;
 }
