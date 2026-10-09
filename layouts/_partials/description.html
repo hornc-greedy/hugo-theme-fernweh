@@ -3,10 +3,10 @@
        without an album, so the site's own description stays the fallback. */ -}}
 {{- $count := 0 -}}
 {{- $span := "" -}}
-{{- if eq .Kind "page" -}}
+{{- if .IsPage -}}
   {{- $count = len (partial "photos.html" .) -}}
   {{- $span = partial "entrydate.html" . -}}
-{{- else if eq .Kind "section" -}}
+{{- else if .IsSection -}}
   {{- range .Pages -}}
     {{- $count = add $count (len (partial "photos.html" .)) -}}
   {{- end -}}
