@@ -82,11 +82,8 @@
 }
 
 .photo-pin img {
-    display: block;
     /* it grows and shrinks standing on its point */
     transform-origin: 50% 100%;
-    margin: 0;
-    width: var(--pin);
     height: var(--pin);
     object-fit: cover;
     border: max(1px, calc(var(--pin) / 30)) solid var(--text);
