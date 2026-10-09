@@ -24,7 +24,7 @@
         {{- range .Pages.ByDate }}
           <a class="day-row" href="{{ .RelPermalink }}">
             {{- with partial "cover.html" . }}
-              <img src="{{ .small }}" width="{{ .sw }}" height="{{ .sh }}" {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} alt="">
+              <img src="{{ .small }}" width="{{ .sw }}" height="{{ .sh }}" {{ if $shown }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="">
               {{- $shown = add $shown 1 -}}
             {{- end }}
             <div class="day-row-text">
