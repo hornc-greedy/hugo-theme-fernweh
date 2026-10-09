@@ -120,7 +120,6 @@ body:has(dialog[open]) {
         outline-offset: -2px;
     }
     & img {
-        display: block;
         width: 3rem;
         height: 3rem;
         object-fit: cover;
