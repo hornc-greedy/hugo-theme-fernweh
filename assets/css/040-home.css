@@ -63,7 +63,6 @@
 }
 
 .journey-title {
-    display: block;
     margin: 0.3rem 0 0;
     font-family: var(--font-display);
     font-weight: 700;
