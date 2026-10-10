@@ -1,7 +1,7 @@
 {{- /* The dominant colour of the covers a page shows: its own on an entry, and
        on a list the covers of the entries listed, averaged. How strongly that
-       colour is applied is settled in the stylesheet, not here. Hugo hands out
-       hex values, so the sum is worked out digit by digit. */ -}}
+       colour is applied is settled in the stylesheet, not here. The colours
+       are hex values, which int reads with 0x in front. */ -}}
 {{- $imgs := slice -}}
 {{- with partial "cover.html" . -}}
   {{- $imgs = $imgs | append . -}}
@@ -14,17 +14,15 @@
     {{- with $c -}}{{ $imgs = $imgs | append . }}{{- end -}}
   {{- end -}}
 {{- end -}}
-{{- $d := dict "0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5 "6" 6 "7" 7 "8" 8 "9" 9 "a" 10 "b" 11 "c" 12 "d" 13 "e" 14 "f" 15 -}}
 {{- $r := 0.0 -}}
 {{- $g := 0.0 -}}
 {{- $b := 0.0 -}}
 {{- $n := 0 -}}
 {{- range $imgs -}}
   {{- with .color -}}
-    {{- $s := lower (strings.TrimPrefix "#" .) -}}
-    {{- $r = add $r (add (mul 16 (index $d (substr $s 0 1))) (index $d (substr $s 1 1))) -}}
-    {{- $g = add $g (add (mul 16 (index $d (substr $s 2 1))) (index $d (substr $s 3 1))) -}}
-    {{- $b = add $b (add (mul 16 (index $d (substr $s 4 1))) (index $d (substr $s 5 1))) -}}
+    {{- $r = add $r (int (printf "0x%s" (substr . 1 2))) -}}
+    {{- $g = add $g (int (printf "0x%s" (substr . 3 2))) -}}
+    {{- $b = add $b (int (printf "0x%s" (substr . 5 2))) -}}
     {{- $n = add $n 1 -}}
   {{- end -}}
 {{- end -}}
