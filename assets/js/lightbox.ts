@@ -47,7 +47,6 @@ export const lightbox = (
     const following = knob('lightbox-next', wording.next, '›')
 
     const img = part('img')
-    img.alt = ''
     img.fetchPriority = 'high'
     const text = part('figcaption')
     const figure = part('figure')
