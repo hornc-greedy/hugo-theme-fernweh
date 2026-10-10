@@ -216,7 +216,7 @@ export const lightbox = (
 
     frame.addEventListener('close', () => {
         if (document.fullscreenElement) {
-            document.exitFullscreen()
+            void document.exitFullscreen()
         }
         closed?.(current)
     })

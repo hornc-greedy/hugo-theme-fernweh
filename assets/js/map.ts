@@ -422,7 +422,7 @@ if (grid) {
                         // in the overview a pin leads nowhere, so the photo waits
                         image.addEventListener('pointerenter', () => {
                             if (map.getZoom() > overview.zoom) {
-                                fetchPhoto()
+                                void fetchPhoto()
                             }
                         })
                         marker.on('click', (e) => {
