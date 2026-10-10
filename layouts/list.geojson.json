@@ -54,9 +54,7 @@
       "count" (add $cell.count 1)
       "points" ($cell.points | append (dict "lat" .lat "long" .long "boundary" .boundary))))) -}}
 {{- end -}}
-{{- $cellList := slice -}}
-{{- range $cells -}}{{- $cellList = $cellList | append . -}}{{- end -}}
-{{- $maps := partialCached "countries.html" (dict "cells" $cellList) .Path -}}
+{{- $maps := partialCached "countries.html" (dict "cells" $cells) .Path -}}
 
 {{- $mapIndexOf := dict -}}
 {{- range $i, $map := $maps -}}
