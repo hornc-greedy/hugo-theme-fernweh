@@ -6,7 +6,7 @@
        row may hold. Returns every row with its shape. */ -}}
 {{- $items := .items -}}
 {{- $least := .least -}}
-{{- $n := mul 1.0 (len $items) -}}
+{{- $n := len $items -}}
 {{- $sum := 0.0 -}}
 {{- range $items }}{{ $sum = add $sum .ar }}{{ end -}}
 {{- $count := math.Max 1.0 (math.Min (math.Round (div $sum .shape)) (math.Floor (div $n $least))) -}}
@@ -15,13 +15,13 @@
 {{- $acc := 0.0 -}}
 {{- $placed := 0.0 -}}
 {{- range $i, $p := $items -}}
-  {{- $open := sub $count (mul 1.0 (len $rows)) -}}
+  {{- $open := sub $count (len $rows) -}}
   {{- $after := sub $open 1.0 -}}
   {{- $target := div (sub $sum $placed) $open -}}
-  {{- $rest := sub $n (mul 1.0 $i) -}}
+  {{- $rest := sub $n $i -}}
   {{- $keep := mul $after $least -}}
   {{- $near := lt (sub $target $acc) (sub (add $acc $p.ar) $target) -}}
-  {{- if and (gt $after 0.0) (ge (mul 1.0 (len $row)) $least) (ge $rest $keep) (or $near (lt (sub $rest 1.0) $keep)) -}}
+  {{- if and (gt $after 0.0) (ge (len $row) $least) (ge $rest $keep) (or $near (lt (sub $rest 1.0) $keep)) -}}
     {{- $rows = $rows | append (dict "items" $row "sum" $acc) -}}
     {{- $placed = add $placed $acc -}}
     {{- $row = slice -}}
