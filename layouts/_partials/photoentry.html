@@ -35,7 +35,7 @@
   {{- $url := .url -}}
   {{- $sizes := site.Params.photos.sizes -}}
   {{- $key := strings.TrimSuffix ".webp" (strings.TrimPrefix (printf "%s/" site.Params.photos.origin) $url) -}}
-  {{- with partialCached "photonote.html" $key $key -}}
+  {{- with partialCached "note.html" $key $key -}}
     {{- /* the cut sizes fit the picture into a box, so a portrait comes out
            narrower than the box. The srcset has to name the width it really has */ -}}
     {{- $longest := math.Max .w .h -}}

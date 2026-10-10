@@ -215,6 +215,9 @@ and a `static/favicon.svg` becomes the icon of the tab.
   node themes/fernweh/geo/boundary.ts Wien assets/geo/boundaries.json
   ```
 
+  With photographs from a bucket each note can name its place as well, see
+  below.
+
 - **A photo without coordinates is left off**, which is what happens to anything
   routed through a photo service or a messenger.
 
@@ -254,9 +257,18 @@ The note is all a build reads: the order of the album, the aspect ratios, the
 `srcset` and the pins. No picture is fetched, and the bucket is never listed.
 The theme shows what an entry names, nothing else.
 
+A note may also name the place the photo was taken in, `"boundary":
+"boundaries/relation-62428"`, with that boundary beside the notes as
+`<boundary>.json`, one feature the way `pick` in `geo/boundaries.ts` cuts it.
+A map whose photographs all lie within one such place, or close outside it,
+draws it, a city or a village, the same way as a boundary of your own. A note
+without a place, or with `null`, names none.
+
 **You bring the uploader.** Cutting those four sizes and writing the note is a
 short script over your own storage. The theme ships none, because what it would
-have to talk to differs with every host.
+have to talk to differs with every host. Looking up the place of a photo belongs
+there too, once per place. `contains` in `geo/boundaries.ts` tells whether a
+place found before holds it.
 
 ## Contributing
 

@@ -11,9 +11,9 @@
        mainland while Java stays off the map of Bali, and a photo off every
        coast, from a boat or a plane, joins the map whose box holds it most
        closely. A map whose photos all lie within a boundary from
-       assets/geo/boundaries.json or a state of its country from
-       assets/geo/states.json, or close outside it, draws the smallest such
-       boundary instead.
+       assets/geo/boundaries.json, a state of its country from
+       assets/geo/states.json or a place their notes name, or close outside it,
+       draws the smallest such boundary instead.
 
        Each map names the cells of its photos, which is how the caller sets
        every photo on exactly one map. The answer depends on the coordinates
@@ -223,9 +223,15 @@
   {{- $landArea := mul (sub (index $land 2) (index $land 0)) 111.2
       (sub (index $land 3) (index $land 1)) 111.2
       (math.Cos (mul (div (add (index $land 0) (index $land 2)) 2) 0.0174533)) -}}
+  {{- /* besides the boundaries of the project and the states of the country,
+         the places the notes of the photos name */ -}}
+  {{- $candidates := where $boundaries "country" "in" (slice "" $country.properties.ISO_A2) -}}
+  {{- range uniq (apply (where $points "boundary" "ne" "") "index" "." "boundary") -}}
+    {{- $candidates = $candidates | append (partial "boundarysize.html"
+        (dict "feature" (partialCached "note.html" . .) "weight" 1.0)) -}}
+  {{- end -}}
   {{- $held := false -}}
-  {{- $iso := $country.properties.ISO_A2 -}}
-  {{- range where (where $boundaries "country" "in" (slice "" $iso)) "area" "lt" $landArea -}}
+  {{- range sort (where $candidates "area" "lt" $landArea) "area" -}}
     {{- $boundary := .feature -}}
     {{- $reach := mul site.Params.map.boundary.margin .size -}}
     {{- $all := true -}}

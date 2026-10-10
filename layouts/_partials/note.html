@@ -1,0 +1,16 @@
+{{- /* A note in the bucket, beside the cut sizes: the one of a photo, what it
+       measures, when it was taken and where, or a boundary such a note names.
+       One small file each and no list anywhere, so an address that nobody knows
+       stays unfindable. */ -}}
+{{- $url := printf "%s/%s.json" site.Params.photos.sizes . -}}
+{{- $note := dict -}}
+{{- with try (resources.GetRemote $url) -}}
+  {{- with .Err -}}
+    {{- errorf "note not fetched: %s" . -}}
+  {{- else with .Value -}}
+    {{- $note = . | transform.Unmarshal -}}
+  {{- else -}}
+    {{- errorf "note missing from the bucket: %s" $url -}}
+  {{- end -}}
+{{- end -}}
+{{- return $note -}}

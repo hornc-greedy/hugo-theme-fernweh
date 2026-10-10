@@ -32,7 +32,7 @@
           "time" $time
           "caption" $photo.caption
           "index" $tile) -}}
-      {{- $pins = $pins | append (dict "lat" $photo.lat "long" $photo.lon) -}}
+      {{- $pins = $pins | append (dict "lat" $photo.lat "long" $photo.lon "boundary" ($photo.boundary | default "")) -}}
     {{- end -}}
   {{- end -}}
   {{- with $photos -}}
@@ -54,7 +54,7 @@
   {{- $cell := index $cells $key | default (dict "key" $key "lat" .lat "long" .long "count" 0 "points" slice) -}}
   {{- $cells = merge $cells (dict $key (merge $cell (dict
       "count" (add $cell.count 1)
-      "points" ($cell.points | append (dict "lat" .lat "long" .long))))) -}}
+      "points" ($cell.points | append (dict "lat" .lat "long" .long "boundary" .boundary))))) -}}
 {{- end -}}
 {{- $cellList := slice -}}
 {{- range $cells -}}{{- $cellList = $cellList | append . -}}{{- end -}}
