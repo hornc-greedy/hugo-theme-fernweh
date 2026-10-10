@@ -1,7 +1,8 @@
 /* typed so the browser checks them and calc() can rely on them. --tint stays
    untyped on purpose: that it is invalid without a picture is what makes
-   --paper fall back to the plain surface. The widths and the accent come from
-   the configuration through head.html, so only their type is stated here */
+   --paper fall back to the plain surface. The column, cover and map widths
+   come from the configuration through head.html, so only their type is
+   stated here */
 
 @property --column {
     syntax: "<length>";
