@@ -45,17 +45,16 @@
     & a:hover {
         color: var(--accent);
     }
+    & span {
+        color: var(--text-muted);
+        font-family: var(--font-body);
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
 }
 
 .paging-next {
     margin-inline-start: auto;
     text-align: right;
-}
-
-.paging span {
-    color: var(--text-muted);
-    font-family: var(--font-body);
-    font-size: 0.74rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
 }
