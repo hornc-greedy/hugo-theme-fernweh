@@ -18,8 +18,8 @@ export interface Boundary {
         /** the full name Nominatim gives the place it found */
         display_name: string
         osm: string
-        box: number[]
-        boxes: number[][]
+        box: Box
+        boxes: Box[]
     }
     geometry: { type: 'MultiPolygon'; coordinates: Part[] }
 }

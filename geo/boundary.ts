@@ -34,7 +34,7 @@ if (!found) {
 }
 // the outline itself to a thousandth of its extent, half a pixel on a map 500
 // pixels wide, which keeps a state as light as a city
-const [south, west, north, east] = found.properties.box as [number, number, number, number]
+const [south, west, north, east] = found.properties.box
 const extent = Math.max(
     north - south,
     (east - west) * Math.cos((((north + south) / 2) * Math.PI) / 180)
