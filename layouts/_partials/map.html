@@ -1,19 +1,19 @@
-{{- $k := site.Params.map -}}
+{{- $map := site.Params.map -}}
 {{- with .OutputFormats.Get "geojson" }}
   <link rel="stylesheet" href="{{ "leaflet/leaflet.css" | relURL }}">
-  <div id="maps"{{ with $k.darken }} class="darken"{{ end }}
+  <div id="maps"{{ with $map.darken }} class="darken"{{ end }}
        data-source="{{ .RelPermalink }}"
-       data-tiles="{{ $k.tiles }}"
+       data-tiles="{{ $map.tiles }}"
        data-attribution="{{ i18n "map_attribution" }}"
        data-photo="{{ i18n "photo" }}" data-close="{{ i18n "close" }}"
        data-previous="{{ i18n "previous" }}" data-next="{{ i18n "next" }}"
        data-panup="{{ i18n "pan_up" }}" data-panleft="{{ i18n "pan_left" }}"
        data-pandown="{{ i18n "pan_down" }}" data-panright="{{ i18n "pan_right" }}"
        data-wholecountry="{{ i18n "whole_country" }}"
-       data-overlay="{{ $k.overlay }}"
-       data-maxzoom="{{ $k.maxzoom }}"
-       data-pin="{{ $k.pin }}"
-       data-pinmax="{{ $k.pinmax }}"></div>
+       data-overlay="{{ $map.overlay }}"
+       data-maxzoom="{{ $map.maxzoom }}"
+       data-pin="{{ $map.pin }}"
+       data-pinmax="{{ $map.pinmax }}"></div>
   <script src="{{ "leaflet/leaflet.js" | relURL }}"></script>
   {{ partial "module.html" "js/map.ts" }}
 {{- end }}
