@@ -7,10 +7,7 @@ const theme = (): string => root.dataset.theme ?? (prefersDark.matches ? 'dark' 
 
 // the header carries the wording for both directions
 const label = (): void => {
-    toggle.setAttribute(
-        'aria-label',
-        (theme() === 'dark' ? toggle.dataset.light : toggle.dataset.dark) as string
-    )
+    toggle.ariaLabel = (theme() === 'dark' ? toggle.dataset.light : toggle.dataset.dark) as string
 }
 
 label()
