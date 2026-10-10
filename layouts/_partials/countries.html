@@ -28,13 +28,7 @@
 {{- $boundaries := slice -}}
 {{- range $file, $weight := dict "geo/boundaries.json" 1.0 "geo/states.json" 1.25 -}}
   {{- range (resources.Get $file | transform.Unmarshal).features -}}
-    {{- $b := .properties.box -}}
-    {{- $cos := math.Cos (mul (div (add (index $b 0) (index $b 2)) 2) 0.0174533) -}}
-    {{- $height := mul (sub (index $b 2) (index $b 0)) 111.2 -}}
-    {{- $width := mul (sub (index $b 3) (index $b 1)) 111.2 $cos -}}
-    {{- $boundaries = $boundaries | append (dict
-        "feature" . "country" (.properties.country | default "")
-        "area" (mul $height $width $weight) "size" (math.Max $height $width)) -}}
+    {{- $boundaries = $boundaries | append (partial "boundarysize.html" (dict "feature" . "weight" $weight)) -}}
   {{- end -}}
 {{- end -}}
 {{- $boundaries = sort $boundaries "area" -}}
