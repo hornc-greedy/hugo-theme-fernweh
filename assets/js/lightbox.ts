@@ -48,6 +48,7 @@ export const lightbox = (
 
     const img = part('img')
     img.fetchPriority = 'high'
+    img.sizes = '100vw'
     const text = part('figcaption')
     const figure = part('figure')
     figure.append(img, text)
@@ -157,7 +158,6 @@ export const lightbox = (
         scale = 1
         shift = { x: 0, y: 0 }
         img.style.transform = ''
-        img.sizes = '100vw'
         img.srcset = shot.cuts
         img.src = shot.href
         img.width = shot.width
