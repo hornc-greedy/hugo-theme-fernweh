@@ -71,3 +71,11 @@ a {
     margin: 0 auto;
     padding-inline: var(--gutter);
 }
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        /* biome-ignore lint/complexity/noImportantStyles: a stated preference
+           beats every transition on the page, whatever its specificity */
+        transition-duration: 0.01ms !important;
+    }
+}
