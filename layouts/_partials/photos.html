@@ -9,7 +9,7 @@
 {{- else if ne .Layout "plain" -}}
   {{- $captions := dict -}}
   {{- range .Params.photos -}}
-    {{- $captions = merge $captions (dict .image (.caption | default "")) -}}
+    {{- $captions = merge $captions (dict .image .caption) -}}
   {{- end -}}
   {{- range .Resources.ByType "image" -}}
     {{- $images = $images | append (partial "photoentry.html"
