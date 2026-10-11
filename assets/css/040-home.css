@@ -75,19 +75,6 @@
     color: var(--accent);
 }
 
-.journey-header {
-    max-width: 44rem;
-    margin-block-end: clamp(2rem, 5vw, 3.5rem);
-    & h1 {
-        margin: 0;
-        font-family: var(--font-display);
-        font-weight: 700;
-        font-size: clamp(2.4rem, 7vw, 4.4rem);
-        line-height: 1.05;
-        letter-spacing: -0.025em;
-    }
-}
-
 @container journeys (width <= 700px) {
     .journey {
         grid-template-columns: minmax(0, 1fr);
