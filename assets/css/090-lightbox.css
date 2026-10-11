@@ -144,16 +144,18 @@ body:has(dialog[open]) {
     font-size: 2.8rem;
 }
 
-.lightbox-prev {
-    left: 0;
+.lightbox-prev,
+.lightbox-next {
     top: 50%;
     transform: translateY(-50%);
 }
 
+.lightbox-prev {
+    left: 0;
+}
+
 .lightbox-next {
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 /* not nested in the strip, that would stand before the plainer button rules */
