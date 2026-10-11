@@ -13,7 +13,8 @@
        closely. A map whose photos all lie within a boundary from
        assets/geo/boundaries.json, a state of its country from
        assets/geo/states.json or a place their notes name, or close outside it,
-       draws the smallest such boundary instead.
+       draws the smallest such boundary instead, and the country around it
+       becomes the locator beside it.
 
        Each map names the cells of its photos, which is how the caller sets
        every photo on exactly one map. The answer depends on the coordinates
@@ -247,6 +248,12 @@
     {{- end -}}
   {{- end -}}
   {{- with $held -}}
+    {{- /* the dot of the locator sits amid the photos, which on a state can lie
+           far from its middle */ -}}
+    {{- $lats := apply $points "index" "." "lat" -}}
+    {{- $longs := apply $points "index" "." "long" -}}
+    {{- $centre := slice (div (add (math.Min $lats) (math.Max $lats)) 2) (div (add (math.Min $longs) (math.Max $longs)) 2) -}}
+    {{- $entry = merge $entry (dict "locator" (dict "geometry" $geometry "code" $country.properties.ISO_A2 "name" .properties.name "centre" $centre)) -}}
     {{- $geometry = .geometry -}}
   {{- end -}}
   {{- $maps = $maps | append (merge $entry (dict "geometry" $geometry)) -}}
@@ -254,6 +261,8 @@
 
 {{- $sorted := slice -}}
 {{- range sort $maps "photos" "desc" -}}
-  {{- $sorted = $sorted | append (dict "geometry" .geometry "keys" .keys) -}}
+  {{- $shape := dict "geometry" .geometry "keys" .keys -}}
+  {{- with .locator -}}{{- $shape = merge $shape (dict "locator" .) -}}{{- end -}}
+  {{- $sorted = $sorted | append $shape -}}
 {{- end -}}
 {{- return $sorted -}}

@@ -1,6 +1,7 @@
 import type * as Leaflet from 'leaflet'
 import { headroom, heap, type PinScale, pinSize, type Spot, tipSize } from './arc.ts'
 import { lightbox } from './lightbox.ts'
+import { locator } from './locator.ts'
 
 // What the geojson template hands over
 interface Photo {
@@ -31,6 +32,14 @@ interface Day {
 
 interface Country {
     geometry: GeoJSON.MultiPolygon
+    /** the country around a boundary, drawn small beside it with the boundary's name */
+    locator?: {
+        geometry: GeoJSON.MultiPolygon
+        code: string
+        name: string
+        /** the middle of the photos of the map */
+        centre: Leaflet.LatLngTuple
+    }
 }
 
 interface MapData {
@@ -220,6 +229,10 @@ if (grid) {
                         fill: false
                     }
                 }).addTo(map)
+
+                if (country.locator) {
+                    locator(map, country.locator)
+                }
 
                 // the outline comes from a world map, fine for the shape of a country
                 // and far too coarse for a coastline at street zoom, where it would cut

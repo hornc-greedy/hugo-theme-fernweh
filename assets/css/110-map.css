@@ -102,6 +102,60 @@
     width: var(--pin);
 }
 
+/* the country a boundary lies in, small in the corner of its map, above the
+   mask and below the pins. The script gives the pane the width of the map, which
+   the drawing is measured against */
+
+.leaflet-locator-pane {
+    container-type: inline-size;
+}
+
+.leaflet-locator-pane > .locator {
+    position: absolute;
+    inset-block: 8px auto;
+    inset-inline: auto 8px;
+    display: flex;
+    align-items: start;
+    gap: 4px;
+    pointer-events: none;
+    & svg {
+        display: block;
+        /* the outline is drawn on the edge of the country, half of it outside */
+        overflow: visible;
+        inline-size: auto;
+        block-size: auto;
+        max-inline-size: clamp(64px, 22cqi, 120px);
+        max-block-size: 120px;
+    }
+    /* the name of the boundary over the code of the country, beside the
+       drawing so that neither covers the other */
+    & .label {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        gap: 2px;
+        text-align: end;
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 0.7rem;
+        font-weight: 600;
+        line-height: 1.1;
+        text-shadow: 0 0 3px var(--surface);
+        & span + span {
+            color: var(--text-muted);
+        }
+    }
+    & path {
+        fill: var(--surface-2);
+        stroke: var(--outline);
+        stroke-width: 1.5;
+        vector-effect: non-scaling-stroke;
+    }
+    & circle {
+        fill: var(--accent);
+    }
+}
+
 .darken .leaflet-tile {
     filter: var(--tile-filter);
 }

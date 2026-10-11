@@ -78,6 +78,10 @@
   {{- end -}}
 {{- end -}}
 {{- $geometries := slice -}}
-{{- range $maps -}}{{- $geometries = $geometries | append (dict "geometry" .geometry) -}}{{- end -}}
+{{- range $maps -}}
+  {{- $shape := dict "geometry" .geometry -}}
+  {{- with .locator -}}{{- $shape = merge $shape (dict "locator" .) -}}{{- end -}}
+  {{- $geometries = $geometries | append $shape -}}
+{{- end -}}
 
 {{- dict "maps" $geometries "days" $placedDays | jsonify -}}
