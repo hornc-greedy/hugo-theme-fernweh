@@ -180,11 +180,6 @@ body:has(dialog[open]) {
     touch-action: none;
 }
 
-.empty {
-    padding-block: 8rem;
-    text-align: center;
-}
-
 @media (prefers-reduced-motion: reduce) {
     * {
         /* biome-ignore lint/complexity/noImportantStyles: a stated preference

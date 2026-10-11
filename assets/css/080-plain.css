@@ -58,3 +58,8 @@
     margin-inline-start: auto;
     text-align: end;
 }
+
+.empty {
+    padding-block: 8rem;
+    text-align: center;
+}
