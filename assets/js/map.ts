@@ -212,7 +212,13 @@ if (grid) {
                 })
 
                 const outline = L.geoJSON(country.geometry, {
-                    style: { color: '#8fa6c0', weight: 1.5, fill: false }
+                    style: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue(
+                            '--outline'
+                        ),
+                        weight: 1.5,
+                        fill: false
+                    }
                 }).addTo(map)
 
                 // the outline comes from a world map, fine for the shape of a country
