@@ -498,7 +498,7 @@ if (grid) {
                         const link = (e.target as Element).closest('a')
                         // in the overview a pin carries no photo yet, and the credit
                         // under the map is a link of its own
-                        if (!(link instanceof HTMLElement) || !link.dataset.shot) {
+                        if (!link?.dataset.shot) {
                             return
                         }
                         // the address of the photo stays on the link for anyone
