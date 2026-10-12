@@ -116,7 +116,7 @@
   {{- range $g := $clusters -}}
     {{- $overlaps := false -}}
     {{- if eq $g.country $cluster.country -}}
-      {{- range $cluster.parts -}}{{- if in $g.parts . -}}{{- $overlaps = true -}}{{- end -}}{{- end -}}
+      {{- if intersect $cluster.parts $g.parts -}}{{- $overlaps = true -}}{{- end -}}
       {{- range $a := $g.cells -}}
         {{- $cosLat := math.Cos (mul $a.lat 0.0174533) -}}
         {{- range $b := $cluster.cells -}}
