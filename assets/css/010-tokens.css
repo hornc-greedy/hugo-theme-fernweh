@@ -60,8 +60,9 @@
     --paper: light-dark(oklch(from var(--tint) 0.965 0.018 h), oklch(from var(--tint) 0.2 0.028 h));
 }
 
-/* everything that differs in the dark palette, in one place, once for the system
-   setting, once for the switch, and nowhere else in this file */
+/* what light-dark() cannot carry, the tile filter and the icons, once for the
+   system setting and once for the switch. The switch also sets the
+   color-scheme that light-dark() follows */
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
