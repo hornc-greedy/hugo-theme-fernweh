@@ -37,6 +37,9 @@
     & svg {
         width: 28px;
         height: 28px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
     }
     & .sun {
         display: var(--sun);
