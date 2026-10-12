@@ -20,9 +20,10 @@
       "gold" "light-dark(#9a6a1f, #d8a367)"
       "pink" "light-dark(#d6006e, #ff5cb0)"
       "teal" "light-dark(#00968a, #00ffd5)" }}
-  <link rel="preload" href="{{ "fonts/sora-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+  {{- $font := "fonts/sora-700.woff2" | relURL }}
+  <link rel="preload" href="{{ $font }}" as="font" type="font/woff2" crossorigin>
   <style>
-    @font-face { font-family: 'Sora'; src: url('{{ "fonts/sora-700.woff2" | relURL }}') format('woff2'); font-weight: 700; font-display: swap }
+    @font-face { font-family: 'Sora'; src: url('{{ $font }}') format('woff2'); font-weight: 700; font-display: swap }
     :root {
       --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
       --column: {{ site.Params.column }};
