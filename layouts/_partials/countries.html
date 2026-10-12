@@ -151,10 +151,13 @@
   {{- $bounded = $bounded | append (merge $g (dict "box" (slice $s $w $n $e))) -}}
 {{- end -}}
 
+{{- /* the whole globe in square degrees, larger than any box */ -}}
+{{- $globe := 64800.0 -}}
+
 {{- /* a photo off every coast joins the map whose box holds it most closely */ -}}
 {{- range $cell := $unmatched -}}
   {{- $owner := -1 -}}
-  {{- $area := 64800.0 -}}
+  {{- $area := $globe -}}
   {{- range $k, $g := $bounded -}}
     {{- $gb := $g.box -}}
     {{- $size := mul (sub (index $gb 2) (index $gb 0)) (sub (index $gb 3) (index $gb 1)) -}}
@@ -186,7 +189,7 @@
       {{- /* a smaller part without a photo nearby joins the smallest box it reaches into */ -}}
       {{- $partSize := mul (sub (index $pb 2) (index $pb 0)) (sub (index $pb 3) (index $pb 1)) -}}
       {{- $owner := -1 -}}
-      {{- $area := 64800.0 -}}
+      {{- $area := $globe -}}
       {{- range $j, $o := $bounded -}}
         {{- $ob := $o.box -}}
         {{- $size := mul (sub (index $ob 2) (index $ob 0)) (sub (index $ob 3) (index $ob 1)) -}}
