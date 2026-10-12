@@ -74,7 +74,7 @@
     visibility: hidden;
 }
 
-/* A marker keeps its place while its photo steps aside, so the boxes of one
+/* a marker keeps its place while its photo steps aside, so the boxes of one
    spot lie over each other. Only the photo takes a click */
 
 .leaflet-container .leaflet-marker-icon.photo-pin {
