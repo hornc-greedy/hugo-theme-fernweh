@@ -57,7 +57,7 @@
     /* The paper a page is printed on: the hue of its own picture, the lightness
            of the palette. head.html sets --tint only where there is a picture, so
            everywhere else this stays invalid and the plain surface is used. */
-    --paper: oklch(from var(--tint) 0.965 0.018 h);
+    --paper: light-dark(oklch(from var(--tint) 0.965 0.018 h), oklch(from var(--tint) 0.2 0.028 h));
 }
 
 /* everything that differs in the dark palette, in one place, once for the system
@@ -66,7 +66,6 @@
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
         --tile-filter: var(--tile-dark);
-        --paper: oklch(from var(--tint) 0.2 0.028 h);
         --sun: block;
         --moon: none;
     }
@@ -79,7 +78,6 @@
 :root[data-theme="dark"] {
     color-scheme: dark;
     --tile-filter: var(--tile-dark);
-    --paper: oklch(from var(--tint) 0.2 0.028 h);
     --sun: block;
     --moon: none;
 }
