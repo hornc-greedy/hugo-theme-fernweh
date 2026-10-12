@@ -2,7 +2,7 @@
 
 .lightbox {
     /* a modal dialog fills the viewport itself, so the browser default of a
-           centred box with a border has to go */
+       centred box with a border has to go */
     width: 100%;
     max-width: 100%;
     /* dvh, not per cent: a phone's browser bar slides in and out over the window */
@@ -17,7 +17,7 @@
     background: #000000ee;
     opacity: 0;
     /* display and overlay are discrete: without allow-discrete the dialog would
-           appear and vanish before the fade has a chance to run */
+       appear and vanish before the fade has a chance to run */
     transition:
         opacity 0.25s,
         display 0.25s allow-discrete,
@@ -61,7 +61,7 @@ body:has(dialog[open]) {
     /* no gap, the box of the caption sits on the lower edge of the photo */
     gap: 0;
     /* a definite height all the way down, otherwise the percentage on the
-           image below has nothing to measure against */
+       image below has nothing to measure against */
     height: 100%;
     min-height: 0;
 }

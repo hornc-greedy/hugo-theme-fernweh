@@ -34,7 +34,7 @@
 body {
     margin: 0;
     /* the header scrim is a 100vw element. Without this the scrollbar width
-           turns into a horizontal scrollbar of its own */
+       turns into a horizontal scrollbar of its own */
     overflow-x: clip;
     overflow-wrap: break-word;
     background-color: var(--paper, var(--surface));

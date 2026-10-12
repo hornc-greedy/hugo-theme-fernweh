@@ -38,7 +38,7 @@
 
 .leaflet-container .leaflet-control-attribution.leaflet-control {
     /* the page colour, but see-through: the credit has to stay legible over
-           whatever tile lies under it, in both palettes */
+       whatever tile lies under it, in both palettes */
     background: color-mix(in srgb, var(--surface) 77%, transparent);
     color: var(--text-muted);
     font-size: 0.62rem;

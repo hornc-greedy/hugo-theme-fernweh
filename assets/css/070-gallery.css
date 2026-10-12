@@ -32,7 +32,7 @@
     flex-direction: column;
     margin: 0;
     /* the width a picture takes in its row follows its shape, hundredfold: a row
-           whose shares add up to less than one is left unfilled by flexbox */
+       whose shares add up to less than one is left unfilled by flexbox */
     flex-grow: calc(var(--ar) * 100);
     flex-basis: 0;
 }
