@@ -38,11 +38,9 @@
     grid-template-columns: 132px minmax(0, 1fr);
     align-items: center;
     gap: 1.4rem;
-    padding-bottom: 1.5rem;
-    border-block-end: 1px solid var(--line);
-    &:last-child {
-        border-block-end: 0;
-        padding-bottom: 0;
+    &:not(:last-child) {
+        padding-bottom: 1.5rem;
+        border-block-end: 1px solid var(--line);
     }
     & img {
         width: 100%;
