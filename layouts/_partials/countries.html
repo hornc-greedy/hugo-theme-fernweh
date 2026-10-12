@@ -232,6 +232,7 @@
         (dict "feature" (partialCached "note.html" . .) "weight" 1.0)) -}}
   {{- end -}}
   {{- $held := false -}}
+  {{- $heldReach := 0.0 -}}
   {{- range sort (where $candidates "area" "lt" $landArea) "area" -}}
     {{- $boundary := .feature -}}
     {{- $reach := mul site.Params.map.boundary.margin .size -}}
@@ -244,6 +245,7 @@
     {{- end -}}
     {{- if $all -}}
       {{- $held = $boundary -}}
+      {{- $heldReach = $reach -}}
       {{- break -}}
     {{- end -}}
   {{- end -}}
@@ -254,7 +256,32 @@
     {{- $longs := apply $points "index" "." "long" -}}
     {{- $centre := slice (div (add (math.Min $lats) (math.Max $lats)) 2) (div (add (math.Min $longs) (math.Max $longs)) 2) -}}
     {{- $entry = merge $entry (dict "locator" (dict "geometry" $geometry "code" $country.properties.ISO_A2 "name" .properties.name "centre" $centre)) -}}
-    {{- $geometry = .geometry -}}
+    {{- /* the parts of the boundary within reach of a photo, and every part no
+           further from their box than the box is large, so Neuwerk stays off the
+           map of Hamburg while Brunn stays on the map of Nuremberg */ -}}
+    {{- $boxes := .properties.boxes -}}
+    {{- $near := slice 90.0 180.0 -90.0 -180.0 -}}
+    {{- range $i, $part := .geometry.coordinates -}}
+      {{- $pb := index $boxes $i -}}
+      {{- $one := dict "geometry" (dict "coordinates" (slice $part)) "properties" (dict "boxes" (slice $pb)) -}}
+      {{- range $points -}}
+        {{- if partial "within-reach.html" (dict "lat" .lat "long" .long "boundary" $one "reach" $heldReach) -}}
+          {{- $near = slice (math.Min (index $near 0) (index $pb 0)) (math.Min (index $near 1) (index $pb 1))
+                            (math.Max (index $near 2) (index $pb 2)) (math.Max (index $near 3) (index $pb 3)) -}}
+          {{- break -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $height := sub (index $near 2) (index $near 0) -}}
+    {{- $width := sub (index $near 3) (index $near 1) -}}
+    {{- $kept := slice -}}
+    {{- range $i, $pb := $boxes -}}
+      {{- if and (le (index $pb 0) (add (index $near 2) $height)) (ge (index $pb 2) (sub (index $near 0) $height))
+                 (le (index $pb 1) (add (index $near 3) $width)) (ge (index $pb 3) (sub (index $near 1) $width)) -}}
+        {{- $kept = $kept | append $i -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $geometry = dict "type" "MultiPolygon" "coordinates" (apply $kept "index" .geometry.coordinates ".") -}}
   {{- end -}}
   {{- $maps = $maps | append (merge $entry (dict "geometry" $geometry)) -}}
 {{- end -}}
