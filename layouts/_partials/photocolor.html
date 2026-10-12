@@ -1,5 +1,3 @@
 {{- /* The dominant colour of a picture lying beside an entry, worked out once
        per photo and kept. A photo from a bucket brings its colour in its note. */ -}}
-{{- $hex := "" -}}
-{{- with .file.Colors -}}{{ $hex = (index . 0).ColorHex }}{{- end -}}
-{{- return $hex -}}
+{{- return (index .Colors 0).ColorHex -}}
