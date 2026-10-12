@@ -16,19 +16,23 @@
          the names decide the order, and with it the cascade. */ -}}
   {{ $css := resources.Match "css/*.css" | resources.Concat "css/main.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}">
-  {{ with site.Params.column }}<style>:root { --column: {{ . }} }</style>{{ end }}
-  {{ with site.Params.cover }}<style>:root { --cover: {{ . }} }</style>{{ end }}
-  {{ with site.Params.map.width }}<style>:root { --map: {{ . }} }</style>{{ end }}
-  {{ with partial "tint.html" . }}<style>:root { --tint: {{ . | safeCSS }} }</style>{{ end }}
   {{- $accents := dict
       "gold" "light-dark(#9a6a1f, #d8a367)"
       "pink" "light-dark(#d6006e, #ff5cb0)"
-      "teal" "light-dark(#00968a, #00ffd5)" -}}
-  {{- with index $accents site.Params.accent }}<style>:root { --accent: {{ . | safeCSS }} }</style>{{ end }}
+      "teal" "light-dark(#00968a, #00ffd5)" }}
   <link rel="preload" href="{{ "fonts/sora-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
   <style>
     @font-face { font-family: 'Sora'; src: url('{{ "fonts/sora-700.woff2" | relURL }}') format('woff2'); font-weight: 700; font-display: swap }
-    :root { --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif }
+    :root {
+      --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+      --column: {{ site.Params.column }};
+      --cover: {{ site.Params.cover }};
+      --map: {{ site.Params.map.width }};
+      --accent: {{ index $accents site.Params.accent | safeCSS }};
+      {{- with partial "tint.html" . }}
+      --tint: {{ . | safeCSS }};
+      {{- end }}
+    }
   </style>
   {{ partial "opengraph.html" . }}
   {{ partial "schema.html" . }}
