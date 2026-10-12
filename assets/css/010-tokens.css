@@ -1,6 +1,5 @@
 /* typed so the browser checks them and calc() can rely on them. --tint stays
-   untyped on purpose: that it is invalid without a picture is what makes
-   --paper fall back to the plain surface. The column, cover and map widths
+   untyped on purpose, see --paper below. The column, cover and map widths
    come from the configuration through head.html, so only their type is
    stated here */
 
@@ -54,9 +53,10 @@
     --tile-filter: none;
     --sun: none;
     --moon: block;
-    /* The paper a page is printed on: the hue of its own picture, the lightness
-           of the palette. head.html sets --tint only where there is a picture, so
-           everywhere else this stays invalid and the plain surface is used. */
+    /* the paper a page is printed on, the hue of its pictures in the
+       lightness of the palette. head.html sets --tint only where there is a
+       picture. Untyped, it stays invalid everywhere else, and so does this,
+       which leaves the plain surface */
     --paper: light-dark(oklch(from var(--tint) 0.965 0.018 h), oklch(from var(--tint) 0.2 0.028 h));
 }
 
