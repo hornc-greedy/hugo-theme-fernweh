@@ -3,8 +3,8 @@
     {{- $shown := 0 -}}
     {{- range $journey := .ByDate.Reverse }}
       {{- $days := $journey.Pages.ByDate -}}
-      {{- /* a journey without entries has nothing to show, and no cover to show
-             it with. It appears once its first day is published */ -}}
+      {{- /* a journey without entries has nothing to show. It appears once its
+             first day is published */ -}}
       {{- if $days }}
         {{- /* the picture of the journey, and without one the opener of its
                first day */ -}}
