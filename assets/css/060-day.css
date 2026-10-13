@@ -61,3 +61,33 @@
         margin-block-end: 0;
     }
 }
+
+/* ── Paging ───────────────────────────────────────────────────────────── */
+
+.paging {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-block-start: 5rem;
+    & a {
+        display: grid;
+        gap: 0.2rem;
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+    }
+    & a:hover {
+        color: var(--accent);
+    }
+    & span {
+        color: var(--text-muted);
+        font-family: var(--font-body);
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+}
+
+.paging-next {
+    margin-inline-start: auto;
+    text-align: end;
+}
