@@ -47,7 +47,6 @@
     border: 1px solid var(--text);
     border-radius: 2px;
     padding: clamp(1.25rem, 3vw, 2rem);
-    color: var(--text);
     font-size: 1.05rem;
     text-align: justify;
     /* justified without hyphens tears holes into German. The language of the

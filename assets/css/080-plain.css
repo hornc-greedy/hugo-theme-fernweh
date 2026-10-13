@@ -6,7 +6,6 @@
     padding-inline: var(--gutter);
     & h1 {
         margin: 0 0 1.8rem;
-        color: var(--text);
         font-family: var(--font-display);
         font-weight: 700;
         font-size: clamp(1.9rem, 4vw, 2.8rem);
@@ -15,7 +14,6 @@
     }
     & h2 {
         margin: 2.4rem 0 0.5rem;
-        color: var(--text);
         font-family: var(--font-display);
         font-weight: 700;
         font-size: 1.15rem;

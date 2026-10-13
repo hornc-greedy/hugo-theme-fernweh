@@ -5,7 +5,6 @@
 .intro {
     margin-block-start: clamp(2.5rem, 6vw, 4.5rem);
     padding-inline: clamp(var(--gutter), 9vw, 9rem);
-    color: var(--text);
     font-size: 1.05rem;
     text-wrap: pretty;
     & p {
