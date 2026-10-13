@@ -141,13 +141,11 @@ if (grid) {
                 box.style.width = `${Math.round(x * scale)}px`
             }
 
-            function build(
-                canvas: HTMLElement,
-                country: Country,
-                allDays: Day[],
-                bounds: Leaflet.LatLngBounds,
-                mapIndex: number
-            ): Leaflet.Map {
+            function build(region: Region, box: HTMLElement, index: number): Leaflet.Map {
+                const { country, bounds } = region
+                const canvas = document.createElement('div')
+                canvas.className = 'map-canvas'
+                box.append(canvas)
                 // a view has to exist before layers are added, otherwise the renderer
                 // has no bounds yet when fitBounds pulls them in
                 const map = L.map(canvas, {
@@ -369,9 +367,9 @@ if (grid) {
                     }
                 }
 
-                for (const day of allDays) {
+                for (const day of data.days) {
                     for (const photo of day.photos) {
-                        if (photo.mapIndex !== mapIndex) {
+                        if (photo.mapIndex !== index) {
                             continue
                         }
                         const image = document.createElement('img')
@@ -523,7 +521,6 @@ if (grid) {
                         map.latLngToContainerPoint([north, b.getCenter().lng]).y
                     )
                     if (room > 0) {
-                        const box = map.getContainer().parentElement as HTMLElement
                         box.style.height = `${box.offsetHeight + room}px`
                         map.invalidateSize(false)
                         map.fitBounds(b, {
@@ -609,15 +606,12 @@ if (grid) {
                 const box = document.createElement('div')
                 box.className = 'map-box'
                 measure(region, box)
-                const canvas = document.createElement('div')
-                canvas.className = 'map-canvas'
-                box.append(canvas)
                 grid.appendChild(box)
 
                 return {
                     ...region,
                     box,
-                    map: build(canvas, region.country, data.days, region.bounds, i)
+                    map: build(region, box, i)
                 }
             })
 
