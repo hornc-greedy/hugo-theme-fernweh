@@ -20,6 +20,9 @@
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--text-muted);
+    .header-over & {
+        color: rgba(255, 255, 255, 0.72);
+    }
 }
 
 .wordmark-name {
@@ -27,10 +30,6 @@
     font-weight: 700;
     font-size: clamp(1.8rem, 3.3vw, 2.8rem);
     letter-spacing: -0.03em;
-}
-
-.header-over .wordmark-kicker {
-    color: rgba(255, 255, 255, 0.72);
 }
 
 /* header and opener share one grid cell: the header lies on the image and stays
