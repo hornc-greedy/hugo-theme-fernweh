@@ -75,10 +75,9 @@
     font-weight: 700;
     font-size: 1.5rem;
     line-height: 1.15;
-}
-
-.day-row:hover .day-row-title {
-    color: var(--accent);
+    .day-row:hover & {
+        color: var(--accent);
+    }
 }
 
 .day-row-excerpt {
