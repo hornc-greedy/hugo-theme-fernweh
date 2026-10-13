@@ -4,7 +4,7 @@
   {{- $located := false -}}
   {{- range .Pages -}}
     {{- range partial "photos.html" . -}}
-      {{- if and .lat .lon -}}{{- $located = true -}}{{- end -}}
+      {{- if isset . "lat" -}}{{- $located = true -}}{{- end -}}
     {{- end -}}
   {{- end -}}
   <div class="journey-layout{{ if not $located }} no-map{{ end }}">
