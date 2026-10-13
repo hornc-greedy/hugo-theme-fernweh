@@ -15,7 +15,8 @@
 }
 
 .wordmark-kicker {
-    font: 500 0.9rem / 1 var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--text-muted);
