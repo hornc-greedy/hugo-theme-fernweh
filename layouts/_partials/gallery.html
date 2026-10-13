@@ -18,7 +18,7 @@
             {{- range .items }}
               <figure class="shot" style="--ar: {{ .ar }}">
                 <a class="tile" id="photo-{{ $n }}" href="{{ .url }}"
-                   aria-label="{{ with .caption }}{{ . }}{{ else }}{{ i18n "photo" }} {{ add $n 1 }}{{ end }}"
+                   {{- if not .caption }} aria-label="{{ i18n "photo" }} {{ add $n 1 }}"{{ end }}
                    data-width="{{ .w }}" data-height="{{ .h }}"
                    data-caption="{{ .caption }}" style="background: {{ .color }}">
                   {{- /* the rows fold at 600px of the gallery, which with gutters of
