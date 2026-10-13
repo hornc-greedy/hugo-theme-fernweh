@@ -142,7 +142,7 @@ if (grid) {
             }
 
             function build(
-                id: string,
+                canvas: HTMLElement,
                 country: Country,
                 allDays: Day[],
                 bounds: Leaflet.LatLngBounds,
@@ -150,7 +150,7 @@ if (grid) {
             ): Leaflet.Map {
                 // a view has to exist before layers are added, otherwise the renderer
                 // has no bounds yet when fitBounds pulls them in
-                const map = L.map(id, {
+                const map = L.map(canvas, {
                     zoomControl: false,
                     dragging: false,
                     keyboard: false,
@@ -609,13 +609,15 @@ if (grid) {
                 const box = document.createElement('div')
                 box.className = 'map-box'
                 measure(region, box)
-                box.innerHTML = `<div class="map-canvas" id="map-${i}"></div>`
+                const canvas = document.createElement('div')
+                canvas.className = 'map-canvas'
+                box.append(canvas)
                 grid.appendChild(box)
 
                 return {
                     ...region,
                     box,
-                    map: build(`map-${i}`, region.country, data.days, region.bounds, i)
+                    map: build(canvas, region.country, data.days, region.bounds, i)
                 }
             })
 
