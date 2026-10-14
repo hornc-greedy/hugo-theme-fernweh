@@ -48,6 +48,7 @@
     --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     /* the display face is declared in head.html, beside the files it loads */
     --gutter: clamp(1rem, 4vw, 2.5rem);
+    --ease: cubic-bezier(0.2, 0, 0.2, 1);
     /* drawn map tiles come light. This is what pulls them into the dark palette */
     --tile-dark: invert(1) hue-rotate(180deg) brightness(0.86) contrast(0.9) saturate(0.7);
     --tile-filter: none;
