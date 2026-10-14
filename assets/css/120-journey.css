@@ -86,7 +86,7 @@
 }
 
 .journey-header {
-    max-width: 44rem;
+    max-width: var(--measure);
     margin-block-end: clamp(2rem, 5vw, 3.5rem);
     & h1 {
         margin: 0;

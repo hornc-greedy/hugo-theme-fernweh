@@ -1,7 +1,7 @@
 /* ── Plain pages ───────────────────────────────────────────────────────── */
 
 .plain {
-    max-width: 44rem;
+    max-width: var(--measure);
     margin: clamp(2.5rem, 7vw, 4.5rem) auto 0;
     padding-inline: var(--gutter);
     & h1 {
