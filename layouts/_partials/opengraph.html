@@ -2,7 +2,7 @@
 <meta property="og:title" content="{{ partial "title.html" . }}">
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
-{{ with or .Description (partial "description.html" .) site.Params.description }}
+{{ with or (partial "description.html" .) site.Params.description }}
   <meta property="og:description" content="{{ . }}">
 {{ end }}
 {{- /* a shared link shows the cover of the page. A page without one, the front

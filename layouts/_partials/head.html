@@ -4,7 +4,7 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f7">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101114">
   <title>{{ partial "title.html" . }}{{ if not .IsHome }} · {{ partial "sitetext.html" "name" }}{{ end }}</title>
-  {{ with or .Description (partial "description.html" .) site.Params.description }}
+  {{ with or (partial "description.html" .) site.Params.description }}
     <meta name="description" content="{{ . }}">
   {{ end }}
   <link rel="canonical" href="{{ .Permalink }}">

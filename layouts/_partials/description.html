@@ -1,19 +1,21 @@
-{{- /* The meta description of a page that carries none of its own: how many
-       photographs the entry holds and when they were taken. Empty for a page
-       without an album, so the site's own description stays the fallback. */ -}}
-{{- $count := 0 -}}
-{{- $span := "" -}}
-{{- if .IsPage -}}
-  {{- $count = len (partial "photos.html" .) -}}
-  {{- $span = partial "entrydate.html" . -}}
-{{- else if .IsSection -}}
-  {{- range .Pages -}}
-    {{- $count = add $count (len (partial "photos.html" .)) -}}
+{{- /* The meta description of a page is its own, or else how many photographs
+       the entry holds and when they were taken. Empty for a page with neither,
+       so the site's own description stays the fallback. */ -}}
+{{- $text := .Description -}}
+{{- if not $text -}}
+  {{- $count := 0 -}}
+  {{- $span := "" -}}
+  {{- if .IsPage -}}
+    {{- $count = len (partial "photos.html" .) -}}
+    {{- $span = partial "entrydate.html" . -}}
+  {{- else if .IsSection -}}
+    {{- range .Pages -}}
+      {{- $count = add $count (len (partial "photos.html" .)) -}}
+    {{- end -}}
+    {{- $span = partial "daterange.html" . -}}
   {{- end -}}
-  {{- $span = partial "daterange.html" . -}}
-{{- end -}}
-{{- $text := "" -}}
-{{- if $count -}}
-  {{- $text = printf "%s · %s" (i18n "photographs" $count) (plainify $span | strings.TrimSpace) -}}
+  {{- if $count -}}
+    {{- $text = printf "%s · %s" (i18n "photographs" $count) (plainify $span | strings.TrimSpace) -}}
+  {{- end -}}
 {{- end -}}
 {{- return $text -}}

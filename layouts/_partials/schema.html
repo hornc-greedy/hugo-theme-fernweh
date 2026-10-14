@@ -17,7 +17,7 @@
   {{- with partial "photos.html" . -}}
     {{- $data = merge $data (dict "image" (apply (apply . "index" "." "url") "absURL" ".")) -}}
   {{- end -}}
-  {{- with or .Description (partial "description.html" .) -}}
+  {{- with partial "description.html" . -}}
     {{- $data = merge $data (dict "description" .) -}}
   {{- end -}}
 {{- end -}}
