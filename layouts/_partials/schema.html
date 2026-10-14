@@ -1,6 +1,6 @@
-{{- /* What search engines and messengers read instead of guessing from the
-       markup. The journal is a blog, a journey a collection and a day an entry.
-       A plain page has none. */ -}}
+{{- /* What search engines read instead of guessing from the markup. The journal
+       is a blog, a journey a collection and a day an entry. A plain page has
+       none. */ -}}
 {{- $name := partial "sitetext.html" "name" -}}
 {{- $author := dict "@type" "Person" "name" $name -}}
 {{- $base := dict "@context" "https://schema.org" "url" .Permalink "inLanguage" site.Language.Locale -}}
