@@ -558,13 +558,16 @@ if (grid) {
                     if (kept.steps > 0) {
                         map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
                     }
+                    follow()
+                }
+
+                // the pins, the paint and the arrows answer the zoom the map has
+                const follow = (): void => {
                     arrange()
                     shroud(map.getZoom())
                     showPan()
                 }
-
-                arrange()
-                shroud(map.getZoom())
+                follow()
 
                 // registered only now: during fitBounds the overview zoom is not known
                 // yet, and every comparison against it would be answered wrongly
@@ -575,9 +578,7 @@ if (grid) {
                     if (!out(map.getZoom()) && map.getMinZoom() < overview.zoom) {
                         floor()
                     }
-                    arrange()
-                    shroud(map.getZoom())
-                    showPan()
+                    follow()
                 })
 
                 return map
