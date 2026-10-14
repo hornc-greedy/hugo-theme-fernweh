@@ -39,7 +39,7 @@
     align-items: center;
     gap: 1.4rem;
     &:not(:last-child) {
-        padding-bottom: 1.5rem;
+        padding-block-end: 1.5rem;
         border-block-end: 1px solid var(--line);
     }
     & img {

@@ -12,7 +12,7 @@
     }
     /* inside the inset, so the line starts where the text and the tiles start */
     & > :last-child {
-        padding-bottom: clamp(2rem, 5vw, 3rem);
+        padding-block-end: clamp(2rem, 5vw, 3rem);
         border-block-end: 1px solid var(--line);
     }
 }
