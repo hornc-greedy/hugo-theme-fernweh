@@ -13,11 +13,6 @@ disableKinds = ["taxonomy", "term"]
   label = "English"
   locale = "en-GB"
   weight = 1
-  [languages.en.params.dates]
-    full = "Monday, 2 January 2006"
-    long = "2 January 2006"
-    short = "2 January"
-    day = "2"
 
 [languages.de]
   label = "Deutsch"
