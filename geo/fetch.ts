@@ -11,16 +11,18 @@ import { convert, type Feature } from './countries.ts'
 import { states } from './states.ts'
 
 const kind = process.argv[2] ?? '50'
-const what = kind === 'states' ? 'states' : 'countries'
+const { what, file, cut } =
+    kind === 'states'
+        ? { what: 'states', file: 'ne_10m_admin_1_states_provinces', cut: states }
+        : { what: 'countries', file: `ne_${kind}m_admin_0_countries`, cut: convert }
 const target: string | URL =
     process.argv[3] ?? new URL(`../assets/geo/${what}.json`, import.meta.url)
 const address = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson'
-const file = kind === 'states' ? 'ne_10m_admin_1_states_provinces' : `ne_${kind}m_admin_0_countries`
 
 console.log(`fetching Natural Earth's ${file} …`)
 const response = await fetch(`${address}/${file}.geojson`)
 const source = (await response.json()) as { features: Feature[] }
-const out = kind === 'states' ? states(source) : convert(source)
+const out = cut(source)
 await writeFile(target, JSON.stringify(out))
 const { size } = await stat(target)
 console.log(`${out.features.length} ${what}, ${(size / 1e6).toFixed(1)} MB`)
