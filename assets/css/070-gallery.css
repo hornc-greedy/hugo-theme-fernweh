@@ -6,10 +6,11 @@
    column to the edge. */
 
 .gallery {
+    --gap: 10px;
     container: gallery / inline-size;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--gap);
     max-width: var(--column);
     margin: clamp(2.5rem, 7vw, 4.5rem) auto 0;
     padding-inline: var(--gutter);
@@ -17,7 +18,7 @@
 
 .row {
     display: flex;
-    gap: 10px;
+    gap: var(--gap);
 }
 
 /* the same pictures cut finer for the phone. On the screen the wide row takes
