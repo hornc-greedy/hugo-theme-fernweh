@@ -14,7 +14,7 @@
   {{- $data = merge $base (dict "@type" "BlogPosting"
       "headline" .Title "datePublished" (dateFormat "2006-01-02" .Date) "author" $author
       "isPartOf" $blog) -}}
-  {{- with partial "photos.html" . -}}
+  {{- with partialCached "photos.html" . .Path -}}
     {{- $data = merge $data (dict "image" (apply (apply . "index" "." "url") "absURL" ".")) -}}
   {{- end -}}
   {{- with partial "description.html" . -}}

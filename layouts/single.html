@@ -12,7 +12,7 @@
 {{ define "main" }}
   {{- $cover := partial "cover.html" . }}
   {{- $rest := slice }}
-  {{- range partial "photos.html" . }}
+  {{- range partialCached "photos.html" . .Path }}
     {{- if ne .url $cover.url }}{{ $rest = $rest | append . }}{{ end }}
   {{- end }}
 

@@ -6,11 +6,11 @@
   {{- $count := 0 -}}
   {{- $span := "" -}}
   {{- if .IsPage -}}
-    {{- $count = len (partial "photos.html" .) -}}
+    {{- $count = len (partialCached "photos.html" . .Path) -}}
     {{- $span = partial "entrydate.html" . -}}
   {{- else if .IsSection -}}
     {{- range .Pages -}}
-      {{- $count = add $count (len (partial "photos.html" .)) -}}
+      {{- $count = add $count (len (partialCached "photos.html" . .Path)) -}}
     {{- end -}}
     {{- $span = partial "daterange.html" . -}}
   {{- end -}}

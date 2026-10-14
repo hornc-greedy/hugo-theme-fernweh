@@ -3,7 +3,7 @@
          column takes the whole width instead of leaving a hole. */ -}}
   {{- $located := false -}}
   {{- range .Pages -}}
-    {{- range partial "photos.html" . -}}
+    {{- range partialCached "photos.html" . .Path -}}
       {{- if isset . "lat" -}}{{- $located = true -}}{{- end -}}
     {{- end -}}
   {{- end -}}

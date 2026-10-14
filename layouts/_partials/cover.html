@@ -17,7 +17,7 @@
     {{- end -}}
   {{- end -}}
 {{- else -}}
-  {{- with partial "photos.html" . -}}
+  {{- with partialCached "photos.html" . .Path -}}
     {{- $cover = index . 0 -}}
   {{- end -}}
 {{- end -}}

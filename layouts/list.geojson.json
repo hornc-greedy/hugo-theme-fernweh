@@ -8,7 +8,7 @@
   {{- /* The album leaves the opener out, so the tiles are numbered without it.
          Counting over every photo here would point each pin at its neighbour. */ -}}
   {{- $n := 0 -}}
-  {{- range $photo := partial "photos.html" $page -}}
+  {{- range $photo := partialCached "photos.html" $page $page.Path -}}
     {{- $tile := -1 -}}
     {{- if ne $photo.url $cover.url -}}
       {{- $tile = $n -}}
