@@ -10,7 +10,6 @@
     {{- range $wide }}
       {{- $full := .sum }}
       {{- $loose := and $only (lt $full 2.2) }}
-      {{- $span := 1200.0 }}{{ if $loose }}{{ $span = mul 300.0 $full }}{{ end }}
       <div class="row{{ if $loose }} row-loose{{ end }}">
         {{- range partial "rows.html" (dict "items" .items "shape" 1.5 "least" 1.0) }}
           {{- $part := .sum }}
@@ -22,10 +21,15 @@
                    data-width="{{ .w }}" data-height="{{ .h }}"
                    data-caption="{{ .caption }}" style="background: {{ .color }}">
                   {{- /* the rows fold at 600px of the gallery, which with gutters of
-                         4vw is a window of 652px */ -}}
+                         4vw is a window of 652px. A full row is the column, or a
+                         narrower window, less its gutters of 2.5rem on either side, a
+                         loose one 300px per unit of its shape */ -}}
                   <img src="{{ .small }}"
                        srcset="{{ .srcset }}"
-                       sizes="(max-width: 652px) {{ int (math.Round (mul (div .ar $part) 100)) }}vw, {{ int (math.Round (mul (div .ar $full) $span)) }}px"
+                       sizes="(max-width: 652px) {{ int (math.Round (mul (div .ar $part) 100)) }}vw,
+                              {{- if $loose }} {{ int (math.Round (mul .ar 300.0)) }}px
+                              {{- else }}{{ $share := printf "%.4f" (div .ar $full) }} (max-width: {{ site.Params.column }}) calc((100vw - 5rem) * {{ $share }}), calc(({{ site.Params.column }} - 5rem) * {{ $share }})
+                              {{- end }}"
                        width="{{ .sw }}" height="{{ .sh }}"
                        {{ if $n }}loading="lazy"{{ else }}fetchpriority="high"{{ end }} decoding="async" alt="{{ .caption }}">
                 </a>
