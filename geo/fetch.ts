@@ -11,12 +11,22 @@ import { convert, type Feature } from './countries.ts'
 import { states } from './states.ts'
 
 const kind = process.argv[2] ?? '50'
-const { what, file, cut } =
+// unless told otherwise, the states go into the project and the countries into the theme
+const { what, file, cut, defaultTarget } =
     kind === 'states'
-        ? { what: 'states', file: 'ne_10m_admin_1_states_provinces', cut: states }
-        : { what: 'countries', file: `ne_${kind}m_admin_0_countries`, cut: convert }
-const target: string | URL =
-    process.argv[3] ?? new URL(`../assets/geo/${what}.json`, import.meta.url)
+        ? {
+              what: 'states',
+              file: 'ne_10m_admin_1_states_provinces',
+              cut: states,
+              defaultTarget: 'assets/geo/states.json'
+          }
+        : {
+              what: 'countries',
+              file: `ne_${kind}m_admin_0_countries`,
+              cut: convert,
+              defaultTarget: new URL('../assets/geo/countries.json', import.meta.url)
+          }
+const target = process.argv[3] ?? defaultTarget
 const address = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson'
 
 console.log(`fetching Natural Earth's ${file} …`)
