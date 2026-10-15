@@ -22,17 +22,16 @@
        for it through partialCached. */ -}}
 {{- $cells := .cells -}}
 {{- $features := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
-{{- /* the boundaries of the project and the states of every country, smallest
-       first, each with the size its margin is measured by. A state counts a
-       quarter larger than it is, so a boundary of your own wins over a state of
-       about its size. */ -}}
+{{- /* the boundaries of the project and the states of every country, each
+       with the size its margin is measured by. A state counts a quarter larger
+       than it is, so a boundary of your own wins over a state of about its
+       size. */ -}}
 {{- $boundaries := slice -}}
 {{- range $file, $weight := dict "geo/boundaries.json" 1.0 "geo/states.json" 1.25 -}}
   {{- range (resources.Get $file | transform.Unmarshal).features -}}
     {{- $boundaries = $boundaries | append (partial "boundarysize.html" (dict "feature" . "weight" $weight)) -}}
   {{- end -}}
 {{- end -}}
-{{- $boundaries = sort $boundaries "area" -}}
 
 {{- /* ── the part each photo lies in or next to ────────────────────────── */ -}}
 {{- $matches := slice -}}
