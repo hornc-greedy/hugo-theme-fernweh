@@ -1,0 +1,31 @@
+{{- /* The distance in squared kilometres from a point to the nearest edge of the
+       rings of a part. An edge counts its end, or the foot of the perpendicular when
+       that falls between its ends. */ -}}
+{{- $lat := .lat -}}
+{{- $long := .long -}}
+{{- $cos := math.Cos (mul $lat 0.0174533) -}}
+{{- $first := index .part 0 0 -}}
+{{- $fx := mul (sub (index $first 0) $long) 111.2 $cos -}}
+{{- $fy := mul (sub (index $first 1) $lat) 111.2 -}}
+{{- $min := add (mul $fx $fx) (mul $fy $fy) -}}
+{{- range $ring := .part -}}
+  {{- $ax := mul (sub (index $ring 0 0) $long) 111.2 $cos -}}
+  {{- $ay := mul (sub (index $ring 0 1) $lat) 111.2 -}}
+  {{- range $b := after 1 $ring -}}
+    {{- $bx := mul (sub (index $b 0) $long) 111.2 $cos -}}
+    {{- $by := mul (sub (index $b 1) $lat) 111.2 -}}
+    {{- $dx := sub $ax $bx -}}
+    {{- $dy := sub $ay $by -}}
+    {{- $lengthSquared := add (mul $dx $dx) (mul $dy $dy) -}}
+    {{- $dot := add (mul $ax $dx) (mul $ay $dy) -}}
+    {{- $d := add (mul $bx $bx) (mul $by $by) -}}
+    {{- if and (gt $dot 0) (lt $dot $lengthSquared) -}}
+      {{- $cross := sub (mul $ax $dy) (mul $ay $dx) -}}
+      {{- $d = div (mul $cross $cross) $lengthSquared -}}
+    {{- end -}}
+    {{- $min = math.Min $min $d -}}
+    {{- $ax = $bx -}}
+    {{- $ay = $by -}}
+  {{- end -}}
+{{- end -}}
+{{- return $min -}}

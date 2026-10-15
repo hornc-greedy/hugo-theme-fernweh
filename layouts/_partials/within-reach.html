@@ -1,5 +1,5 @@
 {{- /* Whether a point lies inside a boundary or no further than `reach`
-       kilometres outside it, measured to the nearest point of its rings.
+       kilometres outside it, measured to the nearest edge of its rings.
        Returns "1" or nothing. */ -}}
 {{- $lat := .lat -}}
 {{- $long := .long -}}
@@ -11,22 +11,12 @@
 {{- $held := false -}}
 {{- range $i, $part := $boundary.geometry.coordinates -}}
   {{- $pb := index $boundary.properties.boxes $i -}}
-  {{- if and (not $held) (ge $lat (sub (index $pb 0) $reachLat)) (le $lat (add (index $pb 2) $reachLat))
+  {{- if and (ge $lat (sub (index $pb 0) $reachLat)) (le $lat (add (index $pb 2) $reachLat))
              (ge $long (sub (index $pb 1) $reachLong)) (le $long (add (index $pb 3) $reachLong)) -}}
-    {{- if partial "inside-part.html" (dict "lat" $lat "long" $long "part" $part) -}}
+    {{- if or (partial "inside-part.html" (dict "lat" $lat "long" $long "part" $part))
+              (le (partial "distance-to-part.html" (dict "lat" $lat "long" $long "part" $part)) (mul $reach $reach)) -}}
       {{- $held = true -}}
-    {{- else -}}
-      {{- range $ring := $part -}}
-        {{- range $ring -}}
-          {{- $dy := mul (sub (index . 1) $lat) 111.2 -}}
-          {{- $dx := mul (sub (index . 0) $long) 111.2 $cos -}}
-          {{- if le (add (mul $dy $dy) (mul $dx $dx)) (mul $reach $reach) -}}
-            {{- $held = true -}}
-            {{- break -}}
-          {{- end -}}
-        {{- end -}}
-        {{- if $held }}{{ break }}{{ end -}}
-      {{- end -}}
+      {{- break -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}

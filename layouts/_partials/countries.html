@@ -59,21 +59,16 @@
     {{- end -}}
   {{- end -}}
   {{- if not $match -}}
-    {{- $cos := math.Cos (mul $cell.lat 0.0174533) -}}
     {{- /* squared kilometres, a degree of latitude at the most */ -}}
     {{- $minDistance := 12365.0 -}}
     {{- range $c, $country := $features -}}
       {{- range $i, $pb := $country.properties.boxes -}}
         {{- if and (ge $cell.lat (sub (index $pb 0) 1)) (le $cell.lat (add (index $pb 2) 1))
                    (ge $cell.long (sub (index $pb 1) 1)) (le $cell.long (add (index $pb 3) 1)) -}}
-          {{- range index (index $country.geometry.coordinates $i) 0 -}}
-            {{- $dy := mul (sub (index . 1) $cell.lat) 111.2 -}}
-            {{- $dx := mul (mul (sub (index . 0) $cell.long) 111.2) $cos -}}
-            {{- $d := add (mul $dx $dx) (mul $dy $dy) -}}
-            {{- if lt $d $minDistance -}}
-              {{- $minDistance = $d -}}
-              {{- $match = dict "country" $c "part" $i -}}
-            {{- end -}}
+          {{- $d := partial "distance-to-part.html" (dict "lat" $cell.lat "long" $cell.long "part" (index $country.geometry.coordinates $i)) -}}
+          {{- if lt $d $minDistance -}}
+            {{- $minDistance = $d -}}
+            {{- $match = dict "country" $c "part" $i -}}
           {{- end -}}
         {{- end -}}
       {{- end -}}
@@ -103,13 +98,8 @@
   {{- range $i, $pb := $country.properties.boxes -}}
     {{- if and $small (ne $i $containing) (ge $cell.lat (sub (index $pb 0) $radiusLat)) (le $cell.lat (add (index $pb 2) $radiusLat))
                (ge $cell.long (sub (index $pb 1) $radiusLong)) (le $cell.long (add (index $pb 3) $radiusLong)) -}}
-      {{- range index (index $country.geometry.coordinates $i) 0 -}}
-        {{- $dy := mul (sub (index . 1) $cell.lat) 111.2 -}}
-        {{- $dx := mul (mul (sub (index . 0) $cell.long) 111.2) $cos -}}
-        {{- if lt (add (mul $dx $dx) (mul $dy $dy)) 10000.0 -}}
-          {{- $parts = $parts | append $i -}}
-          {{- break -}}
-        {{- end -}}
+      {{- if lt (partial "distance-to-part.html" (dict "lat" $cell.lat "long" $cell.long "part" (index $country.geometry.coordinates $i))) 10000.0 -}}
+        {{- $parts = $parts | append $i -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
