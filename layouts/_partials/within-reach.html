@@ -1,5 +1,5 @@
 {{- /* Whether a point lies inside a boundary or no further than `reach`
-       kilometres outside it, measured to the nearest point of its outline.
+       kilometres outside it, measured to the nearest point of its rings.
        Returns "1" or nothing. */ -}}
 {{- $lat := .lat -}}
 {{- $long := .long -}}
@@ -16,13 +16,16 @@
     {{- if partial "inside-part.html" (dict "lat" $lat "long" $long "part" $part) -}}
       {{- $held = true -}}
     {{- else -}}
-      {{- range index $part 0 -}}
-        {{- $dy := mul (sub (index . 1) $lat) 111.2 -}}
-        {{- $dx := mul (sub (index . 0) $long) 111.2 $cos -}}
-        {{- if le (add (mul $dy $dy) (mul $dx $dx)) (mul $reach $reach) -}}
-          {{- $held = true -}}
-          {{- break -}}
+      {{- range $ring := $part -}}
+        {{- range $ring -}}
+          {{- $dy := mul (sub (index . 1) $lat) 111.2 -}}
+          {{- $dx := mul (sub (index . 0) $long) 111.2 $cos -}}
+          {{- if le (add (mul $dy $dy) (mul $dx $dx)) (mul $reach $reach) -}}
+            {{- $held = true -}}
+            {{- break -}}
+          {{- end -}}
         {{- end -}}
+        {{- if $held }}{{ break }}{{ end -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
