@@ -1,6 +1,6 @@
-{{- /* Ray casting counts how often a ray to the east crosses the rings of a part. An
-       odd count means the point lies inside, so a point in a hole lies outside.
-       Returns "1" or nothing. */ -}}
+{{- /* Whether a point lies inside a part. Ray casting counts how often a ray to
+       the east crosses its rings, and an odd count means inside, so a point in a
+       hole lies outside. */ -}}
 {{- $x := .long -}}
 {{- $y := .lat -}}
 {{- $inside := false -}}
@@ -19,4 +19,4 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
-{{- if $inside }}1{{ end -}}
+{{- return $inside -}}

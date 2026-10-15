@@ -1,6 +1,5 @@
 {{- /* Whether a point lies inside a boundary or no further than `reach`
-       kilometres outside it, measured to the nearest edge of its rings.
-       Returns "1" or nothing. */ -}}
+       kilometres outside it, measured to the nearest edge of its rings. */ -}}
 {{- $lat := .lat -}}
 {{- $long := .long -}}
 {{- $reach := .reach -}}
@@ -20,4 +19,4 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
-{{- if $held }}1{{ end -}}
+{{- return $held -}}
