@@ -14,6 +14,9 @@ import {
 /** about a kilometre, a pixel on the map of a state */
 const tolerance = 0.01
 
+/** a closed ring of fewer than four positions is less than a triangle */
+const drawable = (ring: Ring): boolean => ring.length >= 4
+
 /**
  * Natural Earth's states, each with the code of its country and a box per part
  * to compare a photo against. A ring that thins down to less than a triangle
@@ -32,9 +35,7 @@ export const states = (source: { features: Feature[] }): Outlines => ({
                 : (feature.geometry.coordinates as Part[])
         const coordinates = polygons.flatMap((part) => {
             const [outer, ...holes] = part.map((ring) => simplify(ring, tolerance))
-            return (outer as Ring).length >= 4
-                ? [[outer as Ring, ...holes.filter((hole) => hole.length >= 4)]]
-                : []
+            return drawable(outer as Ring) ? [[outer as Ring, ...holes.filter(drawable)]] : []
         })
         if (coordinates.length === 0) {
             return []
