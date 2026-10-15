@@ -5,8 +5,8 @@ import {
     enclose,
     type Feature,
     type Outlines,
-    type Part,
     parts,
+    polygons,
     type Ring,
     simplify
 } from './countries.ts'
@@ -29,11 +29,7 @@ export const states = (source: { features: Feature[] }): Outlines => ({
         if (country === '-1') {
             return []
         }
-        const polygons =
-            feature.geometry.type === 'Polygon'
-                ? [feature.geometry.coordinates as Part]
-                : (feature.geometry.coordinates as Part[])
-        const coordinates = polygons.flatMap((part) => {
+        const coordinates = polygons(feature.geometry).flatMap((part) => {
             const [outer, ...holes] = part.map((ring) => simplify(ring, tolerance))
             return drawable(outer as Ring) ? [[outer as Ring, ...holes.filter(drawable)]] : []
         })

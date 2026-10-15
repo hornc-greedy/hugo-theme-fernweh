@@ -103,12 +103,13 @@ export const enclose = (boxes: Box[]): Box =>
         ]
     )
 
+/** the parts of a polygon or a multipolygon, a polygon being one part */
+export const polygons = (geometry: Feature['geometry']): Part[] =>
+    geometry.type === 'Polygon' ? [geometry.coordinates as Part] : (geometry.coordinates as Part[])
+
 /** the parts of a polygon or a multipolygon, shortened, with the box of each */
 export const parts = (geometry: Feature['geometry']): { coordinates: Part[]; boxes: Box[] } => {
-    const coordinates: Part[] =
-        geometry.type === 'Polygon'
-            ? [shorten(geometry.coordinates as Part)]
-            : (geometry.coordinates as Part[]).map(shorten)
+    const coordinates = polygons(geometry).map(shorten)
     return { coordinates, boxes: coordinates.map((part) => bbox(part[0] as Ring)) }
 }
 
