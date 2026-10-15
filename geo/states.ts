@@ -23,6 +23,9 @@ export const states = (source: { features: Feature[] }): Outlines => ({
     type: 'FeatureCollection',
     features: source.features.flatMap((feature) => {
         const country = String(feature.properties.iso_a2)
+        if (country === '-1') {
+            return []
+        }
         const polygons =
             feature.geometry.type === 'Polygon'
                 ? [feature.geometry.coordinates as Part]
@@ -33,7 +36,7 @@ export const states = (source: { features: Feature[] }): Outlines => ({
                 ? [[outer as Ring, ...holes.filter((hole) => hole.length >= 4)]]
                 : []
         })
-        if (country === '-1' || coordinates.length === 0) {
+        if (coordinates.length === 0) {
             return []
         }
         const outline = parts({ type: 'MultiPolygon', coordinates })
