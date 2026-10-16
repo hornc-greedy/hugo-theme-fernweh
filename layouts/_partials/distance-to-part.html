@@ -3,7 +3,7 @@
        that falls between its ends. */ -}}
 {{- $lat := .lat -}}
 {{- $long := .long -}}
-{{- $cos := math.Cos (mul $lat 0.0174533) -}}
+{{- $cos := math.Cos (math.ToRadians $lat) -}}
 {{- $first := index .part 0 0 -}}
 {{- $fx := mul (sub (index $first 0) $long) 111.2 $cos -}}
 {{- $fy := mul (sub (index $first 1) $lat) 111.2 -}}

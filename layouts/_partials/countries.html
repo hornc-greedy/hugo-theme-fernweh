@@ -85,13 +85,13 @@
 {{- range $matches -}}
   {{- $cell := .cell -}}
   {{- $country := index $features .country -}}
-  {{- $cos := math.Cos (mul $cell.lat 0.0174533) -}}
+  {{- $cos := math.Cos (math.ToRadians $cell.lat) -}}
   {{- $radiusLat := 0.9 -}}
   {{- $radiusLong := div 0.9 $cos -}}
   {{- $containing := .part -}}
   {{- $hb := index $country.properties.boxes $containing -}}
   {{- $heightKm := mul (sub (index $hb 2) (index $hb 0)) 111.2 -}}
-  {{- $widthKm := mul (sub (index $hb 3) (index $hb 1)) 111.2 (math.Cos (mul (add (index $hb 0) (index $hb 2)) 0.0087266)) -}}
+  {{- $widthKm := mul (sub (index $hb 3) (index $hb 1)) 111.2 (math.Cos (math.ToRadians (div (add (index $hb 0) (index $hb 2)) 2))) -}}
   {{- $small := lt (math.Max $heightKm $widthKm) 40 -}}
   {{- $parts := slice $containing -}}
   {{- range $i, $pb := $country.properties.boxes -}}
@@ -109,7 +109,7 @@
     {{- if eq $g.country $cluster.country -}}
       {{- if intersect $cluster.parts $g.parts -}}{{- $overlaps = true -}}{{- end -}}
       {{- range $a := $g.cells -}}
-        {{- $cosLat := math.Cos (mul $a.lat 0.0174533) -}}
+        {{- $cosLat := math.Cos (math.ToRadians $a.lat) -}}
         {{- range $b := $cluster.cells -}}
           {{- $dy := mul (sub $b.lat $a.lat) 111.2 -}}
           {{- $dx := mul (sub $b.long $a.long) 111.2 $cosLat -}}
@@ -217,7 +217,7 @@
   {{- end -}}
   {{- $landArea := mul (sub (index $land 2) (index $land 0)) 111.2
       (sub (index $land 3) (index $land 1)) 111.2
-      (math.Cos (mul (div (add (index $land 0) (index $land 2)) 2) 0.0174533)) -}}
+      (math.Cos (math.ToRadians (div (add (index $land 0) (index $land 2)) 2))) -}}
   {{- /* besides the boundaries of the project and the states of the country,
          the places the notes of the photos name */ -}}
   {{- $candidates := where $boundaries "country" "in" (slice "" $country.properties.ISO_A2) -}}

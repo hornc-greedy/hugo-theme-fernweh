@@ -4,7 +4,7 @@
 {{- $long := .long -}}
 {{- $reach := .reach -}}
 {{- $boundary := .boundary -}}
-{{- $cos := math.Cos (mul $lat 0.0174533) -}}
+{{- $cos := math.Cos (math.ToRadians $lat) -}}
 {{- $reachLat := div $reach 111.2 -}}
 {{- $reachLong := div $reach (mul 111.2 $cos) -}}
 {{- $held := false -}}
