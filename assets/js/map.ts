@@ -51,6 +51,8 @@ interface MapData {
 
 interface Region {
     country: Country
+    /** the days with photos on this map, each holding only those */
+    days: Day[]
     bounds: Leaflet.LatLngBounds
     /** its extent in projected metres */
     extent: { x: number; y: number }
@@ -141,8 +143,8 @@ if (grid) {
                 box.style.width = `${Math.round(x * scale)}px`
             }
 
-            function build(region: Region, box: HTMLElement, index: number): Leaflet.Map {
-                const { country, bounds } = region
+            function build(region: Region, box: HTMLElement): Leaflet.Map {
+                const { country, days, bounds } = region
                 const canvas = document.createElement('div')
                 canvas.className = 'map-canvas'
                 box.append(canvas)
@@ -367,11 +369,8 @@ if (grid) {
                     }
                 }
 
-                for (const day of data.days) {
+                for (const day of days) {
                     for (const photo of day.photos) {
-                        if (photo.mapIndex !== index) {
-                            continue
-                        }
                         const image = document.createElement('img')
                         image.alt = ''
                         image.style.background = photo.color
@@ -585,9 +584,13 @@ if (grid) {
             }
 
             const regions: Region[] = data.maps.map((country, i) => {
-                const photos = data.days
-                    .flatMap((day) => day.photos)
-                    .filter((photo) => photo.mapIndex === i)
+                const days = data.days
+                    .map((day) => ({
+                        ...day,
+                        photos: day.photos.filter((photo) => photo.mapIndex === i)
+                    }))
+                    .filter((day) => day.photos.length > 0)
+                const photos = days.flatMap((day) => day.photos)
                 // a photo just outside a boundary still belongs in the frame
                 const bounds = L.geoJSON(country.geometry).getBounds()
                 for (const photo of photos) {
@@ -597,13 +600,14 @@ if (grid) {
                 const se = L.CRS.EPSG3857.project(bounds.getSouthEast())
                 return {
                     country,
+                    days,
                     bounds,
                     extent: { x: se.x - nw.x, y: nw.y - se.y },
                     secondary: photos.length < 5
                 }
             })
 
-            const shapes: Shape[] = regions.map((region, i) => {
+            const shapes: Shape[] = regions.map((region) => {
                 const box = document.createElement('div')
                 box.className = 'map-box'
                 measure(region, box)
@@ -612,7 +616,7 @@ if (grid) {
                 return {
                     ...region,
                     box,
-                    map: build(region, box, i)
+                    map: build(region, box)
                 }
             })
 
