@@ -33,22 +33,21 @@
   {{- $url := .url -}}
   {{- $sizes := site.Params.photos.sizes -}}
   {{- $key := strings.TrimSuffix ".webp" (strings.TrimPrefix (printf "%s/" site.Params.photos.origin) $url) -}}
-  {{- with partialCached "note.html" $key $key -}}
-    {{- /* the cut sizes fit the picture into a box, so a portrait comes out
-           narrower than the box. The srcset has to name the width it really has */ -}}
-    {{- $longest := math.Max .w .h -}}
-    {{- $small := math.Min 1.0 (div (float $renditions.small) $longest) -}}
-    {{- $medium := math.Min 1.0 (div (float $renditions.medium) $longest) -}}
-    {{- $entry = merge . (dict
-        "url" $url
-        "caption" $caption
-        "small" (printf "%s/%s-%d.webp" $sizes $key $renditions.small)
-        "sw" (int (math.Round (mul .w $small))) "sh" (int (math.Round (mul .h $small)))
-        "medium" (printf "%s/%s-%d.webp" $sizes $key $renditions.medium)
-        "mw" (int (math.Round (mul .w $medium)))
-        "pin" (printf "%s/%s-%d.webp" $sizes $key $renditions.pin) "pw" $renditions.pin
-        "pinlarge" (printf "%s/%s-%d.webp" $sizes $key $renditions.pinlarge)) -}}
-  {{- end -}}
+  {{- $note := partialCached "note.html" $key $key -}}
+  {{- /* the cut sizes fit the picture into a box, so a portrait comes out
+         narrower than the box. The srcset has to name the width it really has */ -}}
+  {{- $longest := math.Max $note.w $note.h -}}
+  {{- $small := math.Min 1.0 (div (float $renditions.small) $longest) -}}
+  {{- $medium := math.Min 1.0 (div (float $renditions.medium) $longest) -}}
+  {{- $entry = merge $note (dict
+      "url" $url
+      "caption" $caption
+      "small" (printf "%s/%s-%d.webp" $sizes $key $renditions.small)
+      "sw" (int (math.Round (mul $note.w $small))) "sh" (int (math.Round (mul $note.h $small)))
+      "medium" (printf "%s/%s-%d.webp" $sizes $key $renditions.medium)
+      "mw" (int (math.Round (mul $note.w $medium)))
+      "pin" (printf "%s/%s-%d.webp" $sizes $key $renditions.pin) "pw" $renditions.pin
+      "pinlarge" (printf "%s/%s-%d.webp" $sizes $key $renditions.pinlarge)) -}}
 {{- end -}}
 {{- /* the cuts never grow past the photo, so a cut can end up as wide as the
        next. The srcset names every width once */ -}}
