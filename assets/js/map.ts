@@ -2,6 +2,7 @@ import type * as Leaflet from 'leaflet'
 import { headroom, heap, type PinScale, pinSize, type Spot, tipSize } from './arc.ts'
 import { lightbox } from './lightbox.ts'
 import { locator } from './locator.ts'
+import { mask } from './mask.ts'
 
 // What the geojson template hands over
 interface Photo {
@@ -77,8 +78,6 @@ interface Pin {
 const flyDuration = 0.7
 /** how many zoom steps a tap on a pin flies in */
 const flyInZoom = 3
-/** how far the mask covers the land around a country in the overview */
-const maskOpacity = 0.7
 /** the room between a country and the edge of its frame, in pixels */
 const fitPadding = 12
 
@@ -196,39 +195,7 @@ if (grid) {
                     tiles.push(L.tileLayer(grid?.dataset.overlay, { maxZoom: maxzoom }).addTo(map))
                 }
 
-                // everything outside the country is painted over in the page colour.
-                // An even-odd polygon with the country as its holes is the mask
-                const world: Leaflet.LatLngTuple[] = [
-                    [-85, -180],
-                    [-85, 180],
-                    [85, 180],
-                    [85, -180]
-                ]
-                // the outer ring of every part becomes a hole, turned from the
-                // longitude first of geojson to the latitude first of Leaflet
-                const holes: Leaflet.LatLngTuple[][] = country.geometry.coordinates.map((part) =>
-                    (part[0] as GeoJSON.Position[]).map(([x, y]) => [y, x] as Leaflet.LatLngTuple)
-                )
-                const mask = L.polygon([world, ...holes], {
-                    fillColor: getComputedStyle(document.body).backgroundColor,
-                    fillOpacity: maskOpacity,
-                    stroke: false,
-                    interactive: false
-                }).addTo(map)
-
-                document.addEventListener('themechange', () => {
-                    mask.setStyle({ fillColor: getComputedStyle(document.body).backgroundColor })
-                })
-
-                const outline = L.geoJSON(country.geometry, {
-                    style: {
-                        color: getComputedStyle(document.documentElement).getPropertyValue(
-                            '--outline'
-                        ),
-                        weight: 1.5,
-                        fill: false
-                    }
-                }).addTo(map)
+                const showMask = mask(map, country.geometry)
 
                 if (country.locator) {
                     locator(map, country.locator)
@@ -238,9 +205,7 @@ if (grid) {
                 // and far too coarse for a coastline at street zoom, where it would cut
                 // across the land and leave pins outside it
                 const shroud = (zoom: number): void => {
-                    const shown = zoom <= overview.zoom
-                    mask.setStyle({ fillOpacity: shown ? maskOpacity : 0 })
-                    outline.setStyle({ opacity: shown ? 1 : 0 })
+                    showMask(zoom <= overview.zoom)
                 }
 
                 const overview = { center: bounds.getCenter(), zoom: 0 }
