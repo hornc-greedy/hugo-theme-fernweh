@@ -5,9 +5,8 @@
 {{- $y := .lat -}}
 {{- $inside := false -}}
 {{- range $ring := .part -}}
-  {{- $n := len $ring -}}
-  {{- range $i, $p := $ring -}}
-    {{- $q := index $ring (cond (eq $i 0) (sub $n 1) (sub $i 1)) -}}
+  {{- range $i, $p := after 1 $ring -}}
+    {{- $q := index $ring $i -}}
     {{- $xi := index $p 0 -}}
     {{- $yi := index $p 1 -}}
     {{- $xj := index $q 0 -}}
