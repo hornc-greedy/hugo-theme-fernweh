@@ -65,9 +65,9 @@ export const contains = (boundary: Boundary, lat: number, lon: number): boolean 
         // ray casting over the outer ring and its holes, an odd number of crossings to the east means inside
         let inside = false
         for (const ring of part) {
-            for (let j = 0, k = ring.length - 1; j < ring.length; k = j++) {
+            for (let j = 1; j < ring.length; j++) {
                 const [xj, yj] = ring[j] as [number, number]
-                const [xk, yk] = ring[k] as [number, number]
+                const [xk, yk] = ring[j - 1] as [number, number]
                 if (yj > lat !== yk > lat && lon < ((xk - xj) * (lat - yj)) / (yk - yj) + xj) {
                     inside = !inside
                 }
