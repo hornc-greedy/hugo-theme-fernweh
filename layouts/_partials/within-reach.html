@@ -1,12 +1,14 @@
 {{- /* Whether a point lies inside a boundary or no further than `reach`
        kilometres outside it, measured to the nearest edge of its rings. */ -}}
+{{- /* kilometres in a degree of latitude */ -}}
+{{- $km := 111.2 -}}
 {{- $lat := .lat -}}
 {{- $long := .long -}}
 {{- $reach := .reach -}}
 {{- $boundary := .boundary -}}
 {{- $cos := math.Cos (math.ToRadians $lat) -}}
-{{- $reachLat := div $reach 111.2 -}}
-{{- $reachLong := div $reach (mul 111.2 $cos) -}}
+{{- $reachLat := div $reach $km -}}
+{{- $reachLong := div $reachLat $cos -}}
 {{- $held := false -}}
 {{- range $i, $part := $boundary.geometry.coordinates -}}
   {{- $pb := index $boundary.properties.boxes $i -}}

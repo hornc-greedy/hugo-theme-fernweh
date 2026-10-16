@@ -20,6 +20,8 @@
        every photo on exactly one map. The answer depends on the coordinates
        alone and not on the language of the page, which is why the caller asks
        for it through partialCached. */ -}}
+{{- /* kilometres in a degree of latitude */ -}}
+{{- $km := 111.2 -}}
 {{- $cells := .cells -}}
 {{- $features := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
 {{- /* the boundaries of the project and the states of every country, each
@@ -59,7 +61,7 @@
   {{- end -}}
   {{- if not $match -}}
     {{- /* squared kilometres, a degree of latitude at the most */ -}}
-    {{- $minDistance := 12365.0 -}}
+    {{- $minDistance := mul $km $km -}}
     {{- range $c, $country := $features -}}
       {{- range $i, $pb := $country.properties.boxes -}}
         {{- if and (ge $cell.lat (sub (index $pb 0) 1)) (le $cell.lat (add (index $pb 2) 1))
@@ -90,8 +92,8 @@
   {{- $radiusLong := div 0.9 $cos -}}
   {{- $containing := .part -}}
   {{- $hb := index $country.properties.boxes $containing -}}
-  {{- $heightKm := mul (sub (index $hb 2) (index $hb 0)) 111.2 -}}
-  {{- $widthKm := mul (sub (index $hb 3) (index $hb 1)) 111.2 (math.Cos (math.ToRadians (div (add (index $hb 0) (index $hb 2)) 2))) -}}
+  {{- $heightKm := mul (sub (index $hb 2) (index $hb 0)) $km -}}
+  {{- $widthKm := mul (sub (index $hb 3) (index $hb 1)) $km (math.Cos (math.ToRadians (div (add (index $hb 0) (index $hb 2)) 2))) -}}
   {{- $small := lt (math.Max $heightKm $widthKm) 40 -}}
   {{- $parts := slice $containing -}}
   {{- range $i, $pb := $country.properties.boxes -}}
@@ -111,8 +113,8 @@
       {{- range $a := $g.cells -}}
         {{- $cosLat := math.Cos (math.ToRadians $a.lat) -}}
         {{- range $b := $cluster.cells -}}
-          {{- $dy := mul (sub $b.lat $a.lat) 111.2 -}}
-          {{- $dx := mul (sub $b.long $a.long) 111.2 $cosLat -}}
+          {{- $dy := mul (sub $b.lat $a.lat) $km -}}
+          {{- $dx := mul (sub $b.long $a.long) $km $cosLat -}}
           {{- if lt (add (mul $dx $dx) (mul $dy $dy)) 10000.0 -}}{{- $overlaps = true -}}{{- end -}}
         {{- end -}}
       {{- end -}}
@@ -215,8 +217,8 @@
     {{- $land = slice (math.Min (index $land 0) (index $pb 0)) (math.Min (index $land 1) (index $pb 1))
                       (math.Max (index $land 2) (index $pb 2)) (math.Max (index $land 3) (index $pb 3)) -}}
   {{- end -}}
-  {{- $landArea := mul (sub (index $land 2) (index $land 0)) 111.2
-      (sub (index $land 3) (index $land 1)) 111.2
+  {{- $landArea := mul (sub (index $land 2) (index $land 0)) $km
+      (sub (index $land 3) (index $land 1)) $km
       (math.Cos (math.ToRadians (div (add (index $land 0) (index $land 2)) 2))) -}}
   {{- /* besides the boundaries of the project and the states of the country,
          the places the notes of the photos name */ -}}

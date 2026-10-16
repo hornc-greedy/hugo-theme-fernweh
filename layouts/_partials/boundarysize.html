@@ -1,10 +1,12 @@
 {{- /* A boundary as the map compares it: the feature, the code of its country
        if it is a state, its area for the order, scaled by `weight`, and its
        longer side for the margin, both in kilometres. */ -}}
+{{- /* kilometres in a degree of latitude */ -}}
+{{- $km := 111.2 -}}
 {{- $b := .feature.properties.box -}}
 {{- $cos := math.Cos (math.ToRadians (div (add (index $b 0) (index $b 2)) 2)) -}}
-{{- $height := mul (sub (index $b 2) (index $b 0)) 111.2 -}}
-{{- $width := mul (sub (index $b 3) (index $b 1)) 111.2 $cos -}}
+{{- $height := mul (sub (index $b 2) (index $b 0)) $km -}}
+{{- $width := mul (sub (index $b 3) (index $b 1)) $km $cos -}}
 {{- return dict
     "feature" .feature "country" (.feature.properties.country | default "")
     "area" (mul $height $width .weight) "size" (math.Max $height $width) -}}
