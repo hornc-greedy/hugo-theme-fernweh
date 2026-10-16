@@ -62,7 +62,8 @@ interface Region {
 
 interface Shape extends Region {
     box: HTMLElement
-    map: Leaflet.Map
+    /** fits the country into its frame again */
+    remeasure: () => void
 }
 
 interface Pin {
@@ -143,7 +144,7 @@ if (grid) {
                 box.style.width = `${Math.round(x * scale)}px`
             }
 
-            function build(region: Region, box: HTMLElement): Leaflet.Map {
+            function build(region: Region, box: HTMLElement): () => void {
                 const { country, days, bounds } = region
                 const canvas = document.createElement('div')
                 canvas.className = 'map-canvas'
@@ -512,17 +513,17 @@ if (grid) {
                 // how far the frame reaches above the country
                 const north = Math.max(...pins.map((pin) => pin.photo.lat))
 
-                const settle = (b: Leaflet.LatLngBounds): void => {
-                    map.fitBounds(b, { padding: [fitPadding, fitPadding], animate: false })
+                const settle = (): void => {
+                    map.fitBounds(bounds, { padding: [fitPadding, fitPadding], animate: false })
                     overview.zoom = map.getZoom()
                     const room = headroom(
                         size(overview.zoom),
-                        map.latLngToContainerPoint([north, b.getCenter().lng]).y
+                        map.latLngToContainerPoint([north, bounds.getCenter().lng]).y
                     )
                     if (room > 0) {
                         box.style.height = `${box.offsetHeight + room}px`
                         map.invalidateSize(false)
-                        map.fitBounds(b, {
+                        map.fitBounds(bounds, {
                             paddingTopLeft: [fitPadding, fitPadding + room],
                             paddingBottomRight: [fitPadding, fitPadding],
                             animate: false
@@ -537,9 +538,9 @@ if (grid) {
                     floor()
                 }
 
-                settle(bounds)
+                settle()
 
-                map.remeasure = (b: Leaflet.LatLngBounds): void => {
+                const remeasure = (): void => {
                     // a turn of the phone gives the frame another width, so the
                     // country is fitted again. How far the reader had zoomed in
                     // is kept, counted from the overview: that step is a
@@ -552,7 +553,7 @@ if (grid) {
                     map.setMinZoom(0)
                     map.setMaxBounds(null)
                     map.invalidateSize(false)
-                    settle(b)
+                    settle()
                     building = false
                     if (kept.steps > 0) {
                         map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
@@ -580,7 +581,7 @@ if (grid) {
                     follow()
                 })
 
-                return map
+                return remeasure
             }
 
             const regions: Region[] = data.maps.map((country, i) => {
@@ -616,7 +617,7 @@ if (grid) {
                 return {
                     ...region,
                     box,
-                    map: build(region, box)
+                    remeasure: build(region, box)
                 }
             })
 
@@ -637,7 +638,7 @@ if (grid) {
                     available = width
                     for (const shape of shapes) {
                         measure(shape, shape.box)
-                        shape.map.remeasure(shape.bounds)
+                        shape.remeasure()
                     }
                 }, 200)
             })
