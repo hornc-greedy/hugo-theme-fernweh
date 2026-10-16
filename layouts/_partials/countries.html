@@ -22,6 +22,8 @@
        for it through partialCached. */ -}}
 {{- /* kilometres in a degree of latitude */ -}}
 {{- $km := 111.2 -}}
+{{- /* how far apart in kilometres the parts of one map may lie */ -}}
+{{- $apart := 100.0 -}}
 {{- $cells := .cells -}}
 {{- $features := (resources.Get "geo/countries.json" | transform.Unmarshal).features -}}
 {{- /* the boundaries of the project and the states of every country, each
@@ -88,8 +90,8 @@
   {{- $cell := .cell -}}
   {{- $country := index $features .country -}}
   {{- $cos := math.Cos (math.ToRadians $cell.lat) -}}
-  {{- $radiusLat := 0.9 -}}
-  {{- $radiusLong := div 0.9 $cos -}}
+  {{- $radiusLat := div $apart $km -}}
+  {{- $radiusLong := div $radiusLat $cos -}}
   {{- $containing := .part -}}
   {{- $hb := index $country.properties.boxes $containing -}}
   {{- $heightKm := mul (sub (index $hb 2) (index $hb 0)) $km -}}
@@ -99,7 +101,7 @@
   {{- range $i, $pb := $country.properties.boxes -}}
     {{- if and $small (ne $i $containing) (ge $cell.lat (sub (index $pb 0) $radiusLat)) (le $cell.lat (add (index $pb 2) $radiusLat))
                (ge $cell.long (sub (index $pb 1) $radiusLong)) (le $cell.long (add (index $pb 3) $radiusLong)) -}}
-      {{- if lt (partial "distance-to-part.html" (dict "lat" $cell.lat "long" $cell.long "part" (index $country.geometry.coordinates $i))) 10000.0 -}}
+      {{- if lt (partial "distance-to-part.html" (dict "lat" $cell.lat "long" $cell.long "part" (index $country.geometry.coordinates $i))) (mul $apart $apart) -}}
         {{- $parts = $parts | append $i -}}
       {{- end -}}
     {{- end -}}
@@ -115,7 +117,7 @@
         {{- range $b := $cluster.cells -}}
           {{- $dy := mul (sub $b.lat $a.lat) $km -}}
           {{- $dx := mul (sub $b.long $a.long) $km $cosLat -}}
-          {{- if lt (add (mul $dx $dx) (mul $dy $dy)) 10000.0 -}}{{- $overlaps = true -}}{{- end -}}
+          {{- if lt (add (mul $dx $dx) (mul $dy $dy)) (mul $apart $apart) -}}{{- $overlaps = true -}}{{- end -}}
         {{- end -}}
       {{- end -}}
     {{- end -}}
