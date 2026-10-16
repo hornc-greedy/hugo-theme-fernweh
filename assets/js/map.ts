@@ -554,10 +554,10 @@ if (grid) {
                     map.setMaxBounds(null)
                     map.invalidateSize(false)
                     settle()
-                    building = false
                     if (kept.steps > 0) {
                         map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
                     }
+                    building = false
                     follow()
                 }
 
