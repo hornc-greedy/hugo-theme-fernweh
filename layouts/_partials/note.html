@@ -4,13 +4,9 @@
        stays unfindable. */ -}}
 {{- $url := printf "%s/%s.json" site.Params.photos.sizes . -}}
 {{- $note := dict -}}
-{{- with try (resources.GetRemote $url) -}}
-  {{- with .Err -}}
-    {{- errorf "note not fetched: %s" . -}}
-  {{- else with .Value -}}
-    {{- $note = . | transform.Unmarshal -}}
-  {{- else -}}
-    {{- errorf "note missing from the bucket: %s" $url -}}
-  {{- end -}}
+{{- with resources.GetRemote $url -}}
+  {{- $note = . | transform.Unmarshal -}}
+{{- else -}}
+  {{- errorf "note missing from the bucket: %s" $url -}}
 {{- end -}}
 {{- return $note -}}
