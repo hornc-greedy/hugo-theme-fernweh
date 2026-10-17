@@ -96,6 +96,50 @@
     width: var(--pin);
 }
 
+.pan {
+    display: grid;
+    grid-template-columns: repeat(3, 30px);
+    grid-template-rows: repeat(2, 30px);
+    gap: 2px;
+    & button {
+        display: grid;
+        place-items: center;
+        background: color-mix(in srgb, var(--surface) 82%, transparent);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        color: var(--text);
+        font: 15px / 1 sans-serif;
+        cursor: pointer;
+    }
+    & button:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    & button[data-dir="up"] {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    & button[data-dir="left"] {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    & button[data-dir="down"] {
+        grid-column: 2;
+        grid-row: 2;
+    }
+    & button[data-dir="right"] {
+        grid-column: 3;
+        grid-row: 2;
+    }
+}
+
+@media (pointer: coarse) {
+    .pan {
+        grid-template-columns: repeat(3, 44px);
+        grid-template-rows: repeat(2, 44px);
+    }
+}
+
 /* the country a boundary lies in, small in the corner of its map, above the
    mask and below the pins. The script gives the pane the width of the map, which
    the drawing is measured against. The drawing is the button that shows the
