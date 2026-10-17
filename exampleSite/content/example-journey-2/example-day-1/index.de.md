@@ -1,6 +1,6 @@
 ---
 title: Beispieltag 1
-date: 2025-10-03
+date: 2026-03-03
 cover: example_8.jpg
 photos:
   - image: example_7.jpg
