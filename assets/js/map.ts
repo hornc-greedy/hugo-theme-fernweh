@@ -3,6 +3,7 @@ import { headroom, heap, type PinScale, pinSize, type Spot, tipSize } from './ar
 import { lightbox } from './lightbox.ts'
 import { locator } from './locator.ts'
 import { mask } from './mask.ts'
+import { panControl, panKeys } from './pan.ts'
 
 // What the geojson template hands over
 interface Photo {
@@ -112,6 +113,7 @@ if (grid) {
                 })
             )
             const view = lightbox(shots, grid.dataset)
+            const wording = grid.dataset
 
             // the map that is currently zoomed in, and therefore the one the arrow
             // keys belong to. It is null again as soon as that map is back in the
@@ -130,18 +132,6 @@ if (grid) {
             }
 
             let available = space()
-
-            // one step of the arrows on a map and of the arrow keys alike
-            const directions: Record<string, Leaflet.PointTuple> = {
-                up: [0, -1],
-                down: [0, 1],
-                left: [-1, 0],
-                right: [1, 0]
-            }
-            const pan = (target: Leaflet.Map, [x, y]: Leaflet.PointTuple): void => {
-                const s = Math.round(target.getContainer().clientWidth / 4)
-                target.panBy([x * s, y * s], { duration: 0.25 })
-            }
 
             const measure = (region: Region, box: HTMLElement): void => {
                 const { x, y } = region.extent
@@ -424,40 +414,7 @@ if (grid) {
                 }
 
                 // dragging comes with the zoom. The keyboard has these steps instead
-                const panControl = new L.Control({ position: 'bottomright' })
-                panControl.onAdd = () => {
-                    const box = L.DomUtil.create('div', 'pan')
-                    const arrows: Record<string, string> = {
-                        up: '↑',
-                        left: '←',
-                        down: '↓',
-                        right: '→'
-                    }
-                    box.innerHTML = Object.keys(arrows)
-                        .map(
-                            (dir) =>
-                                '<button data-dir="' +
-                                dir +
-                                '" aria-label="' +
-                                (grid?.dataset[`pan${dir}`] ?? '') +
-                                '">' +
-                                arrows[dir] +
-                                '</button>'
-                        )
-                        .join('')
-                    L.DomEvent.disableClickPropagation(box)
-                    box.addEventListener('click', (e) => {
-                        const button = (e.target as Element).closest('button')
-                        if (!button) {
-                            return
-                        }
-                        const step = directions[button.dataset.dir ?? '']
-                        if (step) {
-                            pan(map, step)
-                        }
-                    })
-                    return box
-                }
+                const panArrows = panControl(wording)
                 let panShown = false
                 // set while the code itself moves the map: every zoom event during a
                 // programmatic fit compares against a baseline that is not updated yet
@@ -466,11 +423,11 @@ if (grid) {
                 const showPan = (): void => {
                     const inside = map.getZoom() > overview.zoom
                     if (inside && !panShown) {
-                        panControl.addTo(map)
+                        panArrows.addTo(map)
                         panShown = true
                     }
                     if (!inside && panShown) {
-                        panControl.remove()
+                        panArrows.remove()
                         panShown = false
                     }
                     if (inside) {
@@ -623,17 +580,7 @@ if (grid) {
                 }
             })
 
-            document.addEventListener('keydown', (e) => {
-                if (!active) {
-                    return
-                }
-                const dir = directions[e.key.replace('Arrow', '').toLowerCase()]
-                if (!dir) {
-                    return
-                }
-                e.preventDefault()
-                pan(active, dir)
-            })
+            panKeys(() => active)
 
             // a phone that turns round changes every width the boxes were built
             // from. The height alone changes when a browser bar slides in or out
