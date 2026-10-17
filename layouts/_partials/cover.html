@@ -2,11 +2,18 @@
 {{- $page := . -}}
 {{- $cover := "" -}}
 {{- with .Params.cover -}}
+  {{- $name := . -}}
+  {{- /* the caption of a picked cover stands beside it in the list of photos,
+         which a journey does not have */ -}}
+  {{- $caption := "" -}}
+  {{- with $page.Params.photos -}}
+    {{- with where . "image" $name -}}{{- $caption = (index . 0).caption -}}{{- end -}}
+  {{- end -}}
   {{- if site.Params.photos.origin -}}
-    {{- $cover = partial "photoentry.html" (dict "url" .) -}}
+    {{- $cover = partial "photoentry.html" (dict "url" $name "caption" $caption) -}}
   {{- else -}}
-    {{- with $page.Resources.GetMatch . -}}
-      {{- $cover = partial "photoentry.html" (dict "file" .) -}}
+    {{- with $page.Resources.GetMatch $name -}}
+      {{- $cover = partial "photoentry.html" (dict "file" . "caption" $caption) -}}
     {{- end -}}
   {{- end -}}
 {{- else -}}
