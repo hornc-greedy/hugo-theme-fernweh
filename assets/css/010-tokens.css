@@ -63,6 +63,14 @@
     --paper: light-dark(oklch(from var(--tint) 0.965 0.018 h), oklch(from var(--tint) 0.2 0.028 h));
 }
 
+/* the size a finger needs, set only where one points. Each control keeps its
+   own size for a mouse */
+@media (pointer: coarse) {
+    :root {
+        --touch: 44px;
+    }
+}
+
 /* what light-dark() cannot carry, the tile filter and the icons, once for the
    system setting and once for the switch. The switch also sets the
    color-scheme that light-dark() follows */

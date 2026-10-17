@@ -98,8 +98,8 @@
 
 .pan {
     display: grid;
-    grid-template-columns: repeat(3, 30px);
-    grid-template-rows: repeat(2, 30px);
+    grid-template-columns: repeat(3, var(--touch, 30px));
+    grid-template-rows: repeat(2, var(--touch, 30px));
     gap: 2px;
     & button {
         display: grid;
@@ -130,13 +130,6 @@
     & button[data-dir="right"] {
         grid-column: 3;
         grid-row: 2;
-    }
-}
-
-@media (pointer: coarse) {
-    .pan {
-        grid-template-columns: repeat(3, 44px);
-        grid-template-rows: repeat(2, 44px);
     }
 }
 

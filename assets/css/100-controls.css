@@ -1,13 +1,10 @@
 /* ── Controls ──────────────────────────────────────────────────────────── */
 
 .controls {
-    --target: 50px;
+    --target: var(--touch, 50px);
     display: flex;
     align-items: center;
     gap: 0.1rem;
-    @media (pointer: coarse) {
-        --target: 44px;
-    }
 }
 
 /* the same box and the same colour as the toggle beside it, so the two sit on
