@@ -25,18 +25,16 @@ export const panControl = (wording: Record<string, string | undefined>): Leaflet
             down: '↓',
             right: '→'
         }
-        box.innerHTML = Object.keys(glyphs)
-            .map(
-                (dir) =>
-                    '<button data-dir="' +
-                    dir +
-                    '" aria-label="' +
-                    (wording[`pan${dir}`] ?? '') +
-                    '">' +
-                    glyphs[dir] +
-                    '</button>'
-            )
-            .join('')
+        // built element by element: the labels come from the translation tables,
+        // and a quotation mark in one would break markup assembled by hand
+        for (const [dir, glyph] of Object.entries(glyphs)) {
+            const button = document.createElement('button')
+            button.type = 'button'
+            button.dataset.dir = dir
+            button.ariaLabel = wording[`pan${dir}`] ?? ''
+            button.textContent = glyph
+            box.append(button)
+        }
         L.DomEvent.disableClickPropagation(box)
         box.addEventListener('click', (e) => {
             const button = (e.target as Element).closest('button')
