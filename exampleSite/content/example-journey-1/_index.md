@@ -1,8 +1,8 @@
 ---
 title: Example journey 1
-date: 2025-07-11
-until: 2025-07-12
-description: An example journey of two days
+date: 2026-01-12
+until: 2026-01-15
+description: An example journey in one entry over four days
 ---
 
-Example journey. Every folder below it is one day.
+Example journey. Its one entry covers all four of its days.

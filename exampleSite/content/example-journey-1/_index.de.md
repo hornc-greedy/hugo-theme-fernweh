@@ -1,8 +1,8 @@
 ---
 title: Beispielreise 1
-date: 2025-07-11
-until: 2025-07-12
-description: Eine Beispielreise über zwei Tage
+date: 2026-01-12
+until: 2026-01-15
+description: Eine Beispielreise in einem Eintrag über vier Tage
 ---
 
-Beispielreise. Jeder Ordner darunter ist ein Tag.
+Beispielreise. Ihr einziger Eintrag umfasst alle vier Tage.
