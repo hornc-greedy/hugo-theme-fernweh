@@ -13,7 +13,7 @@ the country, drawn from the coordinates the cameras wrote into the pictures.
 
 | | |
 | --- | --- |
-| **Example site** | [`exampleSite/`](https://github.com/hornc-greedy/hugo-theme-fernweh/tree/main/exampleSite), three journeys, two days each, English and German |
+| **Example site** | [`exampleSite/`](https://github.com/hornc-greedy/hugo-theme-fernweh/tree/main/exampleSite), three journeys in English and German |
 | **Needs** | Hugo 0.158.0 or newer, for the metadata a photo carries and the name of a language |
 | **Licence** | MIT, and the bundled work under [its own terms](#licences) |
 
@@ -39,9 +39,8 @@ git clone https://github.com/hornc-greedy/hugo-theme-fernweh themes/fernweh
 hugo server --source themes/fernweh/exampleSite --themesDir ../..
 ```
 
-That serves the example site: three journeys of two days each, in English and
-German. The photographs are public domain and carry the coordinates the maps are
-drawn from.
+That serves the example site in English and German. The photographs are public
+domain and carry the coordinates the maps are drawn from.
 
 ## Installation
 
