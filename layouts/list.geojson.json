@@ -49,9 +49,8 @@
 {{- $cells := dict -}}
 {{- range $pins -}}
   {{- $key := printf "%.1f/%.1f" .lat .long -}}
-  {{- $cell := index $cells $key | default (dict "key" $key "lat" .lat "long" .long "count" 0 "points" slice) -}}
+  {{- $cell := index $cells $key | default (dict "key" $key "lat" .lat "long" .long "points" slice) -}}
   {{- $cells = merge $cells (dict $key (merge $cell (dict
-      "count" (add $cell.count 1)
       "points" ($cell.points | append (dict "lat" .lat "long" .long "boundary" .boundary))))) -}}
 {{- end -}}
 {{- $maps := partialCached "countries.html" (dict "cells" $cells) .Path -}}

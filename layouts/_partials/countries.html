@@ -201,7 +201,7 @@
     {{- end -}}
   {{- end -}}
   {{- $photos := 0 -}}
-  {{- range $g.cells -}}{{- $photos = add $photos .count -}}{{- end -}}
+  {{- range $g.cells -}}{{- $photos = add $photos (len .points) -}}{{- end -}}
   {{- /* the numbers are collected, not the outlines: append unwraps a slice, and
          a second outline cannot be appended to a list that holds one already */ -}}
   {{- $geometry := dict "type" "MultiPolygon"
