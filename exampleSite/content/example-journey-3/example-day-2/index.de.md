@@ -1,9 +1,9 @@
 ---
-title: Beispieltag 4
-date: 2025-10-05
-cover: example_11.jpg
+title: Beispieltag 2
+date: 2026-04-19
+cover: example_17.jpg
 photos:
-  - image: example_10.jpg
+  - image: example_16.jpg
     caption: Eine Beispielunterschrift
 ---
 

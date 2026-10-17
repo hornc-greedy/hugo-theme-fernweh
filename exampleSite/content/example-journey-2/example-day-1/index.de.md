@@ -1,5 +1,5 @@
 ---
-title: Beispieltag 3
+title: Beispieltag 1
 date: 2025-10-03
 cover: example_8.jpg
 photos:

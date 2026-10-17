@@ -1,9 +1,9 @@
 ---
-title: Example day 4
-date: 2025-10-05
-cover: example_11.jpg
+title: Example day 1
+date: 2026-04-18
+cover: example_14.jpg
 photos:
-  - image: example_10.jpg
+  - image: example_13.jpg
     caption: An example caption
 ---
 
