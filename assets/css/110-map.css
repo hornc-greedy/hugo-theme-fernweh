@@ -29,6 +29,11 @@
         stroke-opacity var(--fly-duration);
 }
 
+/* the paint around a country is the colour of the page */
+.mask {
+    fill: var(--paper, var(--surface));
+}
+
 .photo-pin a {
     display: block;
     pointer-events: auto;

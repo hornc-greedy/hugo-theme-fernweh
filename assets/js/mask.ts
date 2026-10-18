@@ -23,15 +23,11 @@ export const mask = (
     // is painted over
     const holes = L.GeoJSON.coordsToLatLngs(geometry.coordinates, 2).flat()
     const cover = L.polygon([world, ...holes], {
-        fillColor: getComputedStyle(document.body).backgroundColor,
+        className: 'mask',
         fillOpacity: maskOpacity,
         stroke: false,
         interactive: false
     }).addTo(map)
-
-    document.addEventListener('themechange', () => {
-        cover.setStyle({ fillColor: getComputedStyle(document.body).backgroundColor })
-    })
 
     const outline = L.geoJSON(geometry, {
         style: {

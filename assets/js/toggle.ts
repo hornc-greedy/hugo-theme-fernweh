@@ -20,6 +20,4 @@ toggle.addEventListener('click', () => {
         localStorage.setItem('theme', next)
     } catch {}
     label()
-    // the map paints its surroundings in the page colour and cannot read a change
-    document.dispatchEvent(new CustomEvent('themechange'))
 })
