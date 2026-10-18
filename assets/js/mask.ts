@@ -5,12 +5,13 @@ const maskOpacity = 0.7
 
 /**
  * Paints everything outside a country over in the page colour and draws the
- * country's outline. Hands back what shows both or hides them again.
+ * country's outline. Hands back what shows or hides the paint and the outline,
+ * the outline with the paint unless told otherwise.
  */
 export const mask = (
     map: Leaflet.Map,
     geometry: GeoJSON.MultiPolygon
-): ((shown: boolean) => void) => {
+): ((painted: boolean, outlined?: boolean) => void) => {
     // the mask is an even-odd polygon, the world with the country as its holes
     const world: Leaflet.LatLngTuple[] = [
         [-85, -180],
@@ -42,8 +43,8 @@ export const mask = (
         }
     }).addTo(map)
 
-    return (shown) => {
-        cover.setStyle({ fillOpacity: shown ? maskOpacity : 0 })
-        outline.setStyle({ opacity: shown ? 1 : 0 })
+    return (painted, outlined = painted) => {
+        cover.setStyle({ fillOpacity: painted ? maskOpacity : 0 })
+        outline.setStyle({ opacity: outlined ? 1 : 0 })
     }
 }
