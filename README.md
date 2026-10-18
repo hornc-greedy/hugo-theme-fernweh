@@ -39,8 +39,10 @@ git clone https://github.com/hornc-greedy/hugo-theme-fernweh themes/fernweh
 hugo server --source themes/fernweh/exampleSite --themesDir ../..
 ```
 
-That serves the example site in English and German. The photographs are public
-domain and carry the coordinates the maps are drawn from.
+That serves the example site in English and German. One journey keeps four days
+in a single entry, one has an entry for each day with the last in words only,
+and two lie within the boundary of a city. The photographs are public domain and
+carry the coordinates the maps are drawn from.
 
 ## Installation
 
