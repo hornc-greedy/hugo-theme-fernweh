@@ -14,6 +14,8 @@
   {{- else -}}
     {{- with $page.Resources.GetMatch $name -}}
       {{- $cover = partial "photoentry.html" (dict "file" . "caption" $caption) -}}
+    {{- else -}}
+      {{- errorf "cover missing from the entry: %s in %s" $name $page.File.Path -}}
     {{- end -}}
   {{- end -}}
 {{- else -}}
