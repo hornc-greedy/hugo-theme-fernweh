@@ -19,11 +19,9 @@ export const mask = (
         [85, 180],
         [85, -180]
     ]
-    // the outer ring of every part becomes a hole, turned from the longitude
-    // first of geojson to the latitude first of Leaflet
-    const holes: Leaflet.LatLngTuple[][] = geometry.coordinates.map((part) =>
-        (part[0] as GeoJSON.Position[]).map(([x, y]) => [y, x] as Leaflet.LatLngTuple)
-    )
+    // every ring of every part, so a country inside another, such as Lesotho,
+    // is painted over
+    const holes = L.GeoJSON.coordsToLatLngs(geometry.coordinates, 2).flat()
     const cover = L.polygon([world, ...holes], {
         fillColor: getComputedStyle(document.body).backgroundColor,
         fillOpacity: maskOpacity,
