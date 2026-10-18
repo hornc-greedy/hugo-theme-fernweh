@@ -8,5 +8,5 @@ photos:
 ---
 
 Beispieltext für einen Tag. Das Album darunter entsteht aus den Fotos neben
-dieser Datei: ihre Aufnahmezeit bestimmt die Reihenfolge, ihre Koordinaten die
+dieser Datei. Ihre Aufnahmezeit bestimmt die Reihenfolge, ihre Koordinaten die
 Karte.

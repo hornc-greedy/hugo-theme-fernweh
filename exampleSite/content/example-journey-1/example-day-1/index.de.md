@@ -9,5 +9,5 @@ photos:
 ---
 
 Beispieltext für einen Eintrag über vier Tage. Das Album darunter entsteht aus
-den Fotos neben dieser Datei: ihre Aufnahmezeit bestimmt die Reihenfolge, ihre
+den Fotos neben dieser Datei. Ihre Aufnahmezeit bestimmt die Reihenfolge, ihre
 Koordinaten die Karte.
