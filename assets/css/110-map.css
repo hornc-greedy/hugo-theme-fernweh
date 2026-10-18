@@ -104,7 +104,8 @@
 
 /* the country a boundary lies in, small in the corner of its map, above the
    mask and below the pins. The script gives the pane the width of the map, which
-   the drawing is measured against */
+   the drawing is measured against. The drawing is the button that shows the
+   whole country, pressed while the map shows it */
 
 .leaflet-locator-pane {
     container-type: inline-size;
@@ -118,6 +119,20 @@
     align-items: start;
     gap: 4px;
     pointer-events: none;
+    & button {
+        display: block;
+        padding: 0;
+        border: 0;
+        background: none;
+        &:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+        }
+        /* the dot steps back while the big map shows the whole country itself */
+        &[aria-pressed="true"] {
+            --dot: 0.4;
+        }
+    }
     & svg {
         display: block;
         /* the outline is drawn on the edge of the country, half of it outside */
@@ -145,6 +160,12 @@
             color: var(--text-muted);
         }
     }
+    /* only the country itself takes a click, not the corners of its box */
+    & path,
+    & circle {
+        pointer-events: auto;
+        cursor: pointer;
+    }
     & path {
         fill: var(--surface-2);
         stroke: var(--outline);
@@ -153,6 +174,7 @@
     }
     & circle {
         fill: var(--accent);
+        opacity: var(--dot, 1);
     }
 }
 

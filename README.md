@@ -199,9 +199,11 @@ and a `static/favicon.svg` becomes the icon of the tab.
   lies within one state or province, or close outside it, the map shows that
   state instead of the whole country, and the country small in a corner with a
   dot where the photographs lie, the state's name over the code of the country
-  beside it. A state only replaces land it is smaller than, so an island stays
-  an island. The states come from Natural Earth once, into a file of your own of
-  about 8 MB, and the build needs no network afterwards:
+  beside it. A click on the small country flies the map out to all of it, the
+  state still outlined within, and a second click or one on the map flies back
+  to the state. A state only replaces land it is smaller than, so an island
+  stays an island. The states come from Natural Earth once, into a file of your
+  own of about 8 MB, and the build needs no network afterwards:
 
   ```sh
   node themes/fernweh/geo/fetch.ts states assets/geo/states.json

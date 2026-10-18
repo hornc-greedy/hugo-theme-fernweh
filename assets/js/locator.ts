@@ -21,6 +21,7 @@ const drawing = (geometry: GeoJSON.MultiPolygon, centre: Leaflet.LatLngTuple): S
     const [left, top] = [Math.min(west, cx - r), Math.min(north, cy - r)]
     const [right, bottom] = [Math.max(east, cx + r), Math.max(south, cy + r)]
     const svg = document.createElementNS(namespace, 'svg')
+    svg.setAttribute('aria-hidden', 'true')
     svg.setAttribute('viewBox', `${left} ${top} ${right - left} ${bottom - top}`)
     // the size in user units gives the drawing the proportions of the country,
     // which the stylesheet then scales down to the corner
@@ -41,7 +42,9 @@ const drawing = (geometry: GeoJSON.MultiPolygon, centre: Leaflet.LatLngTuple): S
 
 /**
  * Puts the country around a boundary in the corner of the boundary's map, in a
- * pane of its own between the mask and the pins.
+ * pane of its own between the mask and the pins. The drawing is a button labelled
+ * `label` that calls `toggle`, and the locator hands back what marks it pressed
+ * while the map shows the whole country.
  */
 export const locator = (
     map: Leaflet.Map,
@@ -50,23 +53,34 @@ export const locator = (
         code: string
         name: string
         centre: Leaflet.LatLngTuple
-    }
-): void => {
+    },
+    label: string,
+    toggle: () => void
+): ((pressed: boolean) => void) => {
     const pane = map.createPane('locator')
     pane.style.zIndex = '550'
     const figure = document.createElement('div')
     figure.className = 'locator'
-    figure.ariaHidden = 'true'
+    // the drawing is the button, the names beside it are not
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.ariaLabel = label
+    button.ariaPressed = 'false'
+    // a click on the map flies back to the overview, this one must not reach it
+    L.DomEvent.disableClickPropagation(button)
+    button.addEventListener('click', toggle)
     // the boundary as its source names it, in the language of the place, over the
     // ISO code of the country, which tells it apart where its shape does not
-    const label = document.createElement('div')
-    label.className = 'label'
+    const names = document.createElement('span')
+    names.className = 'label'
+    names.ariaHidden = 'true'
     for (const text of [country.name, country.code]) {
         const line = document.createElement('span')
         line.textContent = text
-        label.append(line)
+        names.append(line)
     }
-    figure.append(label, drawing(country.geometry, country.centre))
+    button.append(drawing(country.geometry, country.centre))
+    figure.append(names, button)
     pane.append(figure)
     // held against the panning of the map so it stays in the corner
     const hold = (): void => {
@@ -75,4 +89,7 @@ export const locator = (
     }
     map.on('move resize', hold)
     hold()
+    return (pressed) => {
+        button.ariaPressed = String(pressed)
+    }
 }

@@ -13,6 +13,7 @@ pan_up = "up"
 pan_left = "left"
 pan_down = "down"
 pan_right = "right"
+whole_country = "Show the whole country"
 map_attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 not_found = "Nothing here"
 not_found_back = "Back to the overview"

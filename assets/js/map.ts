@@ -187,18 +187,60 @@ if (grid) {
 
                 const showMask = mask(map, country.geometry)
 
-                if (country.locator) {
-                    locator(map, country.locator)
+                const overview = {
+                    center: bounds.getCenter(),
+                    zoom: 0,
+                    bounds
+                }
+
+                // further out than the overview the map shows the whole country around
+                // its boundary, painted and outlined like a country of its own, with the
+                // boundary outlined within it
+                const out = (zoom: number): boolean => zoom < overview.zoom
+                // the frame of the whole country, held there once the map has arrived
+                const fly = (whole: Leaflet.LatLngBounds): void => {
+                    // Leaflet answers no further out than the floor it has, so the
+                    // floor goes first
+                    map.setMaxBounds(null)
+                    map.setMinZoom(0)
+                    const zoom = map.getBoundsZoom(
+                        whole,
+                        false,
+                        L.point(2 * fitPadding, 2 * fitPadding)
+                    )
+                    map.setMinZoom(zoom)
+                    glide(zoom, flyDuration)
+                    map.flyTo(whole.getCenter(), zoom, { duration: flyDuration })
+                    map.once('moveend', () => {
+                        map.setMaxBounds(map.getBounds().pad(0.02))
+                    })
+                }
+                const around = country.locator
+                const wide = around && {
+                    show: mask(map, around.geometry),
+                    press: locator(map, around, wording.wholecountry ?? '', () => {
+                        if (out(map.getZoom())) {
+                            back()
+                        } else {
+                            fly(L.geoJSON(around.geometry).getBounds())
+                        }
+                    })
                 }
 
                 // the outline comes from a world map, fine for the shape of a country
                 // and far too coarse for a coastline at street zoom, where it would cut
                 // across the land and leave pins outside it
                 const shroud = (zoom: number): void => {
-                    showMask(zoom <= overview.zoom)
+                    showMask(zoom <= overview.zoom && !out(zoom), zoom <= overview.zoom)
+                    wide?.show(out(zoom))
+                    wide?.press(out(zoom))
                 }
 
-                const overview = { center: bounds.getCenter(), zoom: 0 }
+                // in the overview or nearer the map is held to the overview
+                const floor = (): void => {
+                    map.setMinZoom(overview.zoom)
+                    map.setMaxBounds(overview.bounds)
+                }
 
                 const pins: Pin[] = []
 
@@ -498,11 +540,11 @@ if (grid) {
                     }
                     overview.center = map.getCenter()
                     overview.zoom = map.getZoom()
-                    // the country filled the frame at this zoom, there is nothing further
-                    // out. The bound gets a little slack: exactly the visible box makes
-                    // Leaflet zoom in a step to satisfy it.
-                    map.setMinZoom(overview.zoom)
-                    map.setMaxBounds(map.getBounds().pad(0.02))
+                    // the country filled the frame at this zoom, only the button of the
+                    // locator leads further out. The bound gets a little slack: exactly
+                    // the visible box makes Leaflet zoom in a step to satisfy it.
+                    overview.bounds = map.getBounds().pad(0.02)
+                    floor()
                 }
 
                 settle(bounds)
@@ -538,6 +580,9 @@ if (grid) {
                 map.on('zoomend', () => {
                     if (building) {
                         return
+                    }
+                    if (!out(map.getZoom()) && map.getMinZoom() < overview.zoom) {
+                        floor()
                     }
                     arrange()
                     shroud(map.getZoom())
