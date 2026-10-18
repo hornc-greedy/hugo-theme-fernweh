@@ -455,26 +455,23 @@ if (grid) {
                 let building = false
 
                 const showPan = (): void => {
-                    const inside = map.getZoom() > overview.zoom
-                    if (inside && !panShown) {
-                        panArrows.addTo(map)
-                        panShown = true
-                    }
-                    if (!inside && panShown) {
-                        panArrows.remove()
-                        panShown = false
-                    }
-                    if (inside) {
+                    if (map.getZoom() > overview.zoom) {
+                        if (!panShown) {
+                            panArrows.addTo(map)
+                            panShown = true
+                        }
                         active = map
-                    }
-                    if (!inside && active === map) {
-                        active = null
-                    }
-                    // in the overview the map already fills its frame: dragging there
-                    // moves nothing and swallows a swipe meant for the page
-                    if (inside) {
                         map.dragging.enable()
                     } else {
+                        if (panShown) {
+                            panArrows.remove()
+                            panShown = false
+                        }
+                        if (active === map) {
+                            active = null
+                        }
+                        // in the overview the map already fills its frame: dragging there
+                        // moves nothing and swallows a swipe meant for the page
                         map.dragging.disable()
                     }
                 }
