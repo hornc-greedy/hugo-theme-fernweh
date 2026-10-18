@@ -31,8 +31,7 @@ export const mask = (
 
     const outline = L.geoJSON(geometry, {
         style: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--outline'),
-            weight: 1.5,
+            className: 'outline',
             fill: false
         }
     }).addTo(map)
