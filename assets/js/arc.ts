@@ -24,7 +24,8 @@ export const pinSize = (scale: PinScale): number => {
     const small = Math.min(scale.smallest, scale.width * 0.22)
     const peak = Math.min(scale.largest, scale.width * 0.42)
     const span = scale.maxZoom - scale.overview
-    const t = span === 0 ? 0 : (scale.zoom - scale.overview) / span
+    // further out than the overview, on the whole country, a pin keeps its smallest size
+    const t = span === 0 ? 0 : Math.max(0, scale.zoom - scale.overview) / span
     return small + (peak - small) * Math.sin(Math.PI * t)
 }
 
