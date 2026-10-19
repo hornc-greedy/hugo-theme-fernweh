@@ -87,6 +87,9 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
     // paging runs on past either end of the album
     const around = (i: number): number => (i + shots.length) % shots.length
 
+    // the strip glides to the current photo, unless the visitor asks for less motion
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches
+
     // a thumbnail of every photo, fetched when the view opens. A closed dialog
     // would fetch them all with the page, lazy or not
     const pictures: HTMLImageElement[] = []
@@ -163,7 +166,11 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         counter.textContent = `${i + 1} / ${shots.length}`
         thumbs.forEach((thumb, n) => {
             if (thumb.classList.toggle('current', n === i)) {
-                thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+                thumb.scrollIntoView({
+                    behavior: still ? 'instant' : 'smooth',
+                    inline: 'center',
+                    block: 'nearest'
+                })
             }
         })
         current = i
