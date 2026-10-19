@@ -306,8 +306,5 @@ curl -sSLo static/leaflet/leaflet.js  https://unpkg.com/leaflet@1.9.4/dist/leafl
 curl -sSLo static/leaflet/leaflet.css https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
 ```
 
-The marker images under `static/leaflet/images/` come from the same archive and
-want the same version.
-
 **A small request.** The footer of every page names Hugo and the theme. I would
 be glad if you kept that credit.
