@@ -2,7 +2,7 @@
   {{- /* the map carries the OSM credit itself, where the policy wants it */ -}}
   <p>&copy; {{ now.Format "2006" }} {{ partial "sitetext.html" "name" }}
     {{- range site.Menus.footer }} &middot; <a href="{{ .URL }}">{{ .Name }}</a>{{ end }}
-    {{- with site.Params.footer.showThemeAttribution }} &middot; <span class="attribution">{{ i18n "powered_by" (dict
+    {{- if site.Params.footer.showThemeAttribution }} &middot; <span class="attribution">{{ i18n "powered_by" (dict
       "Hugo" `<a href="https://gohugo.io/">Hugo</a>`
       "Theme" `<a href="https://github.com/hornc-greedy/hugo-theme-fernweh">Fernweh</a>`) | safeHTML }}</span>{{ end }}</p>
 </footer>
