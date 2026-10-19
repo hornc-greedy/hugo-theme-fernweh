@@ -129,6 +129,7 @@ Everything below is a default the theme brings. A value of your own wins.
 | `cover` | `200px` | edge of the square cover on the front page |
 | `dates.full`, `dates.long`, `dates.short`, `dates.day` | day, month, year | how a date reads, in Go's layout of 2 January 2006. Hugo puts the names in the language of the page, and a language may set formats of its own under its `params` |
 | `description` | | the meta description and the text of a shared link for a page without its own, the front page or a plain page for instance |
+| `footer.showThemeAttribution` | `true` | Hugo and the theme, named and linked at the end of the copyright line. `false` leaves them out |
 | `map.width` | `500px` | width of the map column, from which the outline derives its height |
 | `map.pin` | `60` | thumbnail on the map, in the overview and at full zoom |
 | `map.pinmax` | `100` | its largest, at the zoom levels in between |
@@ -306,3 +307,6 @@ curl -sSLo static/leaflet/leaflet.css https://unpkg.com/leaflet@1.9.4/dist/leafl
 
 The marker images under `static/leaflet/images/` come from the same archive and
 want the same version.
+
+**A small request.** The footer of every page names Hugo and the theme. I would
+be glad if you kept that credit.

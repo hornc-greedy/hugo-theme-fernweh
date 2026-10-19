@@ -9,4 +9,7 @@
     & p {
         margin: 0;
     }
+    & .attribution {
+        white-space: nowrap;
+    }
 }

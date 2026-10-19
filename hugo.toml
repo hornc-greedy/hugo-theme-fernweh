@@ -21,6 +21,10 @@
     short = "2 January"
     day = "2"
 
+  [params.footer]
+    # Hugo and the theme, named and linked at the end of the copyright line
+    showThemeAttribution = true
+
   [params.map]
     # Width of the map column. The outlines fill it and derive their height
     width = "500px"

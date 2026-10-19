@@ -15,6 +15,7 @@ pan_down = "nach unten"
 pan_right = "nach rechts"
 whole_country = "Das ganze Land zeigen"
 map_attribution = 'Karte &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende'
+powered_by = "Erstellt mit {{ .Hugo }} &amp; {{ .Theme }}"
 not_found = "Hier ist nichts"
 not_found_back = "Zurück zur Übersicht"
 skip = "Zum Inhalt springen"
