@@ -18,7 +18,7 @@ export interface PinScale {
  * The size of a pin follows an arc: small in the overview, largest halfway in
  * where the surroundings are read, small again at full zoom where the exact
  * spot is. Both ends scale with the map rather than with pixels, so that a
- * thumbnail cannot cover half a phone screen.
+ * pin cannot cover half a phone screen.
  */
 export const pinSize = (scale: PinScale): number => {
     const small = Math.min(scale.smallest, scale.width * 0.22)
@@ -59,7 +59,7 @@ const middle = (spots: Spot[]): Spot => ({
     y: spots.reduce((sum, spot) => sum + spot.y, 0) / spots.length
 })
 
-/** The heap belongs to the last zoom step alone. The thumbnails are back to
+/** The heap belongs to the last zoom step alone. The pins are back to
     their smallest there, and one still covers another only because the two
     photographs were taken on one spot. */
 const heaped = (scale: PinScale): boolean => scale.zoom >= scale.maxZoom
@@ -83,7 +83,7 @@ const gathered = <T extends Spot>(spots: T[], size: number): T[][] => {
  * On the last zoom step the ones that still do are laid out as a block over the
  * middle of where they sat, edge to edge and in the order they were taken, as
  * many across as it takes for the block to come out square. Every picture is
- * then whole, however many share the spot. Before that a thumbnail is meant to
+ * then whole, however many share the spot. Before that a pin is meant to
  * cover its neighbours and nothing moves. The answer is the step every pin
  * takes.
  */

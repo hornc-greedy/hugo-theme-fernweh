@@ -426,7 +426,7 @@ if (grid) {
                             image,
                             fetch: fetchPhoto
                         })
-                        // in the overview a thumbnail leads nowhere, so the photo waits
+                        // in the overview a pin leads nowhere, so the photo waits
                         image.addEventListener('pointerenter', () => {
                             if (map.getZoom() > overview.zoom) {
                                 fetchPhoto()
@@ -489,7 +489,7 @@ if (grid) {
 
                 map.on('click', back)
 
-                // a drag that comes to rest on a thumbnail ends in a click on its link,
+                // a drag that comes to rest on a pin ends in a click on its link,
                 // and the album would open although the finger only pushed the map
                 let dragged = false
                 map.on('dragstart', () => {

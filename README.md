@@ -131,7 +131,7 @@ Everything below is a default the theme brings. A value of your own wins.
 | `description` | | the meta description and the text of a shared link for a page without its own, the front page or a plain page for instance |
 | `footer.showThemeAttribution` | `true` | Hugo and the theme, named and linked at the end of the copyright line. `false` leaves them out |
 | `map.width` | `500px` | width of the map column, from which the outline derives its height |
-| `map.pin` | `60` | thumbnail on the map, in the overview and at full zoom |
+| `map.pin` | `60` | width of a pin on the map, in the overview and at full zoom |
 | `map.pinmax` | `100` | its largest, at the zoom levels in between |
 | `map.maxzoom` | `18` | how far the map lets you zoom in |
 | `map.tiles` | OpenStreetMap | the tile source under the outlines |
@@ -182,7 +182,7 @@ and a `static/favicon.svg` becomes the icon of the tab.
   pages through every located picture of the journey. Nothing is navigated,
   and closing it leaves the map where it stood.
 - **Photographs from one spot lie in a block on the last zoom step.** Their pins
-  cover each other at every zoom. Where the map ends, the thumbnails are back to
+  cover each other at every zoom. Where the map ends, the pins are back to
   their smallest and the ones that still cover each other are laid out edge to
   edge, as many across as it takes for the block to come out square.
 - **Nothing about it is configured.** No country list, no ISO code, no bounding
@@ -254,8 +254,8 @@ address without its `.webp`:
 | --- | --- |
 | `<key>-560.webp` | the album, and the row on a journey |
 | `<key>-1120.webp` | wider screens, through `srcset` |
-| `<key>-128.webp` | the thumbnail on the map |
-| `<key>-440.webp` | that thumbnail, zoomed in |
+| `<key>-128.webp` | the thumbnail in a pin on the map |
+| `<key>-440.webp` | that thumbnail, for a pin drawn wider than 128 pixels |
 | `<key>.json` | `{"w":1600,"h":900,"color":"#8a7b6c","date":"2026-06-13T11:23:45","lat":47.8,"lon":12.4}` |
 
 The note is all a build reads: the order of the album, the aspect ratios, the
