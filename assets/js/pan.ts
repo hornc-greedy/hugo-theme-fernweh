@@ -57,8 +57,9 @@ export const panKeys = (active: () => Leaflet.Map | null): void => {
             return
         }
         const dir = e.key.replace('Arrow', '').toLowerCase()
-        // every other key is left to the page
-        if (!Object.hasOwn(directions, dir)) {
+        // every other key is left to the page, and so is an arrow with alt, ctrl
+        // or meta, as in Leaflet's keyboard handler
+        if (e.altKey || e.ctrlKey || e.metaKey || !Object.hasOwn(directions, dir)) {
             return
         }
         e.preventDefault()
