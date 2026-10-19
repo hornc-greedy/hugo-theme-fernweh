@@ -9,16 +9,15 @@ interface Shot {
     thumb: string
 }
 
+/** the labels of the view, as the album and the map write them */
+export type Wording = Record<'photo' | 'close' | 'previous' | 'next', string>
+
 /**
  * Builds the view once and hands back what opens it. The photographs come from
  * the caller: an album has them as tiles, a map as the data it is drawn from.
  * `closed` is told which one was open when the view went away.
  */
-export const lightbox = (
-    shots: Shot[],
-    wording: Record<string, string | undefined>,
-    closed?: (i: number) => void
-) => {
+export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) => void) => {
     const part = <K extends keyof HTMLElementTagNameMap>(
         tag: K,
         css?: string
@@ -33,10 +32,10 @@ export const lightbox = (
     // built element by element rather than from a string of markup: the labels
     // come from the translation tables, and a quotation mark in one would break
     // markup assembled by hand
-    const knob = (css: string, label: string | undefined, glyph: string): HTMLButtonElement => {
+    const knob = (css: string, label: string, glyph: string): HTMLButtonElement => {
         const button = part('button', css)
         button.type = 'button'
-        button.ariaLabel = label ?? ''
+        button.ariaLabel = label
         button.textContent = glyph
         return button
     }
@@ -79,7 +78,7 @@ export const lightbox = (
     }
 
     const frame = part('dialog', 'lightbox')
-    frame.ariaLabel = wording.photo ?? ''
+    frame.ariaLabel = wording.photo
     frame.append(closer, previous, following, figure, bar)
     document.body.append(frame)
 
@@ -94,7 +93,7 @@ export const lightbox = (
     const thumbs = shots.map((_, i) => {
         const thumb = part('button')
         thumb.type = 'button'
-        thumb.ariaLabel = `${wording.photo ?? ''} ${i + 1}`
+        thumb.ariaLabel = `${wording.photo} ${i + 1}`
         const picture = part('img')
         pictures.push(picture)
         picture.alt = ''
@@ -151,10 +150,7 @@ export const lightbox = (
     )
 
     function show(i: number): void {
-        const shot = shots[i]
-        if (!shot) {
-            return
-        }
+        const shot = shots[i] as Shot
         scale = 1
         shift = { x: 0, y: 0 }
         img.style.transform = ''
@@ -166,9 +162,10 @@ export const lightbox = (
         text.textContent = shot.caption
         counter.textContent = `${i + 1} / ${shots.length}`
         thumbs.forEach((thumb, n) => {
-            thumb.classList.toggle('current', n === i)
+            if (thumb.classList.toggle('current', n === i)) {
+                thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+            }
         })
-        thumbs[i]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
         current = i
         align()
         // the neighbours wait for the photo in front of them, each of them would
@@ -302,11 +299,9 @@ export const lightbox = (
             // a finger on the strip scrolls it, the photo stays where it is
             onbar = bar.contains(e.target as Node)
             swipe = e.touches.length === 1 && !onbar
-            const first = e.touches[0]
-            start = first?.clientX ?? start
-            if (first) {
-                grabbed = { x: first.clientX - shift.x, y: first.clientY - shift.y }
-            }
+            const first = e.touches[0] as Touch
+            start = first.clientX
+            grabbed = { x: first.clientX - shift.x, y: first.clientY - shift.y }
             const two = pair(e.touches)
             if (two) {
                 const box = img.getBoundingClientRect()
@@ -351,8 +346,8 @@ export const lightbox = (
             e.preventDefault()
             return
         }
-        const first = e.touches[0]
-        if (scale > 1 && first) {
+        const first = e.touches[0] as Touch
+        if (scale > 1) {
             shift = { x: first.clientX - grabbed.x, y: first.clientY - grabbed.y }
             hold()
             e.preventDefault()
@@ -369,7 +364,7 @@ export const lightbox = (
             shift = { x: 0, y: 0 }
             hold()
         }
-        const dir = (e.changedTouches[0]?.clientX ?? start) - start
+        const dir = (e.changedTouches[0] as Touch).clientX - start
         if (swipe && scale === 1 && Math.abs(dir) > 50) {
             step(dir > 0 ? -1 : 1)
         }
@@ -383,16 +378,23 @@ const gallery = document.getElementById('gallery')
 
 if (gallery) {
     const tiles = [...gallery.querySelectorAll<HTMLAnchorElement>('.tile')]
-    const shots = tiles.map((tile) => ({
-        href: tile.href,
-        cuts: tile.querySelector('img')?.srcset ?? '',
-        width: Number(tile.dataset.width),
-        height: Number(tile.dataset.height),
-        caption: tile.dataset.caption ?? '',
-        thumb: tile.querySelector('img')?.src ?? ''
-    }))
+    const shots = tiles.map((tile) => {
+        // gallery.html writes every one of these on every tile
+        const said = tile.dataset as Record<'width' | 'height' | 'caption', string>
+        const picture = tile.querySelector('img') as HTMLImageElement
+        return {
+            href: tile.href,
+            cuts: picture.srcset,
+            width: Number(said.width),
+            height: Number(said.height),
+            caption: said.caption,
+            thumb: picture.src
+        }
+    })
 
-    const view = lightbox(shots, gallery.dataset, (i) => tiles[i]?.focus())
+    const view = lightbox(shots, gallery.dataset as Wording, (i) =>
+        (tiles[i] as HTMLAnchorElement).focus()
+    )
 
     // an address may name a single photo, and then it opens straight away
     const linked = tiles.findIndex((tile) => `#${tile.id}` === location.hash)

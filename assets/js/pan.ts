@@ -1,12 +1,25 @@
 import type * as Leaflet from 'leaflet'
 
-/** one step of the arrows on a map and of the arrow keys alike */
-const directions: Record<string, Leaflet.PointTuple> = {
+type Dir = 'up' | 'left' | 'down' | 'right'
+
+/** one step of the arrows on a map and of the arrow keys alike, in the order the
+    arrows are tabbed through */
+const directions: Record<Dir, Leaflet.PointTuple> = {
     up: [0, -1],
-    down: [0, 1],
     left: [-1, 0],
+    down: [0, 1],
     right: [1, 0]
 }
+
+const glyphs: Record<Dir, string> = {
+    up: '↑',
+    left: '←',
+    down: '↓',
+    right: '→'
+}
+
+/** the labels of the arrows, as map.html writes them */
+export type PanWording = Record<`pan${Dir}`, string>
 
 /** moves a map a quarter of its width in one of the directions */
 const pan = (target: Leaflet.Map, [x, y]: Leaflet.PointTuple): void => {
@@ -15,37 +28,22 @@ const pan = (target: Leaflet.Map, [x, y]: Leaflet.PointTuple): void => {
 }
 
 /** the arrows in the corner of a map, labelled with the page's wording */
-export const panControl = (wording: Record<string, string | undefined>): Leaflet.Control => {
+export const panControl = (wording: PanWording): Leaflet.Control => {
     const control = new L.Control({ position: 'bottomright' })
     control.onAdd = (map) => {
         const box = L.DomUtil.create('div', 'pan')
-        const glyphs: Record<string, string> = {
-            up: '↑',
-            left: '←',
-            down: '↓',
-            right: '→'
-        }
         // built element by element: the labels come from the translation tables,
         // and a quotation mark in one would break markup assembled by hand
-        for (const [dir, glyph] of Object.entries(glyphs)) {
+        for (const dir of Object.keys(directions) as Dir[]) {
             const button = document.createElement('button')
             button.type = 'button'
             button.dataset.dir = dir
-            button.ariaLabel = wording[`pan${dir}`] ?? ''
-            button.textContent = glyph
+            button.ariaLabel = wording[`pan${dir}`]
+            button.textContent = glyphs[dir]
+            button.addEventListener('click', () => pan(map, directions[dir]))
             box.append(button)
         }
         L.DomEvent.disableClickPropagation(box)
-        box.addEventListener('click', (e) => {
-            const button = (e.target as Element).closest('button')
-            if (!button) {
-                return
-            }
-            const step = directions[button.dataset.dir ?? '']
-            if (step) {
-                pan(map, step)
-            }
-        })
         return box
     }
     return control
@@ -58,11 +56,12 @@ export const panKeys = (active: () => Leaflet.Map | null): void => {
         if (!map) {
             return
         }
-        const dir = directions[e.key.replace('Arrow', '').toLowerCase()]
-        if (!dir) {
+        const dir = e.key.replace('Arrow', '').toLowerCase()
+        // every other key is left to the page
+        if (!Object.hasOwn(directions, dir)) {
             return
         }
         e.preventDefault()
-        pan(map, dir)
+        pan(map, directions[dir as Dir])
     })
 }

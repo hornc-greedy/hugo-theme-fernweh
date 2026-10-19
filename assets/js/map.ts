@@ -1,9 +1,9 @@
 import type * as Leaflet from 'leaflet'
 import { headroom, heap, type PinScale, pinSize, type Spot, tipSize } from './arc.ts'
-import { lightbox } from './lightbox.ts'
+import { lightbox, type Wording } from './lightbox.ts'
 import { locator } from './locator.ts'
 import { mask } from './mask.ts'
-import { panControl, panKeys } from './pan.ts'
+import { type PanWording, panControl, panKeys } from './pan.ts'
 
 // What the geojson template hands over
 interface Photo {
@@ -49,6 +49,21 @@ interface MapData {
     days: Day[]
 }
 
+/** what map.html writes on the element of the maps */
+type Attributes = Wording &
+    PanWording &
+    Record<
+        | 'source'
+        | 'tiles'
+        | 'attribution'
+        | 'overlay'
+        | 'maxzoom'
+        | 'pin'
+        | 'pinmax'
+        | 'wholecountry',
+        string
+    >
+
 interface Region {
     country: Country
     /** the days with photos on this map, each holding only those */
@@ -90,11 +105,12 @@ const grid = document.getElementById('maps')
 if (grid) {
     // the stylesheet fades the mask and the outline over the same seconds
     grid.style.setProperty('--fly-duration', `${flyDuration}s`)
-    const maxzoom = Number(grid.dataset.maxzoom)
-    const smallestPin = Number(grid.dataset.pin)
-    const largestPin = Number(grid.dataset.pinmax)
+    const said = grid.dataset as Attributes
+    const maxzoom = Number(said.maxzoom)
+    const smallestPin = Number(said.pin)
+    const largestPin = Number(said.pinmax)
 
-    void fetch(grid.dataset.source ?? '')
+    void fetch(said.source)
         .then((r) => r.json() as Promise<MapData>)
         .then((data) => {
             // every located photograph of the journey, in the order the days run.
@@ -115,8 +131,7 @@ if (grid) {
                     }
                 })
             )
-            const view = lightbox(shots, grid.dataset)
-            const wording = grid.dataset
+            const view = lightbox(shots, said)
 
             // the map that is currently zoomed in, and therefore the one the arrow
             // keys belong to. It is null again as soon as that map is back in the
@@ -167,13 +182,13 @@ if (grid) {
                 // the footer. Leaflet's own name is not part of that
                 map.attributionControl.setPrefix('')
                 const tiles = [
-                    L.tileLayer(grid?.dataset.tiles ?? '', {
+                    L.tileLayer(said.tiles, {
                         maxZoom: maxzoom,
-                        attribution: grid?.dataset.attribution
+                        attribution: said.attribution
                     }).addTo(map)
                 ]
-                if (grid?.dataset.overlay) {
-                    tiles.push(L.tileLayer(grid?.dataset.overlay, { maxZoom: maxzoom }).addTo(map))
+                if (said.overlay) {
+                    tiles.push(L.tileLayer(said.overlay, { maxZoom: maxzoom }).addTo(map))
                 }
 
                 const showMask = mask(map, country.geometry)
@@ -209,7 +224,7 @@ if (grid) {
                 const around = country.locator
                 const wide = around && {
                     show: mask(map, around.geometry),
-                    press: locator(map, around, wording.wholecountry ?? '', () => {
+                    press: locator(map, around, said.wholecountry, () => {
                         if (out(map.getZoom())) {
                             back()
                         } else {
@@ -448,7 +463,7 @@ if (grid) {
                 }
 
                 // dragging comes with the zoom. The keyboard has these steps instead
-                const panArrows = panControl(wording)
+                const panArrows = panControl(said)
                 let panShown = false
                 // set while the code itself moves the map: every zoom event during a
                 // programmatic fit compares against a baseline that is not updated yet
