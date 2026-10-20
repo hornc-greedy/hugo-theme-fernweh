@@ -99,6 +99,12 @@ const flyDuration = 0.7
 const flyInZoom = 3
 /** the room between a country and the edge of its frame, in pixels */
 const fitPadding = 12
+/**
+ * how far the bounds the map is held to reach past the visible box, as a share
+ * of its size in each direction. Exactly the visible box makes Leaflet zoom in
+ * a step to satisfy it
+ */
+const boundsBuffer = 0.02
 
 const grid = document.getElementById('maps')
 
@@ -217,7 +223,7 @@ if (grid) {
                     glide(zoom, flyDuration)
                     map.flyTo(whole.getCenter(), zoom, { duration: flyDuration })
                     map.once('moveend', () => {
-                        map.setMaxBounds(map.getBounds().pad(0.02))
+                        map.setMaxBounds(map.getBounds().pad(boundsBuffer))
                     })
                 }
                 const around = country.locator
@@ -551,9 +557,8 @@ if (grid) {
                     overview.center = map.getCenter()
                     overview.zoom = map.getZoom()
                     // the country filled the frame at this zoom, only the button of the
-                    // locator leads further out. The bound gets a little slack: exactly
-                    // the visible box makes Leaflet zoom in a step to satisfy it.
-                    overview.bounds = map.getBounds().pad(0.02)
+                    // locator leads further out
+                    overview.bounds = map.getBounds().pad(boundsBuffer)
                     floor()
                 }
 
