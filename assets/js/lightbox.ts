@@ -387,14 +387,14 @@ if (gallery) {
     const tiles = [...gallery.querySelectorAll<HTMLAnchorElement>('.tile')]
     const shots = tiles.map((tile) => {
         // gallery.html writes every one of these on every tile
-        const said = tile.dataset as Record<'width' | 'height' | 'caption', string>
+        const said = tile.dataset as Record<'width' | 'height', string>
         const picture = tile.querySelector('img') as HTMLImageElement
         return {
             href: tile.href,
             cuts: picture.srcset,
             width: Number(said.width),
             height: Number(said.height),
-            caption: said.caption,
+            caption: picture.alt,
             thumb: picture.src
         }
     })

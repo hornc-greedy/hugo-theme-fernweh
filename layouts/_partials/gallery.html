@@ -19,7 +19,7 @@
                 <a class="tile" id="photo-{{ $n }}" href="{{ .url }}"
                    {{- if not .caption }} aria-label="{{ i18n "photo" }} {{ add $n 1 }}"{{ end }}
                    data-width="{{ .w }}" data-height="{{ .h }}"
-                   data-caption="{{ .caption }}" style="background: {{ .color }}">
+                   style="background: {{ .color }}">
                   {{- /* the rows fold at 600px of the gallery, which with gutters of
                          4vw is a window of 652px. A full row is the column, or a
                          narrower window, less its gutters of 2.5rem on either side, a
