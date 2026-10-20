@@ -40,7 +40,7 @@ interface Country {
         code: string
         name: string
         /** the middle of the photos of the map */
-        centre: Leaflet.LatLngTuple
+        center: Leaflet.LatLngTuple
     }
 }
 
@@ -565,7 +565,7 @@ if (grid) {
                     // is kept, counted from the overview: that step is a
                     // different one in the new frame
                     const kept = {
-                        centre: map.getCenter(),
+                        center: map.getCenter(),
                         steps: map.getZoom() - overview.zoom
                     }
                     building = true
@@ -573,7 +573,7 @@ if (grid) {
                     map.invalidateSize(false)
                     settle()
                     if (kept.steps > 0) {
-                        map.setView(kept.centre, overview.zoom + kept.steps, { animate: false })
+                        map.setView(kept.center, overview.zoom + kept.steps, { animate: false })
                     }
                     building = false
                     follow()

@@ -3,7 +3,7 @@ import type * as Leaflet from 'leaflet'
 const namespace = 'http://www.w3.org/2000/svg'
 
 /** the country around a boundary, small, with a dot amid the photos of the map */
-const drawing = (geometry: GeoJSON.MultiPolygon, centre: Leaflet.LatLngTuple): SVGSVGElement => {
+const drawing = (geometry: GeoJSON.MultiPolygon, center: Leaflet.LatLngTuple): SVGSVGElement => {
     // the same projection as the map, turned so that north points up in the drawing
     const project = ([lng, lat]: GeoJSON.Position): [number, number] => {
         const p = L.CRS.EPSG3857.project(L.latLng(lat as number, lng as number))
@@ -15,7 +15,7 @@ const drawing = (geometry: GeoJSON.MultiPolygon, centre: Leaflet.LatLngTuple): S
     const [west, north] = project([box.getWest(), box.getNorth()])
     const [east, south] = project([box.getEast(), box.getSouth()])
     const r = Math.max(east - west, south - north) / 18
-    const [cx, cy] = project([centre[1], centre[0]])
+    const [cx, cy] = project([center[1], center[0]])
     // the drawing reaches as far as the country and the dot, which sticks out on a
     // boundary at the edge of the country
     const [left, top] = [Math.min(west, cx - r), Math.min(north, cy - r)]
@@ -52,7 +52,7 @@ export const locator = (
         geometry: GeoJSON.MultiPolygon
         code: string
         name: string
-        centre: Leaflet.LatLngTuple
+        center: Leaflet.LatLngTuple
     },
     label: string,
     toggle: () => void
@@ -79,7 +79,7 @@ export const locator = (
         line.textContent = text
         names.append(line)
     }
-    button.append(drawing(country.geometry, country.centre))
+    button.append(drawing(country.geometry, country.center))
     corner.append(names, button)
     pane.append(corner)
     // held against the panning of the map so it stays in the corner

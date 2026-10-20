@@ -252,8 +252,8 @@
            far from its middle */ -}}
     {{- $lats := apply $points "index" "." "lat" -}}
     {{- $longs := apply $points "index" "." "long" -}}
-    {{- $centre := slice (div (add (math.Min $lats) (math.Max $lats)) 2) (div (add (math.Min $longs) (math.Max $longs)) 2) -}}
-    {{- $entry = merge $entry (dict "locator" (dict "geometry" $geometry "code" $country.properties.ISO_A2 "name" .properties.name "centre" $centre)) -}}
+    {{- $center := slice (div (add (math.Min $lats) (math.Max $lats)) 2) (div (add (math.Min $longs) (math.Max $longs)) 2) -}}
+    {{- $entry = merge $entry (dict "locator" (dict "geometry" $geometry "code" $country.properties.ISO_A2 "name" .properties.name "center" $center)) -}}
     {{- /* the parts of the boundary within reach of a photo, and every part no
            further from their box than the box is large, so Neuwerk stays off the
            map of Hamburg while Brunn stays on the map of Nuremberg */ -}}
