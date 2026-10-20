@@ -167,13 +167,8 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         thumbs.forEach((thumb, n) => {
             thumb.ariaCurrent = n === i ? 'true' : null
         })
-        const shown = thumbs[i] as HTMLButtonElement
-        shown.scrollIntoView({
-            behavior: still ? 'instant' : 'smooth',
-            inline: 'center',
-            block: 'nearest'
-        })
         current = i
+        centre(still ? 'instant' : 'smooth')
         align()
         // the neighbours wait for the photo in front of them, each of them would
         // take a third of the line
@@ -194,6 +189,12 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         )
     }
 
+    // the thumbnail of the photo shown stands in the middle of the strip. A closed
+    // dialog has no scroll position, so opening centres the thumbnail once more
+    function centre(behavior: ScrollBehavior): void {
+        thumbs[current]?.scrollIntoView({ behavior, inline: 'center', block: 'nearest' })
+    }
+
     // touch devices show a browser bar, a mouse does not
     const handheld = matchMedia('(pointer: coarse)').matches
 
@@ -211,6 +212,7 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
                 .catch(() => undefined)
         }
         dialog.showModal()
+        centre('instant')
         align()
     }
 
@@ -252,7 +254,7 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
 
     // a hidden strip cannot scroll, so it is centred again once it is back
     addEventListener('resize', () => {
-        thumbs[current]?.scrollIntoView({ inline: 'center', block: 'nearest' })
+        centre('instant')
         align()
     })
     // the strip settles late, and the room for the photo is what it leaves over
