@@ -165,13 +165,13 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         text.textContent = shot.caption
         counter.textContent = `${i + 1} / ${shots.length}`
         thumbs.forEach((thumb, n) => {
-            if (thumb.classList.toggle('current', n === i)) {
-                thumb.scrollIntoView({
-                    behavior: still ? 'instant' : 'smooth',
-                    inline: 'center',
-                    block: 'nearest'
-                })
-            }
+            thumb.ariaCurrent = n === i ? 'true' : null
+        })
+        const shown = thumbs[i] as HTMLButtonElement
+        shown.scrollIntoView({
+            behavior: still ? 'instant' : 'smooth',
+            inline: 'center',
+            block: 'nearest'
         })
         current = i
         align()
