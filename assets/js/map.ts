@@ -219,20 +219,50 @@ if (grid) {
                     // floor is lifted first
                     lift()
                     // out here a pin keeps its smallest size and stands over its spot,
-                    // so the frame keeps half of one at the sides and all of one above
-                    const pin = size(overview.zoom)
+                    // so the frame gives extra room only where a pin would reach past it,
+                    // above the northernmost one and beside the outermost ones. More
+                    // room lowers the zoom and moves the spots, so the fit is
+                    // measured again until no pin reaches past it
+                    const pin = Math.round(size(overview.zoom))
+                    const view = map.getSize()
                     const padding = {
-                        paddingTopLeft: L.point(
-                            fitPadding + pin / 2,
-                            fitPadding + pin + tipSize(pin)
-                        ),
-                        paddingBottomRight: L.point(fitPadding + pin / 2, fitPadding)
+                        paddingTopLeft: L.point(fitPadding, fitPadding),
+                        paddingBottomRight: L.point(fitPadding, fitPadding)
                     }
-                    const zoom = map.getBoundsZoom(
-                        whole,
-                        false,
-                        padding.paddingTopLeft.add(padding.paddingBottomRight)
-                    )
+                    let zoom: number
+                    for (;;) {
+                        zoom = map.getBoundsZoom(
+                            whole,
+                            false,
+                            padding.paddingTopLeft.add(padding.paddingBottomRight)
+                        )
+                        // the center flyToBounds flies to
+                        const center = map
+                            .project(whole.getSouthWest(), zoom)
+                            .add(map.project(whole.getNorthEast(), zoom))
+                            .divideBy(2)
+                            .add(
+                                padding.paddingBottomRight
+                                    .subtract(padding.paddingTopLeft)
+                                    .divideBy(2)
+                            )
+                        const spots = pins.map((one) =>
+                            map
+                                .project([one.photo.lat, one.photo.long], zoom)
+                                .subtract(center)
+                                .add(view.divideBy(2))
+                        )
+                        const reach = (gap: (spot: Leaflet.Point) => number): number =>
+                            Math.max(0, ...spots.map((spot) => Math.ceil(gap(spot))))
+                        const left = reach((spot) => pin / 2 - spot.x)
+                        const top = reach((spot) => headroom(pin, spot.y))
+                        const right = reach((spot) => spot.x + pin / 2 - view.x)
+                        if (left + top + right === 0) {
+                            break
+                        }
+                        padding.paddingTopLeft = padding.paddingTopLeft.add([left, top])
+                        padding.paddingBottomRight = padding.paddingBottomRight.add([right, 0])
+                    }
                     map.setMinZoom(zoom)
                     glide(zoom, flyDuration)
                     map.flyToBounds(whole, { ...padding, duration: flyDuration })
