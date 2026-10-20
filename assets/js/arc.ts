@@ -59,9 +59,11 @@ const middle = (spots: Spot[]): Spot => ({
     y: spots.reduce((sum, spot) => sum + spot.y, 0) / spots.length
 })
 
-/** The heap belongs to the last zoom step alone. The pins are back to
-    their smallest there, and one still covers another only because the two
-    photographs were taken on one spot. */
+/**
+ * The heap belongs to the last zoom step alone. The pins are back to
+ * their smallest there, and one still covers another only because the two
+ * photographs were taken on one spot.
+ */
 const heaped = (scale: PinScale): boolean => scale.zoom >= scale.maxZoom
 
 /** the pins that cover each other, gathered into heaps */

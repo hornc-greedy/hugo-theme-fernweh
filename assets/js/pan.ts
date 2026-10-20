@@ -2,8 +2,10 @@ import type * as Leaflet from 'leaflet'
 
 type Dir = 'up' | 'left' | 'down' | 'right'
 
-/** one step of the arrows on a map and of the arrow keys alike, in the order the
-    arrows are tabbed through */
+/**
+ * one step of the arrows on a map and of the arrow keys alike, in the order the
+ * arrows are tabbed through
+ */
 const directions: Record<Dir, Leaflet.PointTuple> = {
     up: [0, -1],
     left: [-1, 0],

@@ -292,9 +292,11 @@ if (grid) {
                     }
                 }
 
-                /** the pins nearest this photo, the ones a finger reaches next. Eight,
-                    because the view holds ninety of them on a journey the size of an
-                    island, and every photo is a third of a megabyte */
+                /**
+                 * the pins nearest this photo, the ones a finger reaches next. Eight,
+                 * because the view holds ninety of them on a journey the size of an
+                 * island, and every photo is a third of a megabyte
+                 */
                 const nearest = (centre: Photo): Pin[] => {
                     const zoom = map.getZoom()
                     const here = map.project([centre.lat, centre.long], zoom)
@@ -341,9 +343,11 @@ if (grid) {
                     }
                 }
 
-                /** the pins take the size and the place of the destination at once, held
-                    back by a counter-scale and their old step, both released over the
-                    seconds the map flies */
+                /**
+                 * the pins take the size and the place of the destination at once, held
+                 * back by a counter-scale and their old step, both released over the
+                 * seconds the map flies
+                 */
                 const glide = (zoom: number, seconds: number): void => {
                     shroud(zoom)
                     // flying in, the tiles at hand cover the destination and only turn
