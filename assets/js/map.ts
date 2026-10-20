@@ -131,7 +131,7 @@ if (grid) {
                     }
                 })
             )
-            const view = lightbox(shots, said)
+            const open = lightbox(shots, said)
 
             // the map that is currently zoomed in, and therefore the one the arrow
             // keys belong to. It is null again as soon as that map is back in the
@@ -515,7 +515,7 @@ if (grid) {
                         // without a script. Here the view opens over the map
                         e.preventDefault()
                         if (!dragged) {
-                            view.open(Number(link.dataset.shot))
+                            void open(Number(link.dataset.shot))
                         }
                     },
                     true

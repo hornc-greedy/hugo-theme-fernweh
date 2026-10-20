@@ -377,7 +377,7 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         }
     })
 
-    return { open }
+    return open
 }
 
 // the album of a day drives the view from the tiles it already shows
@@ -399,7 +399,7 @@ if (gallery) {
         }
     })
 
-    const view = lightbox(shots, gallery.dataset as Wording, (i) =>
+    const open = lightbox(shots, gallery.dataset as Wording, (i) =>
         (tiles[i] as HTMLAnchorElement).focus()
     )
 
@@ -409,11 +409,11 @@ if (gallery) {
     tiles.forEach((tile, i) => {
         tile.addEventListener('click', (e) => {
             e.preventDefault()
-            view.open(i)
+            void open(i)
         })
     })
 
     if (linked > -1) {
-        view.open(linked)
+        void open(linked)
     }
 }
