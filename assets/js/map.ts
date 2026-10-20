@@ -300,9 +300,9 @@ if (grid) {
                  * because the view holds ninety of them on a journey the size of an
                  * island, and every photo is a third of a megabyte
                  */
-                const nearest = (centre: Photo): Pin[] => {
+                const nearest = (photo: Photo): Pin[] => {
                     const zoom = map.getZoom()
-                    const here = map.project([centre.lat, centre.long], zoom)
+                    const here = map.project([photo.lat, photo.long], zoom)
                     return pins
                         .map((pin) => ({
                             pin,
