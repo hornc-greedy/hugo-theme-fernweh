@@ -206,9 +206,8 @@ if (grid) {
                 // the frame of the whole country, held there once the map has arrived
                 const fly = (whole: Leaflet.LatLngBounds): void => {
                     // Leaflet answers no further out than the floor it has, so the
-                    // floor goes first
-                    map.setMaxBounds(null)
-                    map.setMinZoom(0)
+                    // floor is lifted first
+                    lift()
                     const zoom = map.getBoundsZoom(
                         whole,
                         false,
@@ -246,6 +245,10 @@ if (grid) {
                 const floor = (): void => {
                     map.setMinZoom(overview.zoom)
                     map.setMaxBounds(overview.bounds)
+                }
+                const lift = (): void => {
+                    map.setMaxBounds(null)
+                    map.setMinZoom(0)
                 }
 
                 const pins: Pin[] = []
@@ -566,8 +569,7 @@ if (grid) {
                         steps: map.getZoom() - overview.zoom
                     }
                     building = true
-                    map.setMinZoom(0)
-                    map.setMaxBounds(null)
+                    lift()
                     map.invalidateSize(false)
                     settle()
                     if (kept.steps > 0) {
