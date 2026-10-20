@@ -218,14 +218,24 @@ if (grid) {
                     // Leaflet answers no further out than the floor it has, so the
                     // floor is lifted first
                     lift()
+                    // out here a pin keeps its smallest size and stands over its spot,
+                    // so the frame keeps half of one at the sides and all of one above
+                    const pin = size(overview.zoom)
+                    const padding = {
+                        paddingTopLeft: L.point(
+                            fitPadding + pin / 2,
+                            fitPadding + pin + tipSize(pin)
+                        ),
+                        paddingBottomRight: L.point(fitPadding + pin / 2, fitPadding)
+                    }
                     const zoom = map.getBoundsZoom(
                         whole,
                         false,
-                        L.point(2 * fitPadding, 2 * fitPadding)
+                        padding.paddingTopLeft.add(padding.paddingBottomRight)
                     )
                     map.setMinZoom(zoom)
                     glide(zoom, flyDuration)
-                    map.flyTo(whole.getCenter(), zoom, { duration: flyDuration })
+                    map.flyToBounds(whole, { ...padding, duration: flyDuration })
                     map.once('moveend', () => {
                         map.setMaxBounds(map.getBounds().pad(boundsBuffer))
                     })
