@@ -1,5 +1,5 @@
 import type * as Leaflet from 'leaflet'
-import { headroom, heap, type PinScale, pinSize, type Spot, tipSize } from './arc.ts'
+import { headroom, heap, heaped, type PinScale, pinSize, type Spot, tipSize } from './arc.ts'
 import { lightbox, type Wording } from './lightbox.ts'
 import { locator } from './locator.ts'
 import { mask } from './mask.ts'
@@ -286,7 +286,7 @@ if (grid) {
                     frame.style.setProperty('--pin', `${pin}px`)
                     frame.style.setProperty('--tip', `${tipSize(pin)}px`)
                     // a pin moved into a heap no longer stands on its own spot
-                    frame.classList.toggle('heaped', zoom >= map.getMaxZoom())
+                    frame.classList.toggle('heaped', heaped(scale(zoom)))
                 }
 
                 // the zoom is passed in, because during a flight the pins already

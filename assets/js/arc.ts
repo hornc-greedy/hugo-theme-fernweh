@@ -64,7 +64,7 @@ const middle = (spots: Spot[]): Spot => ({
  * their smallest there, and one still covers another only because the two
  * photographs were taken on one spot.
  */
-const heaped = (scale: PinScale): boolean => scale.zoom >= scale.maxZoom
+export const heaped = (scale: PinScale): boolean => scale.zoom >= scale.maxZoom
 
 /** the pins that cover each other, gathered into heaps */
 const gathered = <T extends Spot>(spots: T[], size: number): T[][] => {
