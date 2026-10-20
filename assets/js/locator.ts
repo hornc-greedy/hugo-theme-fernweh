@@ -59,8 +59,8 @@ export const locator = (
 ): ((pressed: boolean) => void) => {
     const pane = map.createPane('locator')
     pane.style.zIndex = '550'
-    const figure = document.createElement('div')
-    figure.className = 'locator'
+    const corner = document.createElement('div')
+    corner.className = 'locator'
     // the drawing is the button, the names beside it are not
     const button = document.createElement('button')
     button.type = 'button'
@@ -80,8 +80,8 @@ export const locator = (
         names.append(line)
     }
     button.append(drawing(country.geometry, country.centre))
-    figure.append(names, button)
-    pane.append(figure)
+    corner.append(names, button)
+    pane.append(corner)
     // held against the panning of the map so it stays in the corner
     const hold = (): void => {
         L.DomUtil.setPosition(pane, map.containerPointToLayerPoint([0, 0]))
