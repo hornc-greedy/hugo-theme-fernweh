@@ -20,11 +20,11 @@ export type Wording = Record<'photo' | 'close' | 'previous' | 'next', string>
 export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) => void) => {
     const part = <K extends keyof HTMLElementTagNameMap>(
         tag: K,
-        css?: string
+        className?: string
     ): HTMLElementTagNameMap[K] => {
         const el = document.createElement(tag)
-        if (css) {
-            el.className = css
+        if (className) {
+            el.className = className
         }
         return el
     }
@@ -32,18 +32,18 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
     // built element by element rather than from a string of markup: the labels
     // come from the translation tables, and a quotation mark in one would break
     // markup assembled by hand
-    const knob = (css: string, label: string, glyph: string): HTMLButtonElement => {
-        const button = part('button', css)
-        button.type = 'button'
-        button.ariaLabel = label
-        button.textContent = glyph
-        return button
+    const button = (className: string, label: string, glyph: string): HTMLButtonElement => {
+        const el = part('button', className)
+        el.type = 'button'
+        el.ariaLabel = label
+        el.textContent = glyph
+        return el
     }
 
-    const closer = knob('lightbox-close', wording.close, '×')
+    const closer = button('lightbox-close', wording.close, '×')
     closer.autofocus = true
-    const previous = knob('lightbox-prev', wording.previous, '‹')
-    const following = knob('lightbox-next', wording.next, '›')
+    const previous = button('lightbox-prev', wording.previous, '‹')
+    const following = button('lightbox-next', wording.next, '›')
 
     const img = part('img')
     img.fetchPriority = 'high'
@@ -77,10 +77,10 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         figure.style.gridTemplateRows = `${wide / ratio}px auto`
     }
 
-    const frame = part('dialog', 'lightbox')
-    frame.ariaLabel = wording.photo
-    frame.append(closer, previous, following, figure, bar)
-    document.body.append(frame)
+    const dialog = part('dialog', 'lightbox')
+    dialog.ariaLabel = wording.photo
+    dialog.append(closer, previous, following, figure, bar)
+    document.body.append(dialog)
 
     let current = -1
 
@@ -210,7 +210,7 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
                 .requestFullscreen?.({ navigationUI: 'hide' })
                 .catch(() => undefined)
         }
-        frame.showModal()
+        dialog.showModal()
         align()
     }
 
@@ -218,24 +218,24 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         show(around(current + by))
     }
 
-    frame.addEventListener('close', () => {
+    dialog.addEventListener('close', () => {
         if (document.fullscreenElement) {
             void document.exitFullscreen()
         }
         closed?.(current)
     })
 
-    closer.addEventListener('click', () => frame.close())
+    closer.addEventListener('click', () => dialog.close())
     previous.addEventListener('click', () => step(-1))
     following.addEventListener('click', () => step(1))
-    frame.addEventListener('click', (e) => {
+    dialog.addEventListener('click', (e) => {
         // without a margin the space beside the picture belongs to the figure
-        if (e.target === frame || e.target === figure) {
-            frame.close()
+        if (e.target === dialog || e.target === figure) {
+            dialog.close()
         }
     })
 
-    frame.addEventListener('keydown', (e) => {
+    dialog.addEventListener('keydown', (e) => {
         if (!e.key.startsWith('Arrow')) {
             return
         }
@@ -300,7 +300,7 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         img.style.transform = `translate(${shift.x}px, ${shift.y}px) scale(${scale})`
     }
 
-    frame.addEventListener(
+    dialog.addEventListener(
         'touchstart',
         (e) => {
             // a finger on the strip scrolls it, the photo stays where it is
@@ -331,13 +331,13 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
     // Leaflet turns touches into pointer events and listens for them on the
     // document, so a drag it began with the tap that opened the view would follow
     // every swipe over the photo. A mouse passes, the strip is dragged with it.
-    frame.addEventListener('pointermove', (e) => {
+    dialog.addEventListener('pointermove', (e) => {
         if (e.pointerType !== 'mouse') {
             e.stopPropagation()
         }
     })
 
-    frame.addEventListener('touchmove', (e) => {
+    dialog.addEventListener('touchmove', (e) => {
         if (onbar) {
             return
         }
@@ -361,7 +361,7 @@ export const lightbox = (shots: Shot[], wording: Wording, closed?: (i: number) =
         }
     })
 
-    frame.addEventListener('touchend', (e) => {
+    dialog.addEventListener('touchend', (e) => {
         // a finger still down after a pinch takes over the moving
         const left = e.touches[0]
         if (left) {
