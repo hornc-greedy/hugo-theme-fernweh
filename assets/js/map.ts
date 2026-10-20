@@ -99,6 +99,8 @@ const flyDuration = 0.7
 const flyInZoom = 3
 /** the room between a country and the edge of its frame, in pixels */
 const fitPadding = 12
+/** the height of the flattest frame to its width, which a stopover always has */
+const flattest = 0.75
 /**
  * how far the bounds the map is held to reach past the visible box, as a share
  * of its size in each direction. Exactly the visible box makes Leaflet zoom in
@@ -153,15 +155,17 @@ if (grid) {
                 if (region.secondary) {
                     // a stopover keeps a frame of its own, so a tall island cannot outgrow the main maps
                     box.style.width = `${Math.round(available)}px`
-                    box.style.height = `${Math.round(available * 0.75)}px`
+                    box.style.height = `${Math.round(available * flattest)}px`
                     return
                 }
-                // every map takes the full width it is given, the height follows from
-                // the country. Only the extreme shapes are capped, and relative to that
+                // a map takes the width it is given and the height that follows from
+                // the country. Only the extreme shapes are bounded, and relative to that
                 // width rather than to the window: a viewport-bound cap makes a tall
-                // country narrower than a round one standing right beside it.
+                // country narrower than a round one standing right beside it. A tall one
+                // stops at twice the width, a wide one gets land above and below it
+                // instead of a sliver.
                 const scale = Math.min(available / x, (available * 2) / y)
-                box.style.height = `${Math.round(y * scale)}px`
+                box.style.height = `${Math.round(Math.max(y * scale, available * flattest))}px`
                 box.style.width = `${Math.round(x * scale)}px`
             }
 
@@ -556,7 +560,7 @@ if (grid) {
                     }
                     overview.center = map.getCenter()
                     overview.zoom = map.getZoom()
-                    // the country filled the frame at this zoom, only the button of the
+                    // the country fits the frame at this zoom, only the button of the
                     // locator leads further out
                     overview.bounds = map.getBounds().pad(boundsBuffer)
                     floor()
